@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 3964253297533920987}
   - component: {fileID: 3964253297533920964}
   - component: {fileID: 3922510449089984249}
-  m_Layer: 10
+  - component: {fileID: 3965710285987920718}
+  m_Layer: 8
   m_Name: SimpleEnemyBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,3 +109,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &3965710285987920718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3964253297533920965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef01d2b389d2d7b41b061f7e2854a254, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dmg: 10

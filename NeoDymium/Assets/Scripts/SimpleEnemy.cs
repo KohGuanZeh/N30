@@ -3,19 +3,22 @@ using UnityEngine;
 
 public class SimpleEnemy : MonoBehaviour
 {
-	public float shootCooldown;
+	public float shootCooldown = 1;
 	public GameObject bullet;
-	public float bulletSpeed;
+	public float bulletSpeed = 2;
 	[Space (10)]
-	public float health;
+	public int health = 100;
+	public float invulnTime = 0.5f;
 	[Space (10)]
 	[Header ("Wandering Behaviour")]
-	public float rotationTime;
-	public float rotationDelay;
-	public float walkTime;
-	public float walkDelay;
-	public float walkSpeed;
-	public float rotatingSpeed;
+	public float rotationTime = 0.7f;
+	public float rotationDelay = 0.5f;
+	public float walkTime = 0.7f;
+	public float walkDelay = 0.5f;
+	public float walkSpeed = 2;
+	public float rotatingSpeed = 100;
+
+	bool invuln;
 
 	bool walking;
 	bool rotating;
@@ -41,6 +44,8 @@ public class SimpleEnemy : MonoBehaviour
 		walking = false;
 		rotating = false;
 		wandering = false;
+
+		invuln = false;
 	}
 
 	void Update () 
@@ -80,6 +85,9 @@ public class SimpleEnemy : MonoBehaviour
 					transform.eulerAngles -= new Vector3 (0, rotatingSpeed * Time.deltaTime, 0);
 			}
 		}
+
+		if (health < 0) 
+			Destroy (gameObject);
 	}
 
 	void Shoot () 
@@ -94,10 +102,17 @@ public class SimpleEnemy : MonoBehaviour
 
 	void OnCollisionEnter (Collision other) 
 	{
-		if (other.gameObject.tag == "PlayerAttack") 
+		if (other.gameObject.tag == "PlayerAttack" && !invuln) 
 		{
 			health -= player.CalculateDamage ();
+			invuln = true;
+			Invoke ("RefreshInvuln", invulnTime);
 		}
+	}
+
+	void RefreshInvuln () 
+	{
+		invuln = false;
 	}
 
 	IEnumerator Wander ()

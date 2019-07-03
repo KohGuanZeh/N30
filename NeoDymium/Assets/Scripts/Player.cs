@@ -63,6 +63,9 @@ public class Player : MonoBehaviour
 			comboTimer = Mathf.Max (comboTimer - Time.deltaTime, 0);
 		else 
 			comboStep = 0;
+
+		if (currentHealth <= 0)
+			Destroy (gameObject);
 	}
 
 	void Punch () 
@@ -73,24 +76,27 @@ public class Player : MonoBehaviour
 		armCollider.enabled = true;
 		comboTimer = 0.5f + punchAnimationClips[comboStep - 1].length;
 		Invoke ("CanPunch", punchAnimationClips[comboStep - 1].length);
-		if (comboStep == 3)
-			comboStep = 0;
 	}
 
 	void CanPunch () 
 	{
 		canPunch = true;
 		armCollider.enabled = false;
+		if (comboStep == 3)
+			comboStep = 0;
 	}
 
 	void OnCollisionEnter (Collision other) 
 	{
-		if (other.gameObject.layer == 10) //layer name is EnemyProj
-			currentHealth -= bulletDamage;
+		if (other.gameObject.layer == 8) 	//layer name is EnemyProj
+		{
+			currentHealth -= other.gameObject.GetComponent<EnemyBullet> ().dmg;
+			Destroy (other.gameObject);
+		}
 	}
 
 	public int CalculateDamage () 
 	{
-		return comboDamage[comboStep];
+		return comboDamage[comboStep - 1];
 	}
 }

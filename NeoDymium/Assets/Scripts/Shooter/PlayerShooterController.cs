@@ -5,6 +5,10 @@ using System;
 
 public class PlayerShooterController : MonoBehaviour
 {
+	[Header("Player Properties")]
+	public int currentHealth;
+	public int maxHealth;
+
 	[Header("Player Movement")]
 	[SerializeField] Rigidbody rb;
 	[SerializeField] Camera playerCam;
@@ -16,7 +20,7 @@ public class PlayerShooterController : MonoBehaviour
 	public Transform gun;
 	public Transform shootPoint;
 	public LayerMask expectedLayers;
-	public float minSpread, maxSpread;
+	public float spreadVal;
 	public float effectiveRange;
 	public bool inAimMode;
 
@@ -45,6 +49,8 @@ public class PlayerShooterController : MonoBehaviour
 		//Set Camera
 		playerCam.transform.localPosition = new Vector3(playerCam.transform.localPosition.x, playerCam.transform.localPosition.y, normCamPos);
 		playerCam.fieldOfView = normFov;
+
+		currentHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -126,7 +132,8 @@ public class PlayerShooterController : MonoBehaviour
 	public void RaycastShoot()
 	{
 		Vector3 bulletDir = playerCam.transform.forward;
-		Ray shootRay = inAimMode ? new Ray(playerCam.transform.position, playerCam.transform.forward) : new Ray(playerCam.transform.position, playerCam.transform.forward);
+		Vector3 spread = new Vector3(UnityEngine.Random.Range(-spreadVal,spreadVal), UnityEngine.Random.Range(-spreadVal, spreadVal), 0);
+		Ray shootRay = inAimMode ? new Ray(playerCam.transform.position, playerCam.transform.forward) : new Ray(playerCam.transform.position + spread, playerCam.transform.forward);
 		RaycastHit hitInfo;
 
 		if (Physics.Raycast(shootRay, out hitInfo, effectiveRange, expectedLayers))
@@ -136,6 +143,7 @@ public class PlayerShooterController : MonoBehaviour
 		}
 	}
 
+	//Not Emphasied on yet
 	public void ShootProjectile()
 	{
 		Vector3 bulletDir = playerCam.transform.forward;

@@ -5,15 +5,15 @@ public class UIManager : MonoBehaviour
 {
     public TextMeshProUGUI healthText;
 
-	Player player;
+	PlayerController player;
 
 	void Start () 
 	{
-		player = Player.inst;
+		player = PlayerController.inst;
 	}
 	
 	void Update () 
 	{
-		healthText.text = player.currentHealth + "/" + player.maxHealth;
+		healthText.text = player + "/" + player;
 	}
 }

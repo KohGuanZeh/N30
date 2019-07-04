@@ -5,26 +5,41 @@ public class SimpleEnemy : MonoBehaviour
 {
 	public float attackCooldown = 1;
 	public int health = 100;
+	public int damage = 10;
 
-	PlayerController player;
+	bool canHit;
+
+	PlayerShooterController player;
 	NavMeshAgent agent;
 
 	void Start () 
 	{
-		player = PlayerController.inst;
+		canHit = true;
+
+		player = PlayerShooterController.inst;
 		agent = GetComponent<NavMeshAgent> ();
 	}
 
 	void Update () 
 	{
-		agent.SetDestination (player.transform.position);
+		if (player != null)
+			agent.SetDestination (player.transform.position);
 		if (health < 0)
 			Destroy (gameObject);
 	}
 
 	void OnCollisionStay (Collision other) 
 	{
-		if (other.gameObject.tag == "Player") 
-			{}//player.currentHealth -= 10;
+		if (other.gameObject.tag == "Player" && canHit) 
+		{
+			canHit = false;
+			player.currentHealth -= damage;
+			Invoke ("RefreshHit", attackCooldown);
+		}
+	}
+
+	void RefreshHit () 
+	{
+		canHit = true;
 	}
 }

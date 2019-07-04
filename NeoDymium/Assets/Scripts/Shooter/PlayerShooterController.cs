@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 public class PlayerShooterController : MonoBehaviour
 {
+	public static PlayerShooterController inst;
+
 	[Header("Player Movement")]
 	[SerializeField] Rigidbody rb;
 	[SerializeField] Camera playerCam;
@@ -17,21 +17,30 @@ public class PlayerShooterController : MonoBehaviour
 	public Transform shootPoint;
 	public LayerMask expectedLayers;
 	public float minSpread, maxSpread;
-	public float effectiveRange;
+	public float effectiveRange = 50;
 	public bool inAimMode;
+	public int gunDamage = 10;
 
 	[Header("Adjustments for Aim Mode. For Design Use")]
-	public float normFov;
-	public float aimFov;
-	public float normCamPos;
-	public float aimCamPos;
+	public float normFov = 60;
+	public float aimFov = 30;
+	public float normCamPos = -0.25f;
+	public float aimCamPos = 0.1f;
+
+	[Header ("Health")]
+	public int maxHealth = 100;
+	public int currentHealth;
 
 	//For Camera, Particularly Aiming
 	bool cameraLerping;
 	Action cameraLerp;
 	float cameraLerpStatus;
 
-    // Start is called before the first frame update
+	void Awake () 
+	{
+		inst = this;
+	}
+
     void Start()
     {
 		//Lock Cursor in Middle of Screen
@@ -45,9 +54,10 @@ public class PlayerShooterController : MonoBehaviour
 		//Set Camera
 		playerCam.transform.localPosition = new Vector3(playerCam.transform.localPosition.x, playerCam.transform.localPosition.y, normCamPos);
 		playerCam.fieldOfView = normFov;
+
+		currentHealth = maxHealth;
     }
 
-    // Update is called once per frame
     void Update()
     {
 		PlayerMovement();
@@ -55,6 +65,8 @@ public class PlayerShooterController : MonoBehaviour
 		if (Input.GetMouseButtonDown(0)) RaycastShoot();
 
 		if (cameraLerp != null) cameraLerp();
+		if (currentHealth <= 0)
+			Destroy (gameObject);
     }
 
 	void PlayerMovement()
@@ -132,7 +144,21 @@ public class PlayerShooterController : MonoBehaviour
 		if (Physics.Raycast(shootRay, out hitInfo, effectiveRange, expectedLayers))
 		{
 			print("Hit!");
-			hitInfo.collider.gameObject.SetActive(false);
+			switch (hitInfo.collider.gameObject.tag) 
+			{
+				case ("Enemy"): 
+				{
+					hitInfo.collider.GetComponent<SimpleEnemy> ().health -= gunDamage;
+				}
+				break;
+
+				case ("ExplodingBarrel"): 
+				{
+					hitInfo.collider.GetComponent<ExplodingBarrel> ().hitsLeft--;
+				}
+				break;
+			}
+			//hitInfo.collider.gameObject.SetActive(false);
 		}
 	}
 

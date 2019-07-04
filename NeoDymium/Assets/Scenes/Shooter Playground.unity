@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 48775189}
   - component: {fileID: 48775188}
   - component: {fileID: 48775187}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1527,7 +1527,7 @@ MonoBehaviour:
   shootPoint: {fileID: 1664501512}
   expectedLayers:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 256
   minSpread: 0
   maxSpread: 0
   effectiveRange: 50
@@ -1536,6 +1536,8 @@ MonoBehaviour:
   aimFov: 30
   normCamPos: -0.25
   aimCamPos: 0.1
+  maxHealth: 100
+  currentHealth: 0
 --- !u!54 &1618043340
 Rigidbody:
   m_ObjectHideFlags: 0

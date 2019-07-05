@@ -9,11 +9,12 @@ public class JumpPad : MonoBehaviour
 
 	public void LaunchPlayer(Transform player)
 	{
-		//Do an Arc Jump
+		//Now only need to do the Jump Arc
+		player.transform.position = jumpDestination.position + new Vector3(0, PlayerShooterController.inst.distFromGround, 0);
 	}
 
-	private void OnCollisionEnter(Collision collision)
+	private void OnTriggerEnter(Collider other)
 	{
-		if (collision.gameObject.tag == "Player") LaunchPlayer(collision.transform);
+		if (other.GetComponent<PlayerShooterController>()) LaunchPlayer(other.transform);
 	}
 }

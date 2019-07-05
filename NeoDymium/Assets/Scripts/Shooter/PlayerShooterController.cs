@@ -3,32 +3,35 @@ using System;
 
 public class PlayerShooterController : MonoBehaviour
 {
-<<<<<<< HEAD
-	[Header("Player Properties")]
-	public int currentHealth;
-	public int maxHealth;
-=======
 	public static PlayerShooterController inst;
->>>>>>> c7c17753dff003b24e91089af447bfd20b52cf03
+
+	[Header("Player Properties")]
+	public int maxHealth = 100;
+	public int currentHealth;
 
 	[Header("Player Movement")]
 	[SerializeField] Rigidbody rb;
 	[SerializeField] Camera playerCam;
-	public float walkSpeed = 10, runSpeed = 20;
+	public float walkSpeed = 10, runSpeed = 20, jumpSpeed = 10;
 	public float horLookSpeed = 1, vertLookSpeed = 1;
 	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
+	//For Ground Check using Collider.Bounds.Extents
+	[SerializeField] Collider playerCollider;
+	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size)
+	[SerializeField] bool isGrounded; //Implemented for Debugging Purposes
+
+	[Header("For Gravity Testing")] //Required since there is no gravity scale
+	[SerializeField] bool testGravity;
+	[SerializeField] float originalGravity;
+	[SerializeField] float currentGravity;
+	[SerializeField] float gravityScale;
 
 	[Header("For Gun and Shooting")]
 	public Transform gun;
 	public Transform shootPoint;
 	public LayerMask expectedLayers;
-<<<<<<< HEAD
 	public float spreadVal;
 	public float effectiveRange;
-=======
-	public float minSpread, maxSpread;
-	public float effectiveRange = 50;
->>>>>>> c7c17753dff003b24e91089af447bfd20b52cf03
 	public bool inAimMode;
 	public int gunDamage = 10;
 
@@ -37,10 +40,6 @@ public class PlayerShooterController : MonoBehaviour
 	public float aimFov = 30;
 	public float normCamPos = -0.25f;
 	public float aimCamPos = 0.1f;
-
-	[Header ("Health")]
-	public int maxHealth = 100;
-	public int currentHealth;
 
 	//For Camera, Particularly Aiming
 	bool cameraLerping;
@@ -61,16 +60,31 @@ public class PlayerShooterController : MonoBehaviour
 		//Getting Components
 		playerCam = GetComponentInChildren<Camera>();
 		rb = GetComponent<Rigidbody>();
+		playerCollider = GetComponent<Collider>();
 
 		//Set Camera
 		playerCam.transform.localPosition = new Vector3(playerCam.transform.localPosition.x, playerCam.transform.localPosition.y, normCamPos);
 		playerCam.fieldOfView = normFov;
 
+		//Set Ground Check. May need to change the y
+		originalGravity = Physics.gravity.y;
+		Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
+		currentGravity = Physics.gravity.y;
+		distFromGround = playerCollider.bounds.extents.y + 0.05f; 
+
+		//Set Player Properties
 		currentHealth = maxHealth;
     }
 
     void Update()
     {
+		//Temporary Solution to adjust and Test Gravity
+		if (testGravity)
+		{
+			Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
+			currentGravity = Physics.gravity.y;
+		}
+
 		PlayerMovement();
 		Aim();
 		if (Input.GetMouseButtonDown(0)) RaycastShoot();
@@ -97,7 +111,17 @@ public class PlayerShooterController : MonoBehaviour
 
 		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
 		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
-		rb.velocity = (xMovement + zMovement).normalized * movementSpeed;
+		Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
+
+		//Jump. //May also need to do Area Sweeping to prevent jittering
+		isGrounded = IsGrounded();
+		if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) rb.velocity = new Vector3(horVelocity.x, jumpSpeed, horVelocity.z);
+		else rb.velocity = new Vector3(horVelocity.x, rb.velocity.y, horVelocity.z);
+	}
+
+	public bool IsGrounded()
+	{
+		return (Physics.Raycast(transform.position, -Vector3.up, distFromGround));
 	}
 
 	void Aim()
@@ -160,13 +184,13 @@ public class PlayerShooterController : MonoBehaviour
 			{
 				case ("Enemy"): 
 				{
-					hitInfo.collider.GetComponent<SimpleEnemy> ().health -= gunDamage;
+					hitInfo.collider.GetComponent<SimpleEnemy>().health -= gunDamage;
 				}
 				break;
 
 				case ("ExplodingBarrel"): 
 				{
-					hitInfo.collider.GetComponent<ExplodingBarrel> ().hitsLeft--;
+					hitInfo.collider.GetComponent<ExplodingBarrel>().hitsLeft--;
 				}
 				break;
 			}

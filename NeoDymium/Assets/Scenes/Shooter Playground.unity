@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 48775189}
   - component: {fileID: 48775188}
   - component: {fileID: 48775187}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 82444081}
   - component: {fileID: 82444080}
   - component: {fileID: 82444079}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Player Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -488,7 +488,7 @@ GameObject:
   - component: {fileID: 677399105}
   - component: {fileID: 677399107}
   - component: {fileID: 677399106}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Crosshair Mid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -562,7 +562,7 @@ GameObject:
   - component: {fileID: 763971387}
   - component: {fileID: 763971389}
   - component: {fileID: 763971388}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Crosshair Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -822,7 +822,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3970bff8255005a47b12f9fc97033e55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   jumpDestination: {fileID: 1397051447}
+  amplitude: 0
+  targetStep: 0.7
+  step: 0
+  travelByTime: 0
+  travelTime: 0
+  travelSpeed: 1
+  startPosition: {x: 0, y: 0, z: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
+  playerIsJumping: 0
+  jumpPadIsSet: 0
 --- !u!1 &995953536
 GameObject:
   m_ObjectHideFlags: 0
@@ -925,7 +936,7 @@ GameObject:
   - component: {fileID: 998014619}
   - component: {fileID: 998014621}
   - component: {fileID: 998014620}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Crosshair Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -999,7 +1010,7 @@ GameObject:
   - component: {fileID: 1007910442}
   - component: {fileID: 1007910444}
   - component: {fileID: 1007910443}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Crosshair Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1389,7 +1400,7 @@ GameObject:
   - component: {fileID: 1436849094}
   - component: {fileID: 1436849096}
   - component: {fileID: 1436849095}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Crosshair Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1557,9 +1568,9 @@ GameObject:
   - component: {fileID: 1618043335}
   - component: {fileID: 1618043340}
   - component: {fileID: 1618043339}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1655,6 +1666,8 @@ MonoBehaviour:
   currentHealth: 0
   rb: {fileID: 0}
   playerCam: {fileID: 0}
+  lockMovement: 0
+  lockRotation: 0
   walkSpeed: 10
   runSpeed: 20
   jumpSpeed: 15
@@ -1673,7 +1686,7 @@ MonoBehaviour:
   shootPoint: {fileID: 1664501512}
   expectedLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   spreadVal: 0
   effectiveRange: 50
   inAimMode: 0
@@ -1801,7 +1814,7 @@ GameObject:
   - component: {fileID: 1641925450}
   - component: {fileID: 1641925449}
   - component: {fileID: 1641925448}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1901,7 +1914,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1664501512}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Shoot Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2116,7 +2129,7 @@ GameObject:
   - component: {fileID: 1912553207}
   - component: {fileID: 1912553206}
   - component: {fileID: 1912553205}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}

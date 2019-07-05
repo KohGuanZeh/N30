@@ -12,6 +12,7 @@ public class PlayerShooterController : MonoBehaviour
 	[Header("Player Movement")]
 	[SerializeField] Rigidbody rb;
 	[SerializeField] Camera playerCam;
+	public bool lockMovement, lockRotation; //To Lock Player Movement and Rotation if needed, for things like Jump Pad
 	public float walkSpeed = 10, runSpeed = 20, jumpSpeed = 10;
 	public float horLookSpeed = 1, vertLookSpeed = 1;
 	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
@@ -85,7 +86,8 @@ public class PlayerShooterController : MonoBehaviour
 			currentGravity = Physics.gravity.y;
 		}
 
-		PlayerMovement();
+		if (!lockRotation) PlayerRotation();
+		if (!lockMovement) PlayerMovement();
 		Aim();
 		if (Input.GetMouseButtonDown(0)) RaycastShoot();
 
@@ -94,9 +96,10 @@ public class PlayerShooterController : MonoBehaviour
 			Destroy (gameObject);
     }
 
-	void PlayerMovement()
+	void PlayerRotation()
 	{
 		//Camera and Player Rotation
+		//Separated Since Jump Pad can allow Player to look around but not move
 		//Credits go to https://www.youtube.com/watch?v=lYIRm4QEqro
 		yaw += horLookSpeed * Input.GetAxis("Mouse X");
 		pitch -= vertLookSpeed * Input.GetAxis("Mouse Y"); //-Since 0-1 = 359 and 359 is rotation upwards;
@@ -104,8 +107,10 @@ public class PlayerShooterController : MonoBehaviour
 
 		transform.eulerAngles = new Vector3(0, yaw, 0);
 		playerCam.transform.localEulerAngles = new Vector3(pitch, 0, 0);
+	}
 
-		//Player Movement
+	void PlayerMovement()
+	{
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
 		float movementSpeed = inAimMode ? walkSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
@@ -122,6 +127,16 @@ public class PlayerShooterController : MonoBehaviour
 	public bool IsGrounded()
 	{
 		return (Physics.Raycast(transform.position, -Vector3.up, distFromGround));
+	}
+
+	//For now the following Two Functions exist as I do not want the Rigidbodies to be directly manipulated in other scripts
+	public void StopPlayerMovementImmediately()
+	{
+		rb.velocity = Vector3.zero;
+	}
+	public void ToggleRbKinematic(bool setKinematic = false)
+	{
+		rb.isKinematic = setKinematic;
 	}
 
 	void Aim()

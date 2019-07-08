@@ -42,7 +42,7 @@ public class JumpPad : MonoBehaviour
 		if (step >= 1)
 		{
 			playerIsJumping = false;
-			player.ToggleRbKinematic(false);
+			//player.ToggleRbKinematic(false);
 			player.lockMovement = false;
 
 			step = 0;
@@ -70,7 +70,7 @@ public class JumpPad : MonoBehaviour
 			}
 
 			player.StopPlayerMovementImmediately();
-			player.ToggleRbKinematic(true);
+			//player.ToggleRbKinematic(true);
 			player.lockMovement = true;
 			other.transform.position = startPosition;
 			playerIsJumping = true;

@@ -11,20 +11,16 @@ public class PlayerShooterController : MonoBehaviour
 	public int currentHealth;
 
 	[Header("Player Movement")]
-	[SerializeField] Rigidbody rb;
+	[SerializeField] CharacterController controller;
 	[SerializeField] Camera playerCam;
+	[SerializeField] Vector3 velocity;
 	public bool lockMovement, lockRotation; //To Lock Player Movement and Rotation if needed, for things like Jump Pad
 	public float walkSpeed = 10, runSpeed = 20, jumpSpeed = 10;
 	public float horLookSpeed = 1, vertLookSpeed = 1;
 	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
-	//For Ground Check using Collider.Bounds.Extents
-	[SerializeField] Collider playerCollider;
-	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size)
-	[SerializeField] LayerMask groundLayer;
-	[SerializeField] bool isGrounded; //Implemented for Debugging Purposes
-	//For Slope Movement Issue...
-	[SerializeField] LayerMask slopeLayer;
-	[SerializeField] bool isOnSlope;
+	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size). With Controller, it is CharacterController.Height/2
+	public bool isGrounded;
+	public LayerMask groundLayer;
 
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
 	[SerializeField] Vector3 groundNormal;
@@ -67,8 +63,7 @@ public class PlayerShooterController : MonoBehaviour
 
 		//Getting Components
 		playerCam = GetComponentInChildren<Camera>();
-		rb = GetComponent<Rigidbody>();
-		playerCollider = GetComponent<Collider>();
+		controller = GetComponent<CharacterController>();
 
 		//Set Camera
 		playerCam.transform.localPosition = new Vector3(playerCam.transform.localPosition.x, playerCam.transform.localPosition.y, normCamPos);
@@ -78,7 +73,7 @@ public class PlayerShooterController : MonoBehaviour
 		originalGravity = Physics.gravity.y;
 		Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
 		currentGravity = Physics.gravity.y;
-		distFromGround = playerCollider.bounds.extents.y + 0.15f; //Ground Detection is a little weird when it comes to slopes
+		distFromGround = (controller.height/2) + 0.2f; //playerCollider.bounds.extents.y + 0.2f; This is via collider
 
 		//Set Player Properties
 		currentHealth = maxHealth;
@@ -92,6 +87,8 @@ public class PlayerShooterController : MonoBehaviour
 			Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
 			currentGravity = -9.81f * gravityScale;
 		}
+
+		isGrounded = IsGrounded();
 
 		if (!lockRotation) PlayerRotation();
 		if (!lockMovement) PlayerMovement();
@@ -118,6 +115,7 @@ public class PlayerShooterController : MonoBehaviour
 
 	void PlayerMovement()
 	{
+		//if (controller.isGrounded)
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
 		float movementSpeed = inAimMode ? walkSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
@@ -125,12 +123,15 @@ public class PlayerShooterController : MonoBehaviour
 		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 		Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
 
-		//Problem now is that character is not detected as grounded on slope unless the offset is 0.1 instead of 0.05... Still poses a problem
-		isGrounded = IsGrounded();
-		isOnSlope = IsOnSlope();
+		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 
-		//May also need to do Area Sweeping to prevent jittering
-		if (isGrounded && Input.GetKeyDown(KeyCode.Space)) //Jump.
+		velocity.y = isGrounded ? currentGravity * Time.deltaTime : velocity.y + currentGravity * Time.deltaTime;
+		if (Input.GetKeyDown(KeyCode.Space) && isGrounded) velocity.y = jumpSpeed;
+
+		controller.Move(velocity * Time.deltaTime);
+
+		#region Rigidbody Method
+		/*if (isGrounded && Input.GetKeyDown(KeyCode.Space)) //Jump.
 		{
 			rb.useGravity = true;
 			rb.velocity = new Vector3(horVelocity.x, jumpSpeed, horVelocity.z);
@@ -147,32 +148,19 @@ public class PlayerShooterController : MonoBehaviour
 
 			//Below will solve the Slope Issue by adding a Ground Clamp for the Rigidbody... But feels like a Duct Tape Method
 			rb.velocity = isOnSlope ? new Vector3(horVelocity.x, -10, horVelocity.z) : new Vector3(horVelocity.x, rb.velocity.y, horVelocity.z);
-		}
-		/*if (isGrounded && horVelocity.sqrMagnitude == 0) rb.useGravity = false; //Velocity also needs to be 0
-		else rb.useGravity = true;
-
-		if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) rb.velocity = new Vector3(horVelocity.x, jumpSpeed, horVelocity.z);
-		else rb.velocity = new Vector3(horVelocity.x, rb.velocity.y, horVelocity.z);*/
-	}
-
-	public bool IsOnSlope()
-	{
-		return (Physics.Raycast(transform.position, -Vector3.up, distFromGround, slopeLayer));
+		}*/
+		#endregion
 	}
 
 	public bool IsGrounded()
 	{
-		return (Physics.Raycast(transform.position, -Vector3.up, distFromGround, groundLayer));
+		return Physics.Raycast(transform.position, -Vector3.up, distFromGround, groundLayer);
 	}
 
-	//For now the following Two Functions exist as I do not want the Rigidbodies to be directly manipulated in other scripts
+	//Do not want Controller.Move to be manipulated directly by other Scripts
 	public void StopPlayerMovementImmediately()
 	{
-		rb.velocity = Vector3.zero;
-	}
-	public void ToggleRbKinematic(bool setKinematic = false)
-	{
-		rb.isKinematic = setKinematic;
+		controller.Move(Vector3.zero);
 	}
 
 	void Aim()

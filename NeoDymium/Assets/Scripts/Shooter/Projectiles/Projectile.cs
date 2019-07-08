@@ -5,25 +5,26 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
 	[Header("Projectile Properties")]
-	public Vector3 bulletDir;
-	public float bulletSpeed;
+	public Vector3 projectileDir;
+	public float projectileSpd;
+	public int projectileDmg;
 	public float lifeTime;
-	public int bulletDmg;
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
 		lifeTime -= Time.deltaTime;
 		if (lifeTime <= 0) Destroy(gameObject);
     }
 
-	public virtual void ProjectileHitEffect()
+	public virtual void HitEffect()
 	{
-		Destroy(gameObject);
+		
 	}
 
 	protected virtual void OnCollisionEnter(Collision collision)
 	{
-		ProjectileHitEffect();
+		HitEffect();
+		Destroy(gameObject);
 	}
 }

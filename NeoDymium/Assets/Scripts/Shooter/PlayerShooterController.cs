@@ -170,7 +170,7 @@ public class PlayerShooterController : MonoBehaviour
 	//Do not want Controller.Move to be manipulated directly by other Scripts
 	public void StopPlayerMovementImmediately()
 	{
-		velocity = Vector3.zero;
+		velocity = new Vector3 (0, currentGravity * Time.deltaTime, 0);
 	}
 
 	void Aim()
@@ -262,6 +262,6 @@ public class PlayerShooterController : MonoBehaviour
 
 		Projectile bullet = Instantiate(projectile, shootPoint.position, Quaternion.identity);
 		Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-		bulletRb.velocity = travelDir * bullet.bulletSpeed;
+		bulletRb.velocity = travelDir * bullet.projectileSpd;
 	}
 }

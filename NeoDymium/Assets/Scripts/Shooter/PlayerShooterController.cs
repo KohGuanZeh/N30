@@ -41,11 +41,21 @@ public class PlayerShooterController : MonoBehaviour
 	public Projectile projectile;
 	public bool canRapidFire = false, raycastShoot = false;
 
+	[Header("Grenade")]
+	public Transform grenadePos;
+	public GameObject grenade;
+    public float throwSpeed = 3;
+	public float explosionRadius = 5;
+	public float explosionTime = 3;
+
 	[Header("Adjustments for Aim Mode. For Design Use")]
 	public float normFov = 60;
 	public float aimFov = 30;
 	public float normCamPos = -0.25f;
 	public float aimCamPos = 0.1f;
+
+	[Header ("Others")]
+	public bool paused;
 
 	//For Camera, Particularly Aiming
 	bool cameraLerping;
@@ -84,8 +94,9 @@ public class PlayerShooterController : MonoBehaviour
     void Update()
     {
 		//Temporary Solution to adjust and Test Gravity
-		if (testGravity)
+		if (!paused) 
 		{
+<<<<<<< HEAD
 			Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
 			currentGravity = -9.81f * gravityScale;
 		}
@@ -108,11 +119,36 @@ public class PlayerShooterController : MonoBehaviour
 			if (raycastShoot) RaycastShoot();
 			else ShootProjectile();
 		}
+=======
+			if (testGravity)
+			{
+				Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
+				currentGravity = -9.81f * gravityScale;
+			}
+>>>>>>> 2f07ea441c6d74622a81d318f4e9d663e92defc8
 
-		if (cameraLerp != null) cameraLerp();
-		if (currentHealth <= 0)
-			Destroy (gameObject);
+			GroundCheck();
+			if (!lockRotation) PlayerRotation();
+			if (!lockMovement) PlayerMovement();
+			Aim();
+			Grenade ();
+		
+			if (Input.GetMouseButtonDown(0)) ShootProjectile();//RaycastShoot();
+
+			if (cameraLerp != null) cameraLerp();
+			if (currentHealth <= 0)
+				Destroy (gameObject);
+		}
     }
+
+	void Grenade () 
+	{
+		if (Input.GetKeyDown (key: KeyCode.G)) 
+		{
+			Rigidbody grenadeRb = Instantiate (grenade, grenadePos.position, Quaternion.identity).GetComponent<Rigidbody> ();
+			grenadeRb.velocity = playerCam.transform.forward * throwSpeed;
+		}
+	}
 
 	void PlayerRotation()
 	{

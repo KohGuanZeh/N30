@@ -6,7 +6,9 @@ public class SimpleEnemy : MonoBehaviour
 	public float attackCooldown = 1;
 	public int health = 100;
 	public int damage = 10;
+	public float blindDuration = 3;
 
+	bool blind;
 	bool canHit;
 
 	PlayerShooterController player;
@@ -15,6 +17,7 @@ public class SimpleEnemy : MonoBehaviour
 	void Start () 
 	{
 		canHit = true;
+		blind = false;
 
 		player = PlayerShooterController.inst;
 		agent = GetComponent<NavMeshAgent> ();
@@ -22,7 +25,7 @@ public class SimpleEnemy : MonoBehaviour
 
 	void Update () 
 	{
-		if (player != null)
+		if (player != null && !blind)
 			agent.SetDestination (player.transform.position);
 		if (health < 0)
 			Destroy (gameObject);
@@ -41,5 +44,16 @@ public class SimpleEnemy : MonoBehaviour
 	void RefreshHit () 
 	{
 		canHit = true;
+	}
+
+	public void Blind () 
+	{
+		blind = true;
+		Invoke ("RefreshBlind", blindDuration);
+	}
+
+	void RefreshBlind () 
+	{
+		blind = false;
 	}
 }

@@ -39,6 +39,7 @@ public class PlayerShooterController : MonoBehaviour
 	public bool inAimMode;
 	public int gunDamage = 10;
 	public Projectile projectile;
+	public bool canRapidFire = false, raycastShoot = false;
 
 	[Header("Adjustments for Aim Mode. For Design Use")]
 	public float normFov = 60;
@@ -89,11 +90,24 @@ public class PlayerShooterController : MonoBehaviour
 			currentGravity = -9.81f * gravityScale;
 		}
 
+		if (Input.GetKeyDown(KeyCode.P)) canRapidFire = !canRapidFire;
+		if (Input.GetKeyDown(KeyCode.O)) raycastShoot = !raycastShoot;
+
 		GroundCheck();
 		if (!lockRotation) PlayerRotation();
 		if (!lockMovement) PlayerMovement();
 		Aim();
-		if (Input.GetMouseButtonDown(0)) ShootProjectile();//RaycastShoot();
+
+		if (canRapidFire && Input.GetMouseButton(0))
+		{
+			if (raycastShoot) RaycastShoot();
+			else ShootProjectile();
+		}
+		else if (Input.GetMouseButtonDown(0))
+		{
+			if (raycastShoot) RaycastShoot();
+			else ShootProjectile();
+		}
 
 		if (cameraLerp != null) cameraLerp();
 		if (currentHealth <= 0)

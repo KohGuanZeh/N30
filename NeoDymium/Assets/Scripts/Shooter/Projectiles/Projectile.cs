@@ -5,6 +5,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
 	[Header("Projectile Properties")]
+	public LayerMask shootableLayers;
 	public Vector3 projectileDir;
 	public float projectileSpd;
 	public int projectileDmg;
@@ -24,7 +25,24 @@ public class Projectile : MonoBehaviour
 
 	protected virtual void OnCollisionEnter(Collision collision)
 	{
-		HitEffect();
+		if (shootableLayers == (shootableLayers | (1 << collision.gameObject.layer)))
+		{
+			switch (collision.gameObject.tag)
+			{
+				case ("Enemy"):
+					{
+						collision.gameObject.GetComponent<SimpleEnemy>().health -= projectileDmg;
+					}
+					break;
+
+				case ("ExplodingBarrel"):
+					{
+						collision.gameObject.GetComponent<ExplodingBarrel>().hitsLeft--;
+					}
+					break;
+			}
+		}
+
 		Destroy(gameObject);
 	}
 }

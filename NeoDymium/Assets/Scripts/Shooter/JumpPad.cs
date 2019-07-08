@@ -65,7 +65,7 @@ public class JumpPad : MonoBehaviour
 			{
 				startPosition = transform.position + new Vector3(0, player.distFromGround, 0);
 				targetPosition = jumpDestination.position + new Vector3(0, player.distFromGround, 0);
-				amplitude = (targetPosition.y - startPosition.y) / Mathf.Sin(targetStep * Mathf.PI);
+				amplitude = targetPosition.y - startPosition.y <= 1 ? 10 : (targetPosition.y - startPosition.y) / Mathf.Sin(targetStep * Mathf.PI);
 				if (travelByTime) travelSpeed = 1 / travelTime;
 			}
 

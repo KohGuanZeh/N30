@@ -5,11 +5,17 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
 	[Header("Projectile Properties")]
+	public Rigidbody rb;
 	public LayerMask shootableLayers;
 	public Vector3 projectileDir;
 	public float projectileSpd;
 	public int projectileDmg;
 	public float lifeTime;
+	
+	protected virtual void Awake()
+	{
+		rb = GetComponent<Rigidbody>();
+	}
 
     // Update is called once per frame
     protected virtual void Update()
@@ -43,6 +49,7 @@ public class Projectile : MonoBehaviour
 			}
 		}
 
+		print(collision.gameObject.name);
 		Destroy(gameObject);
 	}
 }

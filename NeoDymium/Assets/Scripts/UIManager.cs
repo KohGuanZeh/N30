@@ -4,7 +4,6 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-	public GameObject mainObj;
 	public GameObject pauseObj;
 
     public TextMeshProUGUI healthText;
@@ -14,7 +13,6 @@ public class UIManager : MonoBehaviour
 	void Start () 
 	{
 		player = PlayerShooterController.inst;
-		mainObj.SetActive (true);
 		pauseObj.SetActive (false);
 	}
 	
@@ -28,11 +26,10 @@ public class UIManager : MonoBehaviour
 
 	public void PausePlay () 
 	{
-		mainObj.SetActive (!mainObj.activeSelf);
 		pauseObj.SetActive (!pauseObj.activeSelf);
-		player.paused = mainObj.activeSelf ? false : true;
-		Cursor.lockState = mainObj.activeSelf ? CursorLockMode.Locked : CursorLockMode.None;
-		Time.timeScale = mainObj.activeSelf ? 1 : 0;
+		player.paused = pauseObj.activeSelf;
+		Cursor.lockState = pauseObj.activeSelf ?  CursorLockMode.None : CursorLockMode.Locked;
+		Time.timeScale = pauseObj.activeSelf ? 0 : 1;
 	}
 
 	public void MainMenu () 

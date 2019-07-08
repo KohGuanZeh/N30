@@ -65,6 +65,7 @@ public class PlayerShooterController : MonoBehaviour
 	void Awake () 
 	{
 		inst = this;
+		Physics.IgnoreLayerCollision(8, 10, true);
 	}
 
     void Start()
@@ -93,53 +94,40 @@ public class PlayerShooterController : MonoBehaviour
 
     void Update()
     {
-		//Temporary Solution to adjust and Test Gravity
-		if (!paused) 
+		if (!paused)
 		{
-<<<<<<< HEAD
-			Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
-			currentGravity = -9.81f * gravityScale;
-		}
-
-		if (Input.GetKeyDown(KeyCode.P)) canRapidFire = !canRapidFire;
-		if (Input.GetKeyDown(KeyCode.O)) raycastShoot = !raycastShoot;
-
-		GroundCheck();
-		if (!lockRotation) PlayerRotation();
-		if (!lockMovement) PlayerMovement();
-		Aim();
-
-		if (canRapidFire && Input.GetMouseButton(0))
-		{
-			if (raycastShoot) RaycastShoot();
-			else ShootProjectile();
-		}
-		else if (Input.GetMouseButtonDown(0))
-		{
-			if (raycastShoot) RaycastShoot();
-			else ShootProjectile();
-		}
-=======
+			//Temporary Solution to adjust and Test Gravity
 			if (testGravity)
 			{
 				Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
 				currentGravity = -9.81f * gravityScale;
 			}
->>>>>>> 2f07ea441c6d74622a81d318f4e9d663e92defc8
+
+			if (Input.GetKeyDown(KeyCode.P)) canRapidFire = !canRapidFire;
+			if (Input.GetKeyDown(KeyCode.O)) raycastShoot = !raycastShoot;
 
 			GroundCheck();
 			if (!lockRotation) PlayerRotation();
 			if (!lockMovement) PlayerMovement();
 			Aim();
-			Grenade ();
-		
-			if (Input.GetMouseButtonDown(0)) ShootProjectile();//RaycastShoot();
+			Grenade();
+
+			if (canRapidFire && Input.GetMouseButton(0))
+			{
+				if (raycastShoot) RaycastShoot();
+				else ShootProjectile();
+			}
+			else if (Input.GetMouseButtonDown(0))
+			{
+				if (raycastShoot) RaycastShoot();
+				else ShootProjectile();
+			}
 
 			if (cameraLerp != null) cameraLerp();
 			if (currentHealth <= 0)
-				Destroy (gameObject);
+				Destroy(gameObject);
 		}
-    }
+	}
 
 	void Grenade () 
 	{
@@ -311,7 +299,6 @@ public class PlayerShooterController : MonoBehaviour
 		Vector3 travelDir = targetPoint - shootPoint.position;
 
 		Projectile bullet = Instantiate(projectile, shootPoint.position, Quaternion.identity);
-		Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-		bulletRb.velocity = travelDir * bullet.projectileSpd;
+		bullet.rb.velocity = travelDir * bullet.projectileSpd;
 	}
 }

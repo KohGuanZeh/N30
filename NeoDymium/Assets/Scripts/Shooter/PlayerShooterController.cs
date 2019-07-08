@@ -19,8 +19,9 @@ public class PlayerShooterController : MonoBehaviour
 	public float horLookSpeed = 1, vertLookSpeed = 1;
 	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
 	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size). With Controller, it is CharacterController.Height/2
-	public bool isGrounded;
+	public bool isGrounded, onSlope;
 	public LayerMask groundLayer;
+	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
 
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
 	[SerializeField] Vector3 groundNormal;
@@ -88,8 +89,7 @@ public class PlayerShooterController : MonoBehaviour
 			currentGravity = -9.81f * gravityScale;
 		}
 
-		isGrounded = IsGrounded();
-
+		GroundCheck();
 		if (!lockRotation) PlayerRotation();
 		if (!lockMovement) PlayerMovement();
 		Aim();
@@ -125,7 +125,7 @@ public class PlayerShooterController : MonoBehaviour
 
 		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 
-		velocity.y = isGrounded ? currentGravity * Time.deltaTime : velocity.y + currentGravity * Time.deltaTime;
+		velocity.y = isGrounded ? onSlope ? -slopeForce : currentGravity * Time.deltaTime : velocity.y + currentGravity * Time.deltaTime;
 		if (Input.GetKeyDown(KeyCode.Space) && isGrounded) velocity.y = jumpSpeed;
 
 		controller.Move(velocity * Time.deltaTime);
@@ -152,15 +152,25 @@ public class PlayerShooterController : MonoBehaviour
 		#endregion
 	}
 
-	public bool IsGrounded()
+	public void GroundCheck()
 	{
-		return Physics.Raycast(transform.position, -Vector3.up, distFromGround, groundLayer);
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, -Vector3.up, out hit, distFromGround, groundLayer))
+		{
+			isGrounded = true;
+			onSlope = hit.normal != Vector3.up ? true : false;
+		}
+		else
+		{
+			isGrounded = false;
+			onSlope = false;
+		}
 	}
 
 	//Do not want Controller.Move to be manipulated directly by other Scripts
 	public void StopPlayerMovementImmediately()
 	{
-		controller.Move(Vector3.zero);
+		velocity = Vector3.zero;
 	}
 
 	void Aim()

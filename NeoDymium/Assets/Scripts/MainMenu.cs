@@ -14,7 +14,7 @@ public class MainMenu : MonoBehaviour
 
     public void Play () 
 	{
-		SceneManager.LoadScene ("playground");
+		SceneManager.LoadScene ("Shooter Playground");
 	}
 
 	public void Credits () 

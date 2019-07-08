@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour
 	{
 		mainObj.SetActive (!mainObj.activeSelf);
 		pauseObj.SetActive (!pauseObj.activeSelf);
+		player.paused = mainObj.activeSelf ? false : true;
 		Cursor.lockState = mainObj.activeSelf ? CursorLockMode.Locked : CursorLockMode.None;
 		Time.timeScale = mainObj.activeSelf ? 1 : 0;
 	}

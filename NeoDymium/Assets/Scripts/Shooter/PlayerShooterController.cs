@@ -3,6 +3,7 @@ using System;
 
 public class PlayerShooterController : MonoBehaviour
 {
+	//May want to use Character Controller instead of Rigidbody
 	public static PlayerShooterController inst;
 
 	[Header("Player Properties")]
@@ -19,9 +20,14 @@ public class PlayerShooterController : MonoBehaviour
 	//For Ground Check using Collider.Bounds.Extents
 	[SerializeField] Collider playerCollider;
 	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size)
+	[SerializeField] LayerMask groundLayer;
 	[SerializeField] bool isGrounded; //Implemented for Debugging Purposes
+	//For Slope Movement Issue...
+	[SerializeField] LayerMask slopeLayer;
+	[SerializeField] bool isOnSlope;
 
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
+	[SerializeField] Vector3 groundNormal;
 	[SerializeField] bool testGravity;
 	[SerializeField] float originalGravity;
 	[SerializeField] float currentGravity;
@@ -35,6 +41,7 @@ public class PlayerShooterController : MonoBehaviour
 	public float effectiveRange;
 	public bool inAimMode;
 	public int gunDamage = 10;
+	public Projectile projectile;
 
 	[Header("Adjustments for Aim Mode. For Design Use")]
 	public float normFov = 60;
@@ -71,7 +78,7 @@ public class PlayerShooterController : MonoBehaviour
 		originalGravity = Physics.gravity.y;
 		Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
 		currentGravity = Physics.gravity.y;
-		distFromGround = playerCollider.bounds.extents.y + 0.05f; 
+		distFromGround = playerCollider.bounds.extents.y + 0.15f; //Ground Detection is a little weird when it comes to slopes
 
 		//Set Player Properties
 		currentHealth = maxHealth;
@@ -83,13 +90,13 @@ public class PlayerShooterController : MonoBehaviour
 		if (testGravity)
 		{
 			Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
-			currentGravity = Physics.gravity.y;
+			currentGravity = -9.81f * gravityScale;
 		}
 
 		if (!lockRotation) PlayerRotation();
 		if (!lockMovement) PlayerMovement();
 		Aim();
-		if (Input.GetMouseButtonDown(0)) RaycastShoot();
+		if (Input.GetMouseButtonDown(0)) ShootProjectile();//RaycastShoot();
 
 		if (cameraLerp != null) cameraLerp();
 		if (currentHealth <= 0)
@@ -118,15 +125,44 @@ public class PlayerShooterController : MonoBehaviour
 		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 		Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
 
-		//Jump. //May also need to do Area Sweeping to prevent jittering
+		//Problem now is that character is not detected as grounded on slope unless the offset is 0.1 instead of 0.05... Still poses a problem
 		isGrounded = IsGrounded();
+		isOnSlope = IsOnSlope();
+
+		//May also need to do Area Sweeping to prevent jittering
+		if (isGrounded && Input.GetKeyDown(KeyCode.Space)) //Jump.
+		{
+			rb.useGravity = true;
+			rb.velocity = new Vector3(horVelocity.x, jumpSpeed, horVelocity.z);
+		}
+		else if (isGrounded && horVelocity.sqrMagnitude == 0) //If no keys are being input and Player is on the ground, no gravity acts on Player. Required so that Player does not slide down slope
+		{
+			rb.useGravity = false;
+			rb.velocity = Vector3.zero;
+		}
+		else
+		{
+			rb.useGravity = true;
+			//rb.velocity = new Vector3(horVelocity.x, rb.velocity.y, horVelocity.z);
+
+			//Below will solve the Slope Issue by adding a Ground Clamp for the Rigidbody... But feels like a Duct Tape Method
+			rb.velocity = isOnSlope ? new Vector3(horVelocity.x, -10, horVelocity.z) : new Vector3(horVelocity.x, rb.velocity.y, horVelocity.z);
+		}
+		/*if (isGrounded && horVelocity.sqrMagnitude == 0) rb.useGravity = false; //Velocity also needs to be 0
+		else rb.useGravity = true;
+
 		if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) rb.velocity = new Vector3(horVelocity.x, jumpSpeed, horVelocity.z);
-		else rb.velocity = new Vector3(horVelocity.x, rb.velocity.y, horVelocity.z);
+		else rb.velocity = new Vector3(horVelocity.x, rb.velocity.y, horVelocity.z);*/
+	}
+
+	public bool IsOnSlope()
+	{
+		return (Physics.Raycast(transform.position, -Vector3.up, distFromGround, slopeLayer));
 	}
 
 	public bool IsGrounded()
 	{
-		return (Physics.Raycast(transform.position, -Vector3.up, distFromGround));
+		return (Physics.Raycast(transform.position, -Vector3.up, distFromGround, groundLayer));
 	}
 
 	//For now the following Two Functions exist as I do not want the Rigidbodies to be directly manipulated in other scripts
@@ -190,22 +226,22 @@ public class PlayerShooterController : MonoBehaviour
 		Vector3 bulletDir = playerCam.transform.forward;
 		Vector3 spread = new Vector3(UnityEngine.Random.Range(-spreadVal,spreadVal), UnityEngine.Random.Range(-spreadVal, spreadVal), 0);
 		Ray shootRay = inAimMode ? new Ray(playerCam.transform.position, playerCam.transform.forward) : new Ray(playerCam.transform.position + spread, playerCam.transform.forward);
-		RaycastHit hitInfo;
+		RaycastHit hit;
 
-		if (Physics.Raycast(shootRay, out hitInfo, effectiveRange, expectedLayers))
+		if (Physics.Raycast(shootRay, out hit, effectiveRange, expectedLayers))
 		{
 			print("Hit!");
-			switch (hitInfo.collider.gameObject.tag) 
+			switch (hit.collider.gameObject.tag) 
 			{
 				case ("Enemy"): 
 				{
-					hitInfo.collider.GetComponent<SimpleEnemy>().health -= gunDamage;
+					hit.collider.GetComponent<SimpleEnemy>().health -= gunDamage;
 				}
 				break;
 
 				case ("ExplodingBarrel"): 
 				{
-					hitInfo.collider.GetComponent<ExplodingBarrel>().hitsLeft--;
+					hit.collider.GetComponent<ExplodingBarrel>().hitsLeft--;
 				}
 				break;
 			}
@@ -213,17 +249,21 @@ public class PlayerShooterController : MonoBehaviour
 		}
 	}
 
-	//Not Emphasied on yet
+	//Need instantiate bullet then feed in the values
 	public void ShootProjectile()
 	{
 		Vector3 bulletDir = playerCam.transform.forward;
 		Ray shootRay = new Ray(playerCam.transform.position, playerCam.transform.forward);
-		RaycastHit hitInfo;
+		RaycastHit hit;
+		Vector3 targetPoint = Vector3.zero;
 
-		if (Physics.Raycast(shootRay, out hitInfo, effectiveRange, expectedLayers))
-		{
-			print("Hit!");
-			hitInfo.collider.gameObject.SetActive(false);
-		}
+		if (Physics.Raycast(shootRay, out hit, effectiveRange, expectedLayers)) targetPoint = playerCam.transform.position + (hit.point - shootPoint.position).normalized * effectiveRange;
+		else targetPoint = playerCam.transform.position + playerCam.transform.forward * effectiveRange;
+
+		Vector3 travelDir = targetPoint - shootPoint.position;
+
+		Projectile bullet = Instantiate(projectile, shootPoint.position, Quaternion.identity);
+		Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+		bulletRb.velocity = travelDir * bullet.bulletSpeed;
 	}
 }

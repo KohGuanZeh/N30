@@ -44,7 +44,7 @@ public class PlayerShooterController : MonoBehaviour
 	[Header("Grenade")]
 	public Transform grenadePos;
 	public GameObject grenade;
-    public float throwSpeed = 3;
+    public float throwSpeed = 50;
 	public float explosionRadius = 5;
 	public float explosionTime = 3;
 
@@ -72,7 +72,7 @@ public class PlayerShooterController : MonoBehaviour
     {
 		//Lock Cursor in Middle of Screen
 		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = true;
+		Cursor.visible = false;
 
 		//Getting Components
 		playerCam = GetComponentInChildren<Camera>();

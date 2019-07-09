@@ -17,6 +17,7 @@ public class Grenade : MonoBehaviour
 			{
 				case ("Player"):
 				{
+					PlayerShooterController.inst.currentHealth = 0;
 					Destroy (PlayerShooterController.inst.gameObject);
 				}
 				break;

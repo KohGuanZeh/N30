@@ -27,7 +27,7 @@ public class SimpleEnemy : MonoBehaviour
 	{
 		if (player != null && !blind)
 			agent.SetDestination (player.transform.position);
-		if (health < 0)
+		if (health <= 0)
 			Destroy (gameObject);
 	}
 

@@ -49,7 +49,7 @@ public class Projectile : MonoBehaviour
 			}
 		}
 
-		print(collision.gameObject.name);
+		//print(collision.gameObject.name);
 		Destroy(gameObject);
 	}
 }

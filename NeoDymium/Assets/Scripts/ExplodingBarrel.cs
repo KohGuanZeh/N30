@@ -5,6 +5,8 @@ public class ExplodingBarrel : MonoBehaviour
 {
 	public int hitsLeft = 2;
 	public float radius = 5;
+	public float explosionLifetime = 0.1f;
+	public GameObject explosion;
 
 	void Update () 
 	{
@@ -40,6 +42,10 @@ public class ExplodingBarrel : MonoBehaviour
 				break;
 			}
 		}
+
+		GameObject explosionX = Instantiate (explosion, transform.position, Quaternion.identity);
+		explosionX.transform.localScale = Vector3.one * radius * 2;
+		Destroy (explosionX, explosionLifetime);
 
 		Destroy (gameObject);
 	}

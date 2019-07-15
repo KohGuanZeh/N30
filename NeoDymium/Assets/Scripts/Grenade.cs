@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class Grenade : MonoBehaviour
 {
+	public float explosionLifetime = 0.1f;
+	public GameObject explosion;
+
+
 	void Start () 
 	{
 		Invoke ("Explode", PlayerShooterController.inst.explosionTime);
@@ -36,6 +40,10 @@ public class Grenade : MonoBehaviour
 				break;
 			}
 		}
+
+		GameObject explosionX = Instantiate (explosion, transform.position, Quaternion.identity);
+		explosionX.transform.localScale = Vector3.one * PlayerShooterController.inst.explosionRadius * 2;
+		Destroy (explosionX, explosionLifetime);
 
 		Destroy (gameObject);
 	}

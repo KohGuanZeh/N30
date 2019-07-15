@@ -26,7 +26,7 @@ public class PlayerShooterController : MonoBehaviour
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
 	[SerializeField] Vector3 groundNormal;
 	[SerializeField] bool testGravity;
-	[SerializeField] float originalGravity;
+	[SerializeField] float originalGravity = -9.81f;
 	[SerializeField] float currentGravity;
 	[SerializeField] float gravityScale;
 
@@ -83,9 +83,7 @@ public class PlayerShooterController : MonoBehaviour
 		playerCam.fieldOfView = normFov;
 
 		//Set Ground Check. May need to change the y
-		originalGravity = Physics.gravity.y;
-		Physics.gravity = new Vector3(0, originalGravity * gravityScale, 0);
-		currentGravity = Physics.gravity.y;
+		currentGravity = originalGravity * gravityScale;
 		distFromGround = (controller.height/2) + 0.2f; //playerCollider.bounds.extents.y + 0.2f; This is via collider
 
 		//Set Player Properties

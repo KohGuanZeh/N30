@@ -68,7 +68,7 @@ public class JumpPad : MonoBehaviour
 		//Reversing formula to get target step: y = amplitude * sin * targetStep * pi * x (We want X to always be 1 since X is current Step)
 		//amplitude = targetPosition.y - startPosition.y <= 1 ? 10 : (targetPosition.y - startPosition.y) / Mathf.Sin(targetStep * Mathf.PI); //If you want to fix Target Step instead
 		targetStep = (Mathf.Asin(Mathf.Abs(targetPosition.y - startPosition.y) / amplitude) / Mathf.PI); 
-		targetStep = 1 - targetStep; //+0.5f because you always want the arc landing. If it is < 0.5, you get the first part of the Sine Curve. If it is = 0, means you want a complete sine curve and hence target step is 1 
+		targetStep = 1 - targetStep; //need take 1 - target step since the first target step that you get is between 0-0.5 range (Since Sine curve goes up and down and have >2 x solutions for the same y).
 		if (travelByTime) travelSpeed = 1 / travelTime;
 
 		jumpPadIsSet = true;

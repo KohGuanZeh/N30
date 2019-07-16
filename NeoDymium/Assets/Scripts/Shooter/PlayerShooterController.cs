@@ -14,14 +14,14 @@ public class PlayerShooterController : MonoBehaviour
 	[SerializeField] CharacterController controller;
 	[SerializeField] Camera playerCam;
 	[SerializeField] Vector3 velocity;
+	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
 	public bool lockMovement, lockRotation; //To Lock Player Movement and Rotation if needed, for things like Jump Pad
 	public float walkSpeed = 10, runSpeed = 20, jumpSpeed = 10;
+	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
 	public float horLookSpeed = 1, vertLookSpeed = 1;
-	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
 	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size). With Controller, it is CharacterController.Height/2
 	public bool isGrounded, onSlope;
 	public LayerMask groundLayer;
-	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
 
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
 	[SerializeField] Vector3 groundNormal;
@@ -31,15 +31,13 @@ public class PlayerShooterController : MonoBehaviour
 	[SerializeField] float gravityScale;
 
 	[Header("For Gun and Shooting")]
-	public Transform gun;
+	public IGun currentGun;
+	public IGun[] gunInventory;
 	public Transform shootPoint;
-	public LayerMask expectedLayers;
+	public LayerMask shootLayers;
 	public float spreadVal;
-	public float effectiveRange;
 	public bool inAimMode;
-	public int gunDamage = 10;
-	public Projectile projectile;
-	public bool canRapidFire = false, raycastShoot = false;
+	public bool canRapidFire = false, raycastShoot = false, autoReload = true;
 
 	[Header("Grenade")]
 	public Transform grenadePos;
@@ -88,6 +86,9 @@ public class PlayerShooterController : MonoBehaviour
 
 		//Set Player Properties
 		currentHealth = maxHealth;
+
+		currentGun = gunInventory[0];
+		currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
     }
 
     void Update()
@@ -108,17 +109,24 @@ public class PlayerShooterController : MonoBehaviour
 			if (!lockRotation) PlayerRotation();
 			if (!lockMovement) PlayerMovement();
 			Aim();
+			SelectGun(); //Needs to be instantiated... If not it will edit the Prefab
 			Grenade();
 
 			if (canRapidFire && Input.GetMouseButton(0))
 			{
-				if (raycastShoot) RaycastShoot();
-				else ShootProjectile();
+				currentGun.Shoot();
+				/*if (currentGun.shootsProjectiles) ShootProjectile();
+				else RaycastShoot();*/
+				/*if (raycastShoot) RaycastShoot();
+				else ShootProjectile();*/
 			}
 			else if (Input.GetMouseButtonDown(0))
 			{
-				if (raycastShoot) RaycastShoot();
-				else ShootProjectile();
+				currentGun.Shoot();
+				/*if (currentGun.shootsProjectiles) ShootProjectile();
+				else RaycastShoot();*/
+				/*if (raycastShoot) RaycastShoot();
+				else ShootProjectile();*/
 			}
 
 			if (cameraLerp != null) cameraLerp();
@@ -134,6 +142,15 @@ public class PlayerShooterController : MonoBehaviour
 			Rigidbody grenadeRb = Instantiate (grenade, grenadePos.position, Quaternion.identity).GetComponent<Rigidbody> ();
 			grenadeRb.velocity = playerCam.transform.forward * throwSpeed;
 		}
+	}
+
+	void SelectGun()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1)) currentGun = gunInventory[0];
+		else if (Input.GetKeyDown(KeyCode.Alpha2)) currentGun = gunInventory[1];
+		else if (Input.GetKeyDown(KeyCode.Alpha3)) currentGun = gunInventory[2];
+
+		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 	}
 
 	void PlayerRotation()
@@ -255,21 +272,21 @@ public class PlayerShooterController : MonoBehaviour
 		}
 	}
 
-	public void RaycastShoot()
+	/*public void RaycastShoot()
 	{
 		Vector3 bulletDir = playerCam.transform.forward;
 		Vector3 spread = new Vector3(UnityEngine.Random.Range(-spreadVal,spreadVal), UnityEngine.Random.Range(-spreadVal, spreadVal), 0);
 		Ray shootRay = inAimMode ? new Ray(playerCam.transform.position, playerCam.transform.forward) : new Ray(playerCam.transform.position + spread, playerCam.transform.forward);
 		RaycastHit hit;
 
-		if (Physics.Raycast(shootRay, out hit, effectiveRange, expectedLayers))
+		if (Physics.Raycast(shootRay, out hit, currentGun.effectiveRange, shootLayers))
 		{
 			print("Hit!");
-			switch (hit.collider.gameObject.tag) 
+			switch (hit.collider.tag) 
 			{
 				case ("Enemy"): 
 				{
-					hit.collider.GetComponent<SimpleEnemy>().health -= gunDamage;
+					hit.collider.GetComponent<SimpleEnemy>().health -= currentGun.shootDmg;
 				}
 				break;
 
@@ -279,6 +296,7 @@ public class PlayerShooterController : MonoBehaviour
 				}
 				break;
 			}
+
 			//hitInfo.collider.gameObject.SetActive(false);
 		}
 	}
@@ -286,17 +304,16 @@ public class PlayerShooterController : MonoBehaviour
 	//Need instantiate bullet then feed in the values
 	public void ShootProjectile()
 	{
-		Vector3 bulletDir = playerCam.transform.forward;
+		Vector3 shootDir = playerCam.transform.forward;
 		Ray shootRay = new Ray(playerCam.transform.position, playerCam.transform.forward);
 		RaycastHit hit;
-		Vector3 targetPoint = Vector3.zero;
 
-		if (Physics.Raycast(shootRay, out hit, effectiveRange, expectedLayers)) targetPoint = playerCam.transform.position + (hit.point - shootPoint.position).normalized * effectiveRange;
-		else targetPoint = playerCam.transform.position + playerCam.transform.forward * effectiveRange;
+		if (Physics.Raycast(shootRay, out hit, currentGun.effectiveRange, shootLayers)) shootDir = (hit.point - shootPoint.position).normalized;
+		else shootDir = shootRay.direction;
 
-		Vector3 travelDir = targetPoint - shootPoint.position;
+		Projectile bullet = Instantiate(currentGun.projectile, shootPoint.position, Quaternion.identity);
+		bullet.rb.velocity = shootDir * bullet.projectileSpd;
 
-		Projectile bullet = Instantiate(projectile, shootPoint.position, Quaternion.identity);
-		bullet.rb.velocity = travelDir * bullet.projectileSpd;
-	}
+		currentGun.ShootEffect();
+	}*/
 }

@@ -3142,7 +3142,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &952787606
 Transform:
   m_ObjectHideFlags: 0
@@ -5313,16 +5313,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   knockbackTimer: 0
+  knockbackVel: {x: 0, y: 0, z: 0}
   groundNormal: {x: 0, y: 0, z: 0}
   testGravity: 1
   originalGravity: -9.81
   currentGravity: 0
-  gravityScale: 3
+  gravityScale: 5
   currentGun: {fileID: 0}
   gunInventory:
   - {fileID: 5056988255214736715, guid: 15ed9b01ff885cd44b19a871fd6343a0, type: 3}
   - {fileID: 6097661017746080536, guid: 557fe610971862c4ba99190b5ed80ecd, type: 3}
   - {fileID: 8406820371681082959, guid: b18cd4da8104a8d499514dca31bb5c96, type: 3}
+  - {fileID: 5056988255214736715, guid: 6995b27e3a8c93e43a48e776717d413b, type: 3}
   shootPoint: {fileID: 1664501512}
   shootLayers:
     serializedVersion: 2
@@ -7131,7 +7133,7 @@ PrefabInstance:
     - target: {fileID: 2095986147078658751, guid: 3c5227cbdf47c794ebf03234c7508612,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6105786101988488048, guid: 3c5227cbdf47c794ebf03234c7508612,
         type: 3}
@@ -7430,7 +7432,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &5607674666908151074
 MonoBehaviour:
   m_ObjectHideFlags: 0

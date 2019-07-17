@@ -23,7 +23,7 @@ public class PlayerShooterController : MonoBehaviour
 	public bool isGrounded, onSlope;
 	public LayerMask groundLayer;
 	public float knockbackTimer;
-	public Vector3 knockbackVel;
+	public Vector3 knockbackVel; //Save the Original Knockback Velocity so that it can be lerped
 
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
 	[SerializeField] Vector3 groundNormal;
@@ -178,11 +178,7 @@ public class PlayerShooterController : MonoBehaviour
 			Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 			Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
 
-			velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
-		}
-		else
-		{
-			velocity = Vector3.Lerp(new Vector3 (0, velocity.y, 0), knockbackVel, knockbackTimer/0.5f);
+			if (horVelocity.sqrMagnitude != 0 || isGrounded) velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 		}
 
 		//Applying Gravity before moving

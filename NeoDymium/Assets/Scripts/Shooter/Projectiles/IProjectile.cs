@@ -39,7 +39,7 @@ public class IProjectile : MonoBehaviour
 		}
     }
 
-	public void InitialiseProjectile(IGun gun)
+	public virtual void InitialiseProjectile(IGun gun)
 	{
 		this.gun = gun;
 		projectileDmg = gun.shootDmg;

@@ -306,6 +306,24 @@ public class PlayerShooterController : MonoBehaviour
 		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 	}
 
+	private void OnTriggerStay(Collider other)
+	{
+		if (other.tag == "Low Gravity")
+		{
+			gravityScale = 1f;
+			currentGravity = originalGravity * gravityScale;
+		}
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		if (other.tag == "Low Gravity")
+		{
+			gravityScale = 3f;
+			currentGravity = originalGravity * gravityScale;
+		}
+	}
+
 	#region Old Firing Functions
 	/*public void RaycastShoot()
 	{

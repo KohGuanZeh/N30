@@ -22,6 +22,7 @@ public class PlayerShooterController : MonoBehaviour
 	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size). With Controller, it is CharacterController.Height/2
 	public bool isGrounded, onSlope;
 	public LayerMask groundLayer;
+	public float knockBackTimer;
 
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
 	[SerializeField] Vector3 groundNormal;
@@ -37,7 +38,7 @@ public class PlayerShooterController : MonoBehaviour
 	public LayerMask shootLayers;
 	public float spreadVal;
 	public bool inAimMode;
-	public bool canRapidFire = false, raycastShoot = false, autoReload = true;
+	public bool autoReload = true;//,canRapidFire = false, raycastShoot = false;
 
 	[Header("Grenade")]
 	public Transform grenadePos;
@@ -63,7 +64,6 @@ public class PlayerShooterController : MonoBehaviour
 	void Awake () 
 	{
 		inst = this;
-		Physics.IgnoreLayerCollision(8, 10, true);
 	}
 
     void Start()
@@ -87,6 +87,15 @@ public class PlayerShooterController : MonoBehaviour
 		//Set Player Properties
 		currentHealth = maxHealth;
 
+		//Need to instantiate the Guns first if not it will directly affect prefab
+		IGun[] inventoryGuns = new IGun[gunInventory.Length];
+		for (int i = 0; i < gunInventory.Length; i++)
+		{
+			IGun newGun = Instantiate(gunInventory[i], transform.position, Quaternion.identity);
+			newGun.transform.parent = transform;
+			inventoryGuns[i] = newGun;
+		}
+		gunInventory = inventoryGuns;
 		currentGun = gunInventory[0];
 		currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
     }
@@ -102,55 +111,45 @@ public class PlayerShooterController : MonoBehaviour
 				currentGravity = -9.81f * gravityScale;
 			}
 
-			if (Input.GetKeyDown(KeyCode.P)) canRapidFire = !canRapidFire;
-			if (Input.GetKeyDown(KeyCode.O)) raycastShoot = !raycastShoot;
+			//if (Input.GetKeyDown(KeyCode.P)) canRapidFire = !canRapidFire;
+			//if (Input.GetKeyDown(KeyCode.O)) raycastShoot = !raycastShoot;
 
 			GroundCheck();
 			if (!lockRotation) PlayerRotation();
 			if (!lockMovement) PlayerMovement();
+
+			knockBackTimer -= Time.deltaTime;
+
 			Aim();
 			SelectGun(); //Needs to be instantiated... If not it will edit the Prefab
 			Grenade();
 
-			if (canRapidFire && Input.GetMouseButton(0))
+			if (currentGun.isRapidFire && Input.GetMouseButton(0)) currentGun.Shoot(); //Rapid Fire Shoot
+			else if (Input.GetMouseButtonDown(0)) currentGun.Shoot(); //No Rapid Fire Shoot
+
+			#region Old Firing
+			/*if (canRapidFire && Input.GetMouseButton(0))
 			{
 				currentGun.Shoot();
-				/*if (currentGun.shootsProjectiles) ShootProjectile();
-				else RaycastShoot();*/
-				/*if (raycastShoot) RaycastShoot();
-				else ShootProjectile();*/
+				if (currentGun.shootsProjectiles) ShootProjectile();
+				else RaycastShoot();
+				if (raycastShoot) RaycastShoot();
+				else ShootProjectile();
 			}
 			else if (Input.GetMouseButtonDown(0))
 			{
 				currentGun.Shoot();
-				/*if (currentGun.shootsProjectiles) ShootProjectile();
-				else RaycastShoot();*/
-				/*if (raycastShoot) RaycastShoot();
-				else ShootProjectile();*/
-			}
+				if (currentGun.shootsProjectiles) ShootProjectile();
+				else RaycastShoot();
+				if (raycastShoot) RaycastShoot();
+				else ShootProjectile();
+			}*/
+			#endregion
 
 			if (cameraLerp != null) cameraLerp();
 			if (currentHealth <= 0)
 				Destroy(gameObject);
 		}
-	}
-
-	void Grenade () 
-	{
-		if (Input.GetKeyDown (key: KeyCode.G)) 
-		{
-			Rigidbody grenadeRb = Instantiate (grenade, grenadePos.position, Quaternion.identity).GetComponent<Rigidbody> ();
-			grenadeRb.velocity = playerCam.transform.forward * throwSpeed;
-		}
-	}
-
-	void SelectGun()
-	{
-		if (Input.GetKeyDown(KeyCode.Alpha1)) currentGun = gunInventory[0];
-		else if (Input.GetKeyDown(KeyCode.Alpha2)) currentGun = gunInventory[1];
-		else if (Input.GetKeyDown(KeyCode.Alpha3)) currentGun = gunInventory[2];
-
-		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 	}
 
 	void PlayerRotation()
@@ -170,17 +169,20 @@ public class PlayerShooterController : MonoBehaviour
 	{
 		//if (controller.isGrounded)
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
-		float movementSpeed = inAimMode ? walkSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+		if (knockBackTimer <= 0)
+		{
+			float movementSpeed = inAimMode ? walkSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
-		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
-		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
-		Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
+			Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
+			Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
+			Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
 
-		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
+			velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
+		}
 
+		//Applying Gravity before moving
 		velocity.y = isGrounded ? onSlope ? -slopeForce : currentGravity * Time.deltaTime : velocity.y + currentGravity * Time.deltaTime;
-		if (Input.GetKeyDown(KeyCode.Space) && isGrounded) velocity.y = jumpSpeed;
-
+		if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockBackTimer <= 0) velocity.y = jumpSpeed;
 		controller.Move(velocity * Time.deltaTime);
 
 		#region Rigidbody Method
@@ -218,6 +220,12 @@ public class PlayerShooterController : MonoBehaviour
 			isGrounded = false;
 			onSlope = false;
 		}
+	}
+
+	public void PlayerKnockback(Vector3 direction, float force, float knockBackTime = 0.5f)
+	{
+		velocity = direction * force;
+		knockBackTimer = knockBackTime;
 	}
 
 	//Do not want Controller.Move to be manipulated directly by other Scripts
@@ -270,6 +278,24 @@ public class PlayerShooterController : MonoBehaviour
 			cameraLerp -= LerpCamera;
 			cameraLerping = false;
 		}
+	}
+
+	void Grenade()
+	{
+		if (Input.GetKeyDown(key: KeyCode.G))
+		{
+			Rigidbody grenadeRb = Instantiate(grenade, grenadePos.position, Quaternion.identity).GetComponent<Rigidbody>();
+			grenadeRb.velocity = playerCam.transform.forward * throwSpeed;
+		}
+	}
+
+	void SelectGun()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1)) currentGun = gunInventory[0];
+		else if (Input.GetKeyDown(KeyCode.Alpha2)) currentGun = gunInventory[1];
+		else if (Input.GetKeyDown(KeyCode.Alpha3)) currentGun = gunInventory[2];
+
+		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 	}
 
 	/*public void RaycastShoot()

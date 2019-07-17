@@ -43,12 +43,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07cbb49d805f840458e1d4444eba691a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shootLayers:
+    serializedVersion: 2
+    m_Bits: 512
   gunInitialised: 0
   ammo: 100
   ammoPerClip: 100
   infiniteClips: 1
   clips: 0
-  shootsProjectiles: 0
+  shootsProjectiles: 1
+  isRapidFire: 1
+  fireRate: 2
+  cooldown: 0
   shootDir: {x: 0, y: 0, z: 0}
   effectiveRange: 50
   shootDmg: 10

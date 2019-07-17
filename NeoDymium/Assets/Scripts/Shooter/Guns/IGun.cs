@@ -8,7 +8,7 @@ public class IGun : MonoBehaviour
 	protected PlayerShooterController player;
 	protected Camera playerCam; //For Raycasting and Getting Bullet Direction
 	protected Transform playerShootPoint; //Where the particles and bullets should instantiate
-	protected LayerMask shootLayers;
+	public LayerMask shootLayers;
 	public bool gunInitialised;
 
 	[Header("Ammos and Clips")]
@@ -19,12 +19,20 @@ public class IGun : MonoBehaviour
 
 	[Header("For Shooting")]
 	public bool shootsProjectiles;
+	public bool isRapidFire;
+	public float fireRate; //How many seconds before next fire (in shots per seconds for now)
+	public float cooldown;
 	public Ray shootRay;
 	public RaycastHit hit;
 	public Vector3 shootDir;
 	public float effectiveRange;
 	public int shootDmg, effectsDmg; //If Explosion is used for HP depletion instead?
-	public Projectile projectile;
+	public IProjectile projectile;
+
+	protected void Update()
+	{
+		cooldown -= Time.deltaTime;
+	}
 
 	public void InitialiseGun(PlayerShooterController player, Camera playerCam, Transform playerShootPoint, LayerMask shootLayers)
 	{
@@ -47,6 +55,8 @@ public class IGun : MonoBehaviour
 	{
 		//For now Auto Reload
 		//Unsure if I should be handling the Raycasting and Setting Projectile Direction here
+		if (cooldown > 0) return;
+
 		if (ammo == 0)
 		{
 			if(autoReload) Reload();
@@ -60,6 +70,8 @@ public class IGun : MonoBehaviour
 		else RaycastShoot();
 
 		ShootEffect();
+
+		cooldown = 1/fireRate;
 	}
 
 	public virtual void Reload()
@@ -85,7 +97,8 @@ public class IGun : MonoBehaviour
 
 	public virtual void ProjectileShoot()
 	{
-		Projectile bullet = Instantiate(projectile, playerShootPoint.position, Quaternion.identity);
+		IProjectile bullet = Instantiate(projectile, playerShootPoint.position, Quaternion.identity);
+		bullet.InitialiseProjectile(this);
 		bullet.rb.velocity = shootDir * bullet.projectileSpd;
 	}
 

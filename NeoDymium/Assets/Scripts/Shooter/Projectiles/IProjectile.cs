@@ -22,7 +22,7 @@ public class IProjectile : MonoBehaviour
 	public float particleLifeTime;
 
     // Update is called once per frame
-    protected virtual void Update()
+    public virtual void Update()
     {
 		//Or want to destroy by effective Distance
 		lifeTime -= Time.deltaTime;
@@ -47,7 +47,7 @@ public class IProjectile : MonoBehaviour
 		
 	}
 
-	protected virtual void OnCollisionEnter(Collision collision)
+	public virtual void OnCollisionEnter(Collision collision)
 	{
 		if (shootLayers == (shootLayers | (1 << collision.gameObject.layer)))
 		{

@@ -35,6 +35,7 @@ public class JumpPad : MonoBehaviour
 
 	private void Update()
 	{
+		//if (player.knockbackTimer > 0) ResetStep(); //If they want to allow knockback to cancel trajectory
 		if (playerIsJumping) LaunchTarget(player.transform);
 	}
 
@@ -43,12 +44,7 @@ public class JumpPad : MonoBehaviour
 		//The Travel by Time part may not be accurate since its Using Time.deltaTime. Use Time.time for more accuracy
 		step = Mathf.Min(step + Time.deltaTime * travelSpeed, 1); 
 		player.transform.position = JumpPadTrajectory(startPosition, targetPosition, step);
-		if (step >= 1)
-		{
-			playerIsJumping = false;
-			player.lockMovement = false;
-			ResetStep();
-		}
+		if (step >= 1) ResetStep();
 	}
 
 	//Target Step is the x value you want the arc to stop at in reference to Y = Sin(Pi)X. Feel free to rename it
@@ -76,6 +72,8 @@ public class JumpPad : MonoBehaviour
 
 	void ResetStep()
 	{
+		playerIsJumping = false;
+		player.lockMovement = false;
 		step = 0;
 	}
 

@@ -23,7 +23,7 @@ public class PlayerShooterController : MonoBehaviour
 	public bool isGrounded, onSlope;
 	public LayerMask groundLayer;
 	public float knockbackTimer;
-	public Vector3 knockbackVel; //Save the Original Knockback Velocity so that it can be lerped
+	//public Vector3 knockbackVel; //Save the Original Knockback Velocity so that it can be lerped. //Only needed if jump allow player to move in air but not knockback
 
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
 	[SerializeField] Vector3 groundNormal;
@@ -178,11 +178,16 @@ public class PlayerShooterController : MonoBehaviour
 			Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 			Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
 
-			if (horVelocity.sqrMagnitude != 0 || isGrounded) velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
+			if (isGrounded) velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 		}
 
 		//Applying Gravity before moving
 		velocity.y = isGrounded ? onSlope ? -slopeForce : currentGravity * Time.deltaTime : velocity.y + currentGravity * Time.deltaTime;
+
+		//If u want player to be knocked up in the air when shooting the ground
+		//if (knockbackTimer <= 0) velocity.y = isGrounded ? onSlope ? -slopeForce : currentGravity * Time.deltaTime : velocity.y + currentGravity * Time.deltaTime;
+		//else velocity.y = velocity.y + currentGravity * Time.deltaTime; 
+
 		if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockbackTimer <= 0) velocity.y = jumpSpeed;
 		controller.Move(velocity * Time.deltaTime);
 
@@ -226,7 +231,7 @@ public class PlayerShooterController : MonoBehaviour
 	public void PlayerKnockback(Vector3 direction, float force, float knockBackTime = 0.5f)
 	{
 		velocity = direction * force;
-		knockbackVel = velocity;
+		//knockbackVel = velocity;
 		knockbackTimer = knockBackTime;
 	}
 
@@ -300,6 +305,7 @@ public class PlayerShooterController : MonoBehaviour
 		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 	}
 
+	#region Old Firing Functions
 	/*public void RaycastShoot()
 	{
 		Vector3 bulletDir = playerCam.transform.forward;
@@ -344,4 +350,5 @@ public class PlayerShooterController : MonoBehaviour
 
 		currentGun.ShootEffect();
 	}*/
+	#endregion
 }

@@ -302,6 +302,7 @@ public class PlayerShooterController : MonoBehaviour
 		else if (Input.GetKeyDown(KeyCode.Alpha2)) currentGun = gunInventory[1];
 		else if (Input.GetKeyDown(KeyCode.Alpha3)) currentGun = gunInventory[2];
 		else if (Input.GetKeyDown(KeyCode.Alpha4)) currentGun = gunInventory[3];
+		else if (Input.GetKeyDown(KeyCode.Alpha5)) currentGun = gunInventory[4];
 
 		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 	}

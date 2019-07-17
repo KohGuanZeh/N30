@@ -14,6 +14,9 @@ public class GravitonSurge : IProjectile
 
 	public override void ProjectileEffect()
 	{
+		for (int i = enemies.Count - 1; i >= 0; i--)
+			if (enemies[i] == null)
+				enemies.RemoveAt (i);
 		foreach (SimpleEnemy enemy in enemies)
 		{
 			Vector3 direction = (transform.position - enemy.transform.position).normalized;

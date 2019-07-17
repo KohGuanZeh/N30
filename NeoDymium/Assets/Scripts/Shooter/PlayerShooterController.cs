@@ -22,7 +22,8 @@ public class PlayerShooterController : MonoBehaviour
 	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size). With Controller, it is CharacterController.Height/2
 	public bool isGrounded, onSlope;
 	public LayerMask groundLayer;
-	public float knockBackTimer;
+	public float knockbackTimer;
+	public Vector3 knockbackVel;
 
 	[Header("For Gravity Testing")] //Required since there is no gravity scale
 	[SerializeField] Vector3 groundNormal;
@@ -118,7 +119,7 @@ public class PlayerShooterController : MonoBehaviour
 			if (!lockRotation) PlayerRotation();
 			if (!lockMovement) PlayerMovement();
 
-			knockBackTimer -= Time.deltaTime;
+			knockbackTimer -= Time.deltaTime;
 
 			Aim();
 			SelectGun(); //Needs to be instantiated... If not it will edit the Prefab
@@ -169,7 +170,7 @@ public class PlayerShooterController : MonoBehaviour
 	{
 		//if (controller.isGrounded)
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
-		if (knockBackTimer <= 0)
+		if (knockbackTimer <= 0)
 		{
 			float movementSpeed = inAimMode ? walkSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
@@ -179,10 +180,14 @@ public class PlayerShooterController : MonoBehaviour
 
 			velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 		}
+		else
+		{
+			velocity = Vector3.Lerp(new Vector3 (0, velocity.y, 0), knockbackVel, knockbackTimer/0.5f);
+		}
 
 		//Applying Gravity before moving
 		velocity.y = isGrounded ? onSlope ? -slopeForce : currentGravity * Time.deltaTime : velocity.y + currentGravity * Time.deltaTime;
-		if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockBackTimer <= 0) velocity.y = jumpSpeed;
+		if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockbackTimer <= 0) velocity.y = jumpSpeed;
 		controller.Move(velocity * Time.deltaTime);
 
 		#region Rigidbody Method
@@ -225,7 +230,8 @@ public class PlayerShooterController : MonoBehaviour
 	public void PlayerKnockback(Vector3 direction, float force, float knockBackTime = 0.5f)
 	{
 		velocity = direction * force;
-		knockBackTimer = knockBackTime;
+		knockbackVel = velocity;
+		knockbackTimer = knockBackTime;
 	}
 
 	//Do not want Controller.Move to be manipulated directly by other Scripts

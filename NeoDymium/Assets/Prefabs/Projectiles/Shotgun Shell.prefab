@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7574275489154630371}
   - component: {fileID: 7574275489154630372}
   - component: {fileID: 7574275489154630373}
-  - component: {fileID: 7574275489154630368}
+  - component: {fileID: 88073618472925211}
   m_Layer: 10
   m_Name: Shotgun Shell
   m_TagString: PlayerProj
@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 63ae33b3ed4ac764ebe9151cdf087565, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,7 +109,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &7574275489154630368
+--- !u!114 &88073618472925211
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7574275489154630374}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac29349faaca28145b18163198962800, type: 3}
+  m_Script: {fileID: 11500000, guid: 11ff72af5a2c7004f966cafe32996bba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 7574275489154630373}
@@ -137,3 +137,4 @@ MonoBehaviour:
   destroyOnHit: 0
   particleEffect: {fileID: 0}
   particleLifeTime: 0
+  velocityThreshold: 0

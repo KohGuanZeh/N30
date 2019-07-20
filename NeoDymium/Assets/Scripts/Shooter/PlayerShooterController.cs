@@ -21,6 +21,7 @@ public class PlayerShooterController : MonoBehaviour
 	public float horLookSpeed = 1, vertLookSpeed = 1;
 	public float distFromGround; //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size). With Controller, it is CharacterController.Height/2
 	public bool isGrounded, onSlope;
+	public bool onIce;
 	public LayerMask groundLayer;
 	public float knockbackTimer;
 	//public Vector3 knockbackVel; //Save the Original Knockback Velocity so that it can be lerped. //Only needed if jump allow player to move in air but not knockback
@@ -178,7 +179,16 @@ public class PlayerShooterController : MonoBehaviour
 			Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 			Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
 
-			if (isGrounded) velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
+			if (isGrounded)
+			{
+				//Need to Lerp to 0
+				if (onIce && horVelocity.sqrMagnitude == 0)
+				{
+					//velocity = Vector3.Lerp(velocity, new Vector3(0, velocity.y, 0), 0.25f * Time.deltaTime);
+					velocity -= new Vector3(velocity.x * Time.deltaTime * 0.5f, 0, velocity.z * Time.deltaTime * 0.5f);
+				}
+				else velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
+			}
 		}
 
 		//Applying Gravity before moving

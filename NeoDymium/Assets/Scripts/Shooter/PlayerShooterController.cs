@@ -104,9 +104,13 @@ public class PlayerShooterController : MonoBehaviour
 		//temp, for special gun, can be reworked
 		IGun newGun1 = Instantiate(gravitonGun, transform.position, Quaternion.identity);
 		newGun1.transform.parent = transform;
+		gravitonGun = newGun1;
+		gravitonGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 
 		IGun newGun2 = Instantiate(enlargementGun, transform.position, Quaternion.identity);
 		newGun2.transform.parent = transform;
+		enlargementGun = newGun2;
+		enlargementGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 
 		gunInventory = inventoryGuns;
 		currentGun = gunInventory[0];
@@ -330,19 +334,18 @@ public class PlayerShooterController : MonoBehaviour
 		{
 			currentGun = gravitonGun;
 			if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
-			print ("got here");
 			currentGun.Shoot ();
+			currentGun = gunInventory[gunInventoryIndex];
+			if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 		}
 		else if (Input.GetKeyDown (KeyCode.E))
 		{
 			currentGun = enlargementGun;
 			if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
-			print ("got here");
 			currentGun.Shoot ();
+			currentGun = gunInventory[gunInventoryIndex];
+			if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 		}
-
-		currentGun = gunInventory[gunInventoryIndex];
-		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 
 		//old
 		if (Input.GetKeyDown(KeyCode.Alpha1)) currentGun = gunInventory[0];
@@ -350,6 +353,7 @@ public class PlayerShooterController : MonoBehaviour
 		else if (Input.GetKeyDown(KeyCode.Alpha3)) currentGun = gunInventory[2];
 		else if (Input.GetKeyDown(KeyCode.Alpha4)) currentGun = gunInventory[3];
 		else if (Input.GetKeyDown(KeyCode.Alpha5)) currentGun = gunInventory[4];
+		else return;
 
 		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
 	}

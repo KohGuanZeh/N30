@@ -55,11 +55,10 @@ public class IGun : MonoBehaviour
 	{
 		//For now Auto Reload
 		//Unsure if I should be handling the Raycasting and Setting Projectile Direction here
-		if (cooldown > 0) 
+		if (cooldown > 0)
 		{
-			print (cooldown);
 			return;
-		} 
+		}
 
 		if (ammo == 0)
 		{

@@ -35,6 +35,9 @@ public class PlayerShooterController : MonoBehaviour
 	[Header("For Gun and Shooting")]
 	public IGun currentGun;
 	public IGun[] gunInventory;
+	public IGun gravitonGun;
+	public IGun enlargementGun;
+	int gunInventoryIndex;
 	public Transform shootPoint;
 	public LayerMask shootLayers;
 	public float spreadVal;
@@ -96,8 +99,17 @@ public class PlayerShooterController : MonoBehaviour
 			newGun.transform.parent = transform;
 			inventoryGuns[i] = newGun;
 		}
+		
+		//temp, for special gun, can be reworked
+		IGun newGun1 = Instantiate(gravitonGun, transform.position, Quaternion.identity);
+		newGun1.transform.parent = transform;
+
+		IGun newGun2 = Instantiate(enlargementGun, transform.position, Quaternion.identity);
+		newGun2.transform.parent = transform;
+
 		gunInventory = inventoryGuns;
 		currentGun = gunInventory[0];
+		gunInventoryIndex = 0;
 		currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
     }
 
@@ -124,6 +136,8 @@ public class PlayerShooterController : MonoBehaviour
 			Aim();
 			SelectGun(); //Needs to be instantiated... If not it will edit the Prefab
 			Grenade();
+
+			if (Input.GetKeyDown (key: KeyCode.R)) currentGun.Reload ();
 
 			if (currentGun.isRapidFire && Input.GetMouseButton(0)) currentGun.Shoot(); //Rapid Fire Shoot
 			else if (Input.GetMouseButtonDown(0)) currentGun.Shoot(); //No Rapid Fire Shoot
@@ -298,6 +312,29 @@ public class PlayerShooterController : MonoBehaviour
 
 	void SelectGun()
 	{
+		//weapon switching here
+		if (Input.mouseScrollDelta.y > 0 && gunInventoryIndex + 1 < gunInventory.Length)  currentGun = gunInventory[++gunInventoryIndex];
+		else if (Input.mouseScrollDelta.y < 0 && gunInventoryIndex - 1 > 0) currentGun = gunInventory[--gunInventoryIndex];
+
+		if (Input.GetKeyDown (KeyCode.Q)) 
+		{
+			currentGun = gravitonGun;
+			if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
+			print ("got here");
+			currentGun.Shoot ();
+		}
+		else if (Input.GetKeyDown (KeyCode.E))
+		{
+			currentGun = enlargementGun;
+			if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
+			print ("got here");
+			currentGun.Shoot ();
+		}
+
+		currentGun = gunInventory[gunInventoryIndex];
+		if (!currentGun.gunInitialised) currentGun.InitialiseGun(this, playerCam, shootPoint, shootLayers);
+
+		//old
 		if (Input.GetKeyDown(KeyCode.Alpha1)) currentGun = gunInventory[0];
 		else if (Input.GetKeyDown(KeyCode.Alpha2)) currentGun = gunInventory[1];
 		else if (Input.GetKeyDown(KeyCode.Alpha3)) currentGun = gunInventory[2];

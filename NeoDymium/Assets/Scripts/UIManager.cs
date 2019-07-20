@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 	public GameObject gameOverObj;
 
     public TextMeshProUGUI healthText;
+	public TextMeshProUGUI ammoText;
 
 	PlayerShooterController player;
 
@@ -34,8 +35,8 @@ public class UIManager : MonoBehaviour
 				gameOverObj.SetActive (true);
 		}
 
-
 		healthText.text = player.currentHealth + "/" + player.maxHealth;
+		ammoText.text = player.currentGun.ammo + "/" + player.currentGun.ammoPerClip;
 	}
 
 	public void PausePlay (bool pause) 

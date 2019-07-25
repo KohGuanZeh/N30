@@ -7,14 +7,11 @@ public class UIManager : MonoBehaviour
 	public GameObject pauseObj;
 	public GameObject gameOverObj;
 
-    public TextMeshProUGUI healthText;
-	public TextMeshProUGUI ammoText;
-
-	PlayerShooterController player;
+	PlayerController player;
 
 	void Start () 
 	{
-		player = PlayerShooterController.inst;
+		player = PlayerController.inst;
 		pauseObj.SetActive (false);
 		gameOverObj.SetActive (false);
 	}
@@ -34,9 +31,6 @@ public class UIManager : MonoBehaviour
 			if (!gameOverObj.activeSelf)
 				gameOverObj.SetActive (true);
 		}
-
-		healthText.text = player.currentHealth + "/" + player.maxHealth;
-		ammoText.text = player.currentGun.ammo + "/" + player.currentGun.ammoPerClip;
 	}
 
 	public void PausePlay (bool pause) 

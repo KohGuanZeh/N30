@@ -13,7 +13,6 @@ public class PatrollingAI : MonoBehaviour
 	
 	[HideInInspector] public NavMeshAgent agent;
 	List<Collider> colliders;
-	Vector3 oriRotation;
 
 	void Start ()
 	{
@@ -21,7 +20,14 @@ public class PatrollingAI : MonoBehaviour
 		agent = GetComponent<NavMeshAgent> ();
 
 		currentIndex = 0;
+		
 		ReRoute ();
+
+		if (manager)
+			AIWall.inst.IgnoreManager (GetComponent<Collider> ());
+		else
+			AIWall.inst.IgnoreAI (GetComponent<Collider> ());
+
 		foreach (Transform trans in patrolPoints)
 			colliders.Add (trans.GetComponent<Collider> ());
 	}
@@ -60,7 +66,7 @@ public class PatrollingAI : MonoBehaviour
 			else if (!patrol)
 			{
 				agent.SetDestination (transform.position);
-				transform.eulerAngles = oriRotation;
+				transform.eulerAngles = patrolPoints[0].eulerAngles;
 			}
 		}
 	} 

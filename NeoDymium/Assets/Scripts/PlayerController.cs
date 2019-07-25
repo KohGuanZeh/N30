@@ -162,6 +162,7 @@ public class PlayerController : MonoBehaviour
 	}
 	void Unhack()
 	{
+		if (!hackedObj) return;
 		currentViewingCamera = playerCam;
 		hackedObj.OnUnhack();
 		hackedObj = null;

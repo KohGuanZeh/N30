@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
 	public bool paused;
 	public Action action;
 
-	void Awake () 
+	void Awake ()
 	{
 		inst = this;
 		playerRenderer = GetComponentInChildren<Renderer>();
@@ -157,7 +157,7 @@ public class PlayerController : MonoBehaviour
 		{
 			playerCam.transform.position = crouchCamPos.position;
 
-			ResetHeadBobTime(); 
+			ResetHeadBobTime();
 			headBob = (bool)headRefPoint; //Check if Player should resume to Bob head
 
 			controller.height = playerCrouchHeight;
@@ -169,7 +169,7 @@ public class PlayerController : MonoBehaviour
 		{
 			playerCam.transform.position = standCamPos.position;
 
-			ResetHeadBobTime(); 
+			ResetHeadBobTime();
 			headBob = (bool)headRefPoint; //Check if Player should resume to Bob head
 
 			controller.height = playerStandHeight;
@@ -222,7 +222,8 @@ public class PlayerController : MonoBehaviour
 	}
 	void Unhack()
 	{
-		if (hackedObj == null) return;
+		if (!hackedObj) return;
+		currentViewingCamera = playerCam;
 		hackedObj.OnUnhack();
 		hackedObj = null;
 		isHacking = false;

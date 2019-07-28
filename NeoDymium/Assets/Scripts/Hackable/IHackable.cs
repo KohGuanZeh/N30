@@ -18,7 +18,7 @@ public class IHackable : MonoBehaviour
 
 	protected virtual void Update()
 	{
-		//if (camera) CatchPlayer(); //If Hackable Object has a Camera, it should actively look out for Player
+		if (camera) CatchPlayer(); //If Hackable Object has a Camera, it should actively look out for Player
 		if (hacked) ExecuteHackingFunctionaliy();
 	}
 
@@ -37,7 +37,7 @@ public class IHackable : MonoBehaviour
 
 	public virtual void OnUnhack()
 	{
-		if (camera) player.ChangeViewCamera(player.GetPlayerCamera());
+		if (camera) player.ChangeViewCamera(player.GetPlayerCamera(), player.GetHeadRefTransform());
 		hacked = false;
 	}
 

@@ -31,7 +31,7 @@ public class PatrollingAI : MonoBehaviour
 		foreach (Transform trans in patrolPoints)
 			colliders.Add (trans.GetComponent<Collider> ());
 	}
-
+	
 	public void ReRoute () 
 	{
 		if (patrol)

@@ -6,6 +6,7 @@ public class AI : IHackable
 
 	[SerializeField] CharacterController controller;
 	[SerializeField] Camera playerCam;
+	[SerializeField] Transform camPos;
 	[SerializeField] float horLookSpeed = 1, vertLookSpeed = 1;
 	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
 	[SerializeField] Vector3 velocity; //Player Velocity
@@ -28,7 +29,8 @@ public class AI : IHackable
 
 	public override void OnHack ()
 	{
-		base.OnHack ();
+		if (camera) player.ChangeViewCamera(camera, camPos);
+		hacked = true;
 		ai.enabled = false;
 		controller.enabled = true;
 		ai.hacked = true;
@@ -40,6 +42,7 @@ public class AI : IHackable
 		ai.enabled = true;
 		controller.enabled = false;
 		ai.hacked = false;
+		ai.registered = false;
 		ai.ReRoute ();
 	}	
 
@@ -69,6 +72,8 @@ public class AI : IHackable
 		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
 		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 		Vector3 horVelocity = (xMovement + zMovement).normalized * walkSpeed;
+		if (horVelocity.sqrMagnitude != 0) player.SetBobSpeedAndOffset(5f, 0.03f);
+		else player.SetBobSpeedAndOffset(1f, 0.015f);
 		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 
 		//Applying Gravity before moving

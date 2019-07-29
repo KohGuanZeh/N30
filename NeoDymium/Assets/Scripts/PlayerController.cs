@@ -115,15 +115,15 @@ public class PlayerController : MonoBehaviour
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
 		float movementSpeed = isCrouching ? crouchSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
-		if (movementSpeed < walkSpeed) SetBobSpeedAndOffset(0.5f, 0.015f);
+		if (movementSpeed < walkSpeed) SetBobSpeedAndOffset(1f, 0.03f);
 		else if (movementSpeed > walkSpeed) SetBobSpeedAndOffset(5f, 0.05f);
-		else SetBobSpeedAndOffset(3f, 0.03f);
+		else SetBobSpeedAndOffset(5f, 0.03f);
 
 		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
 		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 		Vector3 horVelocity = (xMovement + zMovement).normalized * movementSpeed;
 
-		if (horVelocity.sqrMagnitude == 0) SetBobSpeedAndOffset(0.5f, 0.015f); //Set Bobbing for Idle
+		if (horVelocity.sqrMagnitude == 0) SetBobSpeedAndOffset(0.75f, 0.01f); //Set Bobbing for Idle
 		anim.SetFloat("Speed", horVelocity.sqrMagnitude);
 
 		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
@@ -255,7 +255,7 @@ public class PlayerController : MonoBehaviour
 		currentHeadBobOffset = Vector3.zero;
 	}
 
-	void SetBobSpeedAndOffset(float speed = 1, float maxOffset = 0.15f)
+	public void SetBobSpeedAndOffset(float speed = 1, float maxOffset = 0.15f)
 	{
 		bobSpeed = speed;
 		maxHeadBobOffset = maxOffset;

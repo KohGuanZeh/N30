@@ -5,7 +5,7 @@ using UnityEngine;
 public class IHackable : MonoBehaviour
 {
 	public new Camera camera;
-	[SerializeField] PlayerController player;
+	protected PlayerController player;
 	[SerializeField] Renderer playerRenderer;
 	public bool hacked = false;
 

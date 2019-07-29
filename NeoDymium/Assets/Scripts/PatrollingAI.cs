@@ -10,8 +10,10 @@ public class PatrollingAI : MonoBehaviour
 	public Transform[] patrolPoints;
 
 	public int currentIndex;
+
+	public bool registered = false;
 	
-	[HideInInspector] public NavMeshAgent agent;
+	NavMeshAgent agent;
 	List<Collider> colliders;
 
 	void Start ()
@@ -20,6 +22,7 @@ public class PatrollingAI : MonoBehaviour
 		agent = GetComponent<NavMeshAgent> ();
 
 		currentIndex = 0;
+		registered = false;
 		
 		ReRoute ();
 
@@ -37,11 +40,13 @@ public class PatrollingAI : MonoBehaviour
 		if (patrol)
 		{
 			Transform nearestPatrolPoint = patrolPoints[0];
-			for (int i = 0; i < patrolPoints.Length; i++)
+			currentIndex = 0;
+			for (int i = 1; i < patrolPoints.Length; i++)
 				if ((patrolPoints[i].position - transform.position).magnitude < (nearestPatrolPoint.position - transform.position).magnitude) 
 				{
 					currentIndex = i;
 					nearestPatrolPoint = patrolPoints[i];
+					print("Index Registered is " + currentIndex);
 				}
 			agent.SetDestination (nearestPatrolPoint.position);
 		}
@@ -51,16 +56,19 @@ public class PatrollingAI : MonoBehaviour
 		}
 	}
 
-	void OnTriggerEnter (Collider other) 
+	void OnTriggerStay (Collider other) 
 	{
-		if (other.tag == "PatrolPoint" && !hacked)
+		if (other.tag == "PatrolPoint" && !hacked && !registered)
 		{
+			registered = true;
+
 			if (patrol && colliders.Contains (other)) 
 			{
 				if (currentIndex + 1 >= patrolPoints.Length)
 					currentIndex = 0;
 				else 
 					currentIndex++;
+				print(currentIndex);
 				agent.SetDestination (patrolPoints[currentIndex].position);
 			}
 			else if (!patrol)
@@ -69,5 +77,11 @@ public class PatrollingAI : MonoBehaviour
 				transform.eulerAngles = patrolPoints[0].eulerAngles;
 			}
 		}
-	} 
+	}
+
+	void OnTriggerExit (Collider other)
+	{
+		if (other.tag == "PatrolPoint" && !hacked)
+			registered = false;	
+	}
 }

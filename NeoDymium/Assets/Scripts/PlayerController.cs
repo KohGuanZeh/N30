@@ -127,7 +127,7 @@ public class PlayerController : MonoBehaviour
 
 		if (movementSpeed < walkSpeed) SetBobSpeedAndOffset(1f, 0.03f);
 		else if (movementSpeed > walkSpeed) SetBobSpeedAndOffset(5f, 0.05f);
-		else SetBobSpeedAndOffset(5f, 0.03f);
+		else SetBobSpeedAndOffset(3f, 0.04f);
 
 		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
 		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;

@@ -1,29 +1,34 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-	public GameObject menuObj;
-	public GameObject creditsObj;
+	[Header("Menus")] //Using Rect Transform in case there needs to be animation in the Future
+	[SerializeField] RectTransform optionsScreen;
+	[SerializeField] RectTransform creditsScreen;
 
 	void Start () 
 	{
-		menuObj.SetActive (true);
-		creditsObj.SetActive (false);
+
 	}
 
-    public void Play () 
+    public void Play() 
 	{
-		SceneManager.LoadScene ("Shooter Playground");
+		SceneManager.LoadScene ("Test Scene");
 	}
 
-	public void Credits () 
+	public void Options()
 	{
-		menuObj.SetActive (!menuObj.activeSelf);
-		creditsObj.SetActive (!creditsObj.activeSelf);
+		optionsScreen.gameObject.SetActive(!optionsScreen.gameObject.activeSelf);
 	}
 
-	public void Quit () 
+	public void Credits() 
+	{
+		creditsScreen.gameObject.SetActive (!creditsScreen.gameObject.activeSelf);
+	}
+
+	public void Quit() 
 	{
 		Application.Quit ();
 	}

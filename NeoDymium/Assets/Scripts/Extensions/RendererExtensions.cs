@@ -21,6 +21,7 @@ public static class RendererExtensions
 	public static bool MultipleRaycastCheck(Renderer renderer, Camera camera)
 	{
 		RaycastHit hit;
+		//Need to Manually Adjust Player's Bounds
 		if (Physics.Raycast(camera.transform.position, (renderer.bounds.center - camera.transform.position), out hit, camera.farClipPlane))
 		{
 			if (hit.collider.GetComponentInChildren<Renderer>() == renderer)

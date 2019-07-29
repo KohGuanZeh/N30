@@ -7,13 +7,15 @@ public class PatrollingAI : MonoBehaviour
 	public bool manager = false;
 	public bool patrol = true;
 	public bool hacked = false;
+	
 	public Transform[] patrolPoints;
 
 	public int currentIndex;
-
 	public bool registered = false;
+	public bool alarmed = false;
+	public bool sentBack = false;
 	
-	NavMeshAgent agent;
+	[HideInInspector] public NavMeshAgent agent;
 	List<Collider> colliders;
 
 	void Start ()
@@ -23,8 +25,8 @@ public class PatrollingAI : MonoBehaviour
 
 		currentIndex = 0;
 		registered = false;
-		
-		ReRoute ();
+		alarmed = false;
+		sentBack = false;
 
 		if (manager)
 			AIWall.inst.IgnoreManager (GetComponent<Collider> ());
@@ -35,8 +37,15 @@ public class PatrollingAI : MonoBehaviour
 			colliders.Add (trans.GetComponent<Collider> ());
 	}
 
+	void Update () 
+	{
+		if (!alarmed && !sentBack)
+			ReRoute ();
+	}
+	
 	public void ReRoute () 
 	{
+		sentBack = true;
 		if (patrol)
 		{
 			Transform nearestPatrolPoint = patrolPoints[0];
@@ -58,7 +67,7 @@ public class PatrollingAI : MonoBehaviour
 
 	void OnTriggerStay (Collider other) 
 	{
-		if (other.tag == "PatrolPoint" && !hacked && !registered)
+		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed)
 		{
 			registered = true;
 
@@ -68,7 +77,6 @@ public class PatrollingAI : MonoBehaviour
 					currentIndex = 0;
 				else 
 					currentIndex++;
-				print(currentIndex);
 				agent.SetDestination (patrolPoints[currentIndex].position);
 			}
 			else if (!patrol)

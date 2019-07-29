@@ -5,7 +5,6 @@ public class AI : IHackable
 	PatrollingAI ai;
 
 	[SerializeField] CharacterController controller;
-	[SerializeField] Camera playerCam;
 	[SerializeField] Transform camPos;
 	[SerializeField] float horLookSpeed = 1, vertLookSpeed = 1;
 	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
@@ -34,6 +33,7 @@ public class AI : IHackable
 		ai.enabled = false;
 		controller.enabled = true;
 		ai.hacked = true;
+		Destroy (ai.GetComponent<Rigidbody> ());
 	}
 
 	public override void OnUnhack ()
@@ -43,7 +43,8 @@ public class AI : IHackable
 		controller.enabled = false;
 		ai.hacked = false;
 		ai.registered = false;
-		ai.ReRoute ();
+		ai.sentBack = false;
+		ai.gameObject.AddComponent<Rigidbody> ();
 	}	
 
     protected override void ExecuteHackingFunctionaliy ()
@@ -61,7 +62,7 @@ public class AI : IHackable
 		pitch = Mathf.Clamp(pitch, -90, 90); //Setting Angle Limits
 
 		transform.eulerAngles = new Vector3(0, yaw, 0);
-		playerCam.transform.localEulerAngles = new Vector3(pitch, 0, 0);
+		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
 	}
 
 	void PlayerMovement()

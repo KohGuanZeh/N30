@@ -4,11 +4,13 @@ public class AIWall : MonoBehaviour
 {
     public static AIWall inst;
 
+	public PatrollingAI[] ais;
 	public Collider[] managerColliders;
 	public Collider[] aiColliders;
 
 	void Awake () 
 	{
+		ais = FindObjectsOfType<PatrollingAI> ();
 		inst = this;
 	}
 

@@ -26,7 +26,11 @@ public class IHackable : MonoBehaviour
 	{
 		//May want a Threshold to activate this so this function does not keep calling
 		//Scared that this will lag the game
-		if (playerRenderer.IsVisibleFrom(camera)) print("Game Over");
+		if (playerRenderer.IsVisibleFrom(camera))
+		{
+			player.stealthGauge = Mathf.Min(player.stealthGauge + Time.deltaTime * player.increaseMultiplier, player.stealthThreshold);
+			if (player.stealthGauge >= player.stealthThreshold) print("Game Over @ " + Time.time);
+		}
 	}
 
 	public virtual void OnHack()

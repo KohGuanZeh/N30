@@ -39,6 +39,13 @@ public class PlayerController : MonoBehaviour
 		get { return (controller.height / 2) + groundOffset; } //playerCollider.bounds.extents.y + 0.2f; This is via collider}
 	}  //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size). With Controller, it is CharacterController.Height/2
 
+	[Header("Stealth Gauge")]
+	public float stealthThreshold;
+	[SerializeField] float prevStealthGauge;
+	public float stealthGauge;
+	public float increaseMultiplier;
+	public float decreaseMultiplier;
+
 	[Header("Advanced Camera Movement")]
 	public bool headBob = true;
 	public float headBobLerpTime;
@@ -93,6 +100,9 @@ public class PlayerController : MonoBehaviour
 			//if (Input.GetKeyDown(KeyCode.P)) ResetHeadBob();
 			if (Input.GetMouseButtonDown(0)) Hack();
 			if (Input.GetMouseButtonDown(1)) Unhack();
+
+			if (prevStealthGauge == stealthGauge) stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMultiplier, 0);
+			prevStealthGauge = stealthGauge;
 
 			if (action != null) action();
 		}

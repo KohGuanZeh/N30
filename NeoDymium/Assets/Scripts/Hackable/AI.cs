@@ -79,7 +79,7 @@ public class AI : IHackable
 			if (hit.collider != null) 
 				if (hit.collider.tag == "ControlPanel")
 				{
-					PlayerController.inst.Unhack ();
+					PlayerController.inst.Unhack();
 					hit.collider.GetComponent<ControlPanel> ().Activate ();
 				}	
 		}

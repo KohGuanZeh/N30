@@ -268,7 +268,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	void Unhack()
+	public void Unhack()
 	{
 		if (!hackedObj) return;
 		currentViewingCamera = playerCam;

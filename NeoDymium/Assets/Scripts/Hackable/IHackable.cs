@@ -29,7 +29,7 @@ public class IHackable : MonoBehaviour
 		if (playerRenderer.IsVisibleFrom(camera))
 		{
 			player.stealthGauge = Mathf.Min(player.stealthGauge + Time.deltaTime * player.increaseMultiplier, player.stealthThreshold);
-			if (player.stealthGauge >= player.stealthThreshold) print("Game Over @ " + Time.time);
+			//if (player.stealthGauge >= player.stealthThreshold) print("Game Over @ " + Time.time);
 		}
 	}
 
@@ -43,6 +43,13 @@ public class IHackable : MonoBehaviour
 	{
 		if (camera) player.ChangeViewCamera(player.GetPlayerCamera(), player.GetHeadRefTransform());
 		hacked = false;
+	}
+
+	public virtual void Disable () 
+	{
+		gameObject.layer = 0;
+		camera.enabled = false;
+		this.enabled = false;
 	}
 
 	/// <summary>

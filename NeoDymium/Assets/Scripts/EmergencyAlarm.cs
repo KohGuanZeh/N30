@@ -13,7 +13,7 @@ public class EmergencyAlarm : IHackable
 	protected override void Start ()
 	{
 		base.Start ();
-		ais = AIWall.inst.ais;
+		ais = FindObjectsOfType<PatrollingAI> ();
 	}
 
 	protected override void ExecuteHackingFunctionaliy ()

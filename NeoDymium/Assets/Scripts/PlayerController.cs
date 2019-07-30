@@ -95,6 +95,7 @@ public class PlayerController : MonoBehaviour
 				ToggleCrouch();
 				PlayerRotation();
 				PlayerMovement();
+				Interact ();
 			}
 
 			//if (Input.GetKeyDown(KeyCode.P)) ResetHeadBob();
@@ -105,6 +106,40 @@ public class PlayerController : MonoBehaviour
 			prevStealthGauge = stealthGauge;
 
 			if (action != null) action();
+		}
+	}
+	
+	void Interact ()
+	{
+		if (Input.GetKeyDown (key: KeyCode.E))
+		{
+			RaycastHit hit;
+			Physics.Raycast (playerCam.transform.position, playerCam.transform.forward , out hit, 3);
+
+			if (hit.collider != null) 
+			{
+				switch (hit.collider.tag)
+				{
+					case ("ControlPanel"):
+					{
+						hit.collider.GetComponent<ControlPanel> ().Activate ();
+					}
+					break;
+
+					case ("ServerPanel"):
+					{
+						FindObjectOfType<ExitDoor> ().locked = false;
+					}
+					break;
+
+					case ("ExitDoor"):
+					{
+						if (!hit.collider.GetComponent<ExitDoor> ().locked)
+						hit.collider.GetComponent<ExitDoor> ().OpenDoor ();
+					}
+					break;
+				}
+			}		
 		}
 	}
 
@@ -230,7 +265,7 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
-	void Unhack()
+	public void Unhack()
 	{
 		if (!hackedObj) return;
 		currentViewingCamera = playerCam;
@@ -245,6 +280,7 @@ public class PlayerController : MonoBehaviour
 		ResetHeadBob(headRefPoint);
 		currentViewingCamera = camera;
 		currentViewingCamera.depth = 2;
+		MinimapCamera.inst.ChangeTarget (camera.transform);
 	}
 
 	//Specific For Head Bobbing

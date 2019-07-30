@@ -3,11 +3,10 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
-	//May want to use Character Controller instead of Rigidbody
+	[Header("General Variables")]
 	public static PlayerController inst;
-
-	[Header("Player Renderer")]
-	public Renderer playerRenderer;
+	public Renderer playerRenderer; //Used for 
+	[SerializeField] UIManager ui;
 
 	[Header("Player Movement")]
 	[SerializeField] CharacterController controller;
@@ -27,6 +26,7 @@ public class PlayerController : MonoBehaviour
 	[Header("For Hacking")]
 	public bool isHacking = false;
 	public IHackable hackedObj;
+	public LayerMask hackingRaycastLayers;
 	public LayerMask hackableLayer;
 	[SerializeField] Camera currentViewingCamera;
 
@@ -58,7 +58,6 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] Animator anim;
 
 	[Header ("Others")]
-	public bool paused;
 	public Action action;
 
 	void Awake ()
@@ -74,6 +73,7 @@ public class PlayerController : MonoBehaviour
 		Cursor.visible = true;
 
 		//Getting Components
+		ui = UIManager.inst;
 		playerCam = GetComponentInChildren<Camera>();
 		controller = GetComponent<CharacterController>();
 		currentViewingCamera = playerCam;
@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
 
 	void Update()
     {
-		if (!paused)
+		if (!ui.isPaused && !ui.isGameOver)
 		{
 			if (!isHacking)
 			{
@@ -101,6 +101,7 @@ public class PlayerController : MonoBehaviour
 			if (Input.GetMouseButtonDown(0)) Hack();
 			if (Input.GetMouseButtonDown(1)) Unhack();
 
+			if (stealthGauge >= stealthThreshold) ui.GameOver(); //May want to Add a Return if Stealth Gauge is over Stealth Threshold
 			if (prevStealthGauge == stealthGauge) stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMultiplier, 0);
 			prevStealthGauge = stealthGauge;
 
@@ -213,7 +214,7 @@ public class PlayerController : MonoBehaviour
 	void Hack()
 	{
 		RaycastHit hit;
-		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity))
+		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity, hackingRaycastLayers))
 		{
 			if (hackableLayer == (hackableLayer | 1 << hit.transform.gameObject.layer)) //The | is needed if the Layermask Stores multiple layers
 			{
@@ -222,6 +223,7 @@ public class PlayerController : MonoBehaviour
 				if (!hackable) return;
 				else
 				{
+					ui.StartHacking();
 					if (hackedObj) hackedObj.OnUnhack();
 					isHacking = true;
 					hackedObj = hackable;
@@ -230,6 +232,7 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
+
 	void Unhack()
 	{
 		if (!hackedObj) return;

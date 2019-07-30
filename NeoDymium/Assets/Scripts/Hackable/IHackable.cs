@@ -42,6 +42,13 @@ public class IHackable : MonoBehaviour
 		hacked = false;
 	}
 
+	public virtual void Disable ()
+	{
+		gameObject.layer = 0;
+		camera.enabled = false;
+		this.enabled = false;
+	}
+
 	/// <summary>
 	/// What to Execute when Player Hacks into the Object
 	/// </summary>

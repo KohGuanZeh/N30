@@ -28,11 +28,11 @@ public class AI : IHackable
 
 	public override void OnHack ()
 	{
-		if (camera) player.ChangeViewCamera(camera, camPos);
-		hacked = true;
+		base.OnHack ();
+		ai.agent.enabled = false;
+		ai.hacked = true;
 		ai.enabled = false;
 		controller.enabled = true;
-		ai.hacked = true;
 		Destroy (ai.GetComponent<Rigidbody> ());
 	}
 
@@ -40,18 +40,49 @@ public class AI : IHackable
 	{
 		base.OnUnhack ();
 		ai.enabled = true;
+		ai.agent.enabled = true;
 		controller.enabled = false;
 		ai.hacked = false;
 		ai.registered = false;
 		ai.sentBack = false;
 		ai.gameObject.AddComponent<Rigidbody> ();
-	}	
+		ai.GetComponent<Rigidbody> ().useGravity = false;
+	}
+
+	public override void Disable ()
+	{
+		if (ai.manager)
+			gameObject.layer = 9;
+		else
+		{
+			ai.agent.enabled = false;
+			ai.enabled = false;
+			base.Disable ();
+		}	
+	}
 
     protected override void ExecuteHackingFunctionaliy ()
 	{
 		PlayerRotation ();
 		PlayerMovement ();
 		SlopeCheck ();
+		ControlPanelCheck ();
+	}
+
+	void ControlPanelCheck () 
+	{
+		if (Input.GetKeyDown (key: KeyCode.E))
+		{
+			RaycastHit hit;
+			Physics.Raycast (camera.transform.position, camera.transform.forward, out hit, 3);
+
+			if (hit.collider != null) 
+				if (hit.collider.tag == "ControlPanel")
+				{
+					PlayerController.inst.Unhack ();
+					hit.collider.GetComponent<ControlPanel> ().Activate ();
+				}	
+		}
 	}
 
 	void PlayerRotation()
@@ -87,5 +118,11 @@ public class AI : IHackable
 	{
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, -Vector3.up, out hit, distFromGround, slopeLayer)) onSlope = true;
+	}
+
+	void OnTriggerEnter (Collider other) 
+	{
+		if (other.gameObject.tag == "ManagerDoor" && ai.manager)
+			Destroy (other.gameObject);
 	}
 }

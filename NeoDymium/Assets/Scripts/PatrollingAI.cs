@@ -28,11 +28,6 @@ public class PatrollingAI : MonoBehaviour
 		alarmed = false;
 		sentBack = false;
 
-		if (manager)
-			AIWall.inst.IgnoreManager (GetComponent<Collider> ());
-		else
-			AIWall.inst.IgnoreAI (GetComponent<Collider> ());
-
 		foreach (Transform trans in patrolPoints)
 			colliders.Add (trans.GetComponent<Collider> ());
 	}
@@ -55,7 +50,6 @@ public class PatrollingAI : MonoBehaviour
 				{
 					currentIndex = i;
 					nearestPatrolPoint = patrolPoints[i];
-					print("Index Registered is " + currentIndex);
 				}
 			agent.SetDestination (nearestPatrolPoint.position);
 		}

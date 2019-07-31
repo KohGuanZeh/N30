@@ -13,26 +13,30 @@ public static class RendererExtensions
 	public static bool IsVisibleFrom(this Renderer renderer, Camera camera) //this Renderer means that it will be used as Renderer.IsVisibleFrom()
 	{
 		Plane[] camPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
-		if (GeometryUtility.TestPlanesAABB(camPlanes, renderer.bounds)) return (MultipleRaycastCheck(renderer, camera)); //return PlayerCanBeSeen(renderer.GetComponentInParent<CharacterController>(), camera);
+		if (GeometryUtility.TestPlanesAABB(camPlanes, renderer.bounds)) return (RaycastCheck(renderer, camera));//return PlayerCanBeSeen(renderer.GetComponentInParent<CharacterController>(), camera);
 		else return false;
 	}
 
-	//May want to have different offsets or uae Character Controller
-	public static bool MultipleRaycastCheck(Renderer renderer, Camera camera, float offset = 0.35f, bool debugMode = true)
+	//Need to Manually Adjust Player's Bounds as the Player Bounds is still a little Bigger than what its meant to be... hence having some frames where you cant see the Player but still registered as detected
+	public static bool RaycastCheck(Renderer renderer, Camera camera, float offset = 0.15f, bool debugMode = true)
 	{
 		RaycastHit hit;
 
+		Vector3 boundsCenter = renderer.bounds.center;
+		Vector3 boundsExtents = renderer.bounds.extents;
+		Vector3 cameraPos = camera.transform.position;
+		float camDist = camera.farClipPlane;
+
 		if (debugMode)
 		{
-			Debug.DrawLine(camera.transform.position, renderer.bounds.center - new Vector3(renderer.bounds.extents.x, 0, 0), Color.red, 2);
-			Debug.DrawLine(camera.transform.position, renderer.bounds.center + new Vector3(0, renderer.bounds.extents.y - offset, 0), Color.red, 2);
-			Debug.DrawLine(camera.transform.position, renderer.bounds.center - new Vector3(0, renderer.bounds.extents.y + offset, 0), Color.red, 2);
-			Debug.DrawLine(camera.transform.position, renderer.bounds.center + new Vector3(renderer.bounds.extents.x - offset, 0, 0), Color.red, 2);
-			Debug.DrawLine(camera.transform.position, renderer.bounds.center - new Vector3(renderer.bounds.extents.x + offset, 0, 0), Color.red, 2);
+			Debug.DrawLine(cameraPos, boundsCenter, Color.red, 2);
+			Debug.DrawLine(cameraPos, boundsCenter + new Vector3(0, boundsExtents.y - offset, 0), Color.red, 2);
+			Debug.DrawLine(cameraPos, boundsCenter + new Vector3(0, -boundsExtents.y + offset, 0), Color.red, 2);
+			Debug.DrawLine(cameraPos, boundsCenter + new Vector3(boundsExtents.x - offset, 0, 0), Color.red, 2);
+			Debug.DrawLine(cameraPos, boundsCenter + new Vector3(-boundsExtents.x + offset, 0, 0), Color.red, 2);
 		}
 
-		//Need to Manually Adjust Player's Bounds
-		if (Physics.Raycast(camera.transform.position, (renderer.bounds.center - camera.transform.position), out hit, camera.farClipPlane))
+		if (Physics.Raycast(cameraPos, (boundsCenter - cameraPos).normalized, out hit, camDist))
 		{
 			if (hit.collider.GetComponentInChildren<Renderer>() == renderer)
 			{
@@ -40,7 +44,7 @@ public static class RendererExtensions
 				return true;
 			} 
 		}
-		if (Physics.Raycast(camera.transform.position, ((renderer.bounds.center + new Vector3(0, renderer.bounds.extents.y - offset, 0)) - camera.transform.position).normalized, out hit, Mathf.Infinity))
+		if (Physics.Raycast(cameraPos, (boundsCenter + new Vector3(0, boundsExtents.y - offset, 0) - cameraPos).normalized, out hit, camDist))
 		{
 			if (hit.collider.GetComponentInChildren<Renderer>() == renderer)
 			{
@@ -48,7 +52,7 @@ public static class RendererExtensions
 				return true;
 			}
 		}
-		if (Physics.Raycast(camera.transform.position, ((renderer.bounds.center - new Vector3(0, renderer.bounds.extents.y + offset, 0)) - camera.transform.position).normalized, out hit, Mathf.Infinity))
+		if (Physics.Raycast(cameraPos, (boundsCenter + new Vector3(0, -boundsExtents.y + offset, 0) - cameraPos).normalized, out hit, camDist))
 		{
 			if (hit.collider.GetComponentInChildren<Renderer>() == renderer)
 			{
@@ -56,7 +60,7 @@ public static class RendererExtensions
 				return true;
 			}
 		}
-		if (Physics.Raycast(camera.transform.position, ((renderer.bounds.center + new Vector3(renderer.bounds.extents.x - offset, 0, 0)) - camera.transform.position).normalized, out hit, Mathf.Infinity))
+		if (Physics.Raycast(cameraPos, (boundsCenter + new Vector3(boundsExtents.x - offset, 0, 0) - cameraPos).normalized, out hit, camDist))
 		{
 			if (hit.collider.GetComponentInChildren<Renderer>() == renderer)
 			{
@@ -64,7 +68,7 @@ public static class RendererExtensions
 				return true;
 			}
 		}
-		if (Physics.Raycast(camera.transform.position, ((renderer.bounds.center - new Vector3(renderer.bounds.extents.x + offset, 0, 0)) - camera.transform.position).normalized, out hit, Mathf.Infinity))
+		if (Physics.Raycast(cameraPos, (boundsCenter + new Vector3(-boundsExtents.x + offset, 0, 0) - cameraPos).normalized, out hit, camDist))
 		{
 			if (hit.collider.GetComponentInChildren<Renderer>() == renderer)
 			{
@@ -76,6 +80,7 @@ public static class RendererExtensions
 		return false;
 	}
 
+	#region Another Method. Need to have some adjustments similar to the Function above
 	public static bool PlayerCanBeSeen(CharacterController player, Camera camera, float offset = 0.1f)
 	{
 		RaycastHit hit;
@@ -131,4 +136,5 @@ public static class RendererExtensions
 
 		return false;
 	}
+	#endregion
 }

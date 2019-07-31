@@ -15,7 +15,7 @@ public class MainMenu : MonoBehaviour
 
     public void Play() 
 	{
-		SceneManager.LoadScene ("Test Scene");
+		SceneManager.LoadScene ("Office");
 	}
 
 	public void Options()

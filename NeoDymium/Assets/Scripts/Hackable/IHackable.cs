@@ -4,20 +4,24 @@ using UnityEngine;
 
 public class IHackable : MonoBehaviour
 {
+	[Header ("General Hackable Properties")]
 	public new Camera camera;
 	protected PlayerController player;
+	protected UIManager ui;
 	[SerializeField] Renderer playerRenderer;
 	public bool hacked = false;
 
 	protected virtual void Start()
 	{
 		player = PlayerController.inst;
+		ui = UIManager.inst;
 		playerRenderer = player.playerRenderer;
 		camera = GetComponentInChildren<Camera>();
 	}
 
 	protected virtual void Update()
 	{
+		if (ui.isPaused || ui.isGameOver) return;
 		if (camera) CatchPlayer(); //If Hackable Object has a Camera, it should actively look out for Player
 		if (hacked) ExecuteHackingFunctionaliy();
 	}

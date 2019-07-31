@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 
 	[Header("Player Movement")]
 	[SerializeField] CharacterController controller;
+	[SerializeField] CapsuleCollider detectionColl; //Capsule Collider that is same size as Char Controller Collider. Char Controller Collider cant have proper raycast on its hemisphere so need to use this
 	[SerializeField] Camera playerCam;
 	[SerializeField] float horLookSpeed = 1, vertLookSpeed = 1;
 	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
@@ -77,6 +78,8 @@ public class PlayerController : MonoBehaviour
 		ui = UIManager.inst;
 		playerCam = GetComponentInChildren<Camera>();
 		controller = GetComponent<CharacterController>();
+		detectionColl = GetComponent<CapsuleCollider>();
+		SetDetectionCollider();
 		currentViewingCamera = playerCam;
 		anim = GetComponentInChildren<Animator>();
 		//Set Ground Check. May need to change the y
@@ -200,6 +203,7 @@ public class PlayerController : MonoBehaviour
 		playerCam.transform.position = Vector3.Lerp(standCamPos.position, crouchCamPos.position, crouchStandLerpTime);
 		controller.height = Mathf.Lerp(playerStandHeight, playerCrouchHeight, crouchStandLerpTime);
 		controller.center = Vector3.Lerp(new Vector3(0, playerStandHeight / 2 + groundOffset, 0), new Vector3(0, playerCrouchHeight / 2 + groundOffset, 0), crouchStandLerpTime);
+		SetDetectionCollider();
 
 		if (isCrouching && crouchStandLerpTime >= 1)
 		{
@@ -310,6 +314,13 @@ public class PlayerController : MonoBehaviour
 	{
 		bobSpeed = speed;
 		maxHeadBobOffset = maxOffset;
+	}
+
+	void SetDetectionCollider()
+	{
+		detectionColl.center = controller.center;
+		detectionColl.height = controller.height;
+		detectionColl.radius = controller.radius;
 	}
 
 	//For Getting Private Components

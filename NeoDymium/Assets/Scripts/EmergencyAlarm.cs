@@ -10,10 +10,22 @@ public class EmergencyAlarm : IHackable
 	float horLookSpeed = 1, vertLookSpeed = 1;
 	float yaw, pitch; //Determines Camera and Player Rotation
 
+	public override void OnHack ()
+	{
+		base.OnHack ();
+		yaw = transform.eulerAngles.y;
+	}
+
 	protected override void Start ()
 	{
 		base.Start ();
 		ais = FindObjectsOfType<PatrollingAI> ();
+	}
+
+	public override void Disable ()
+	{
+		gameObject.layer = 0;
+		camera.enabled = false;
 	}
 
 	protected override void ExecuteHackingFunctionaliy ()

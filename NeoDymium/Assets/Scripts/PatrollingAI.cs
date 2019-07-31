@@ -7,6 +7,7 @@ public class PatrollingAI : MonoBehaviour
 	public bool manager = false;
 	public bool patrol = true;
 	public bool hacked = false;
+	public bool disable = false;
 	
 	public Transform[] patrolPoints;
 
@@ -27,6 +28,7 @@ public class PatrollingAI : MonoBehaviour
 		registered = false;
 		alarmed = false;
 		sentBack = false;
+		disable = false;
 
 		foreach (Transform trans in patrolPoints)
 			colliders.Add (trans.GetComponent<Collider> ());

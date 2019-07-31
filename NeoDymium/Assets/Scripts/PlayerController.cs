@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour
 		//Set Ground Check. May need to change the y
 		//distFromGround = (controller.height/2) + groundOffset; //playerCollider.bounds.extents.y + 0.2f; This is via collider
 
+		yaw = transform.eulerAngles.y;
 		headRefPoint = standCamPos;
 		action += LerpHeadBob;
 	}

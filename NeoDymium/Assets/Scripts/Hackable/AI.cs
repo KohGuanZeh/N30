@@ -29,6 +29,7 @@ public class AI : IHackable
 	public override void OnHack ()
 	{
 		base.OnHack ();
+		yaw = transform.eulerAngles.y;
 		ai.agent.enabled = false;
 		ai.hacked = true;
 		ai.enabled = false;

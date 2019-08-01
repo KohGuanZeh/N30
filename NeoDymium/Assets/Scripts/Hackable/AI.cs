@@ -22,6 +22,7 @@ public class AI : IHackable
 		base.Start ();
 		controller = GetComponent<CharacterController>();
 		ai = GetComponent<PatrollingAI> ();
+		distFromGround = GetComponentInChildren<Renderer>().bounds.extents.y + 0.02f ;
 		controller.enabled = false;
 		ai.enabled = true;
 	}

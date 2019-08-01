@@ -6769,7 +6769,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
-  m_Height: 0.7
+  m_Height: 1
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: -0.1}
 --- !u!114 &809758928
@@ -13160,7 +13160,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
-  m_Height: 0.7
+  m_Height: 1
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: -0.1}
 --- !u!114 &1289138819
@@ -17404,16 +17404,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: -2341140326537466139, guid: e84d4b9981fff1b4fabc57314cae2df1,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: -7943378556525867576, guid: e84d4b9981fff1b4fabc57314cae2df1,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: -9217817218132447574, guid: e84d4b9981fff1b4fabc57314cae2df1,
         type: 3}
       propertyPath: m_Layer
@@ -17559,6 +17549,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 32.06717
       objectReference: {fileID: 0}
+    - target: {fileID: -7943378556525867576, guid: e84d4b9981fff1b4fabc57314cae2df1,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: -7597426032139329959, guid: e84d4b9981fff1b4fabc57314cae2df1,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -17592,7 +17587,7 @@ PrefabInstance:
     - target: {fileID: -7417398864011046023, guid: e84d4b9981fff1b4fabc57314cae2df1,
         type: 3}
       propertyPath: m_UpdateWhenOffscreen
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7359990308800947477, guid: e84d4b9981fff1b4fabc57314cae2df1,
         type: 3}
@@ -17925,6 +17920,11 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -2445193559103534071, guid: e84d4b9981fff1b4fabc57314cae2df1,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -2341140326537466139, guid: e84d4b9981fff1b4fabc57314cae2df1,
         type: 3}
       propertyPath: m_Layer
       value: 8
@@ -21841,9 +21841,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
-  m_Height: 0.7
+  m_Height: 1
   m_Direction: 2
-  m_Center: {x: 0, y: 0, z: -0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1778695120978669208
 MonoBehaviour:
   m_ObjectHideFlags: 0

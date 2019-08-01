@@ -17,6 +17,7 @@ public class IHackable : MonoBehaviour
 		ui = UIManager.inst;
 		playerRenderer = player.playerRenderer;
 		camera = GetComponentInChildren<Camera>();
+		if (camera) camera.enabled = false; //Disable Camera Module at Start
 	}
 
 	protected virtual void Update()
@@ -36,13 +37,21 @@ public class IHackable : MonoBehaviour
 
 	public virtual void OnHack()
 	{
-		if (camera) player.ChangeViewCamera(camera);
+		if (camera)
+		{
+			camera.enabled = true;
+			player.ChangeViewCamera(camera);
+		}
 		hacked = true;
 	}
 
 	public virtual void OnUnhack()
 	{
-		if (camera) player.ChangeViewCamera(player.GetPlayerCamera(), player.GetHeadRefTransform());
+		if (camera)
+		{
+			camera.enabled = false;
+			player.ChangeViewCamera(player.GetPlayerCamera(), player.GetHeadRefTransform());
+		}
 		hacked = false;
 	}
 

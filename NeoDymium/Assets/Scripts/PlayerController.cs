@@ -5,7 +5,8 @@ public class PlayerController : MonoBehaviour
 {
 	[Header("General Variables")]
 	public static PlayerController inst;
-	public Renderer playerRenderer; //Used for
+	public Renderer playerRenderer; //Used for recalculating bounds
+	public MeshFilter mesh;
 	[SerializeField] UIManager ui;
 
 	[Header("Player Movement")]
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
 	{
 		inst = this;
 		playerRenderer = GetComponentInChildren<Renderer>();
+		mesh = GetComponentInChildren<MeshFilter>();
 	}
 
     void Start()
@@ -94,6 +96,8 @@ public class PlayerController : MonoBehaviour
     {
 		if (!ui.isPaused && !ui.isGameOver)
 		{
+			//mesh.mesh.RecalculateBounds();
+
 			if (!isHacking)
 			{
 				SlopeCheck();
@@ -110,14 +114,14 @@ public class PlayerController : MonoBehaviour
 			if (stealthGauge >= stealthThreshold) ui.GameOver(); //May want to Add a Return if Stealth Gauge is over Stealth Threshold
 			if (prevStealthGauge == stealthGauge) stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMultiplier, 0);
 			prevStealthGauge = stealthGauge;
-
+			
 			if (action != null) action();
 		}
 	}
 
 	void Interact ()
 	{
-		if (Input.GetKeyDown (key: KeyCode.E))
+		if (Input.GetKeyDown (KeyCode.E))
 		{
 			RaycastHit hit;
 			Physics.Raycast (playerCam.transform.position, playerCam.transform.forward , out hit, 3);
@@ -255,8 +259,11 @@ public class PlayerController : MonoBehaviour
 	void Hack()
 	{
 		RaycastHit hit;
-		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity, hackingRaycastLayers))
+		Debug.DrawLine(currentViewingCamera.transform.position, currentViewingCamera.transform.position + currentViewingCamera.transform.forward * 100, Color.green, 5);
+		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity, hackingRaycastLayers, QueryTriggerInteraction.Ignore))
 		{
+			if (hit.collider != null) Debug.Log(hit.collider.name + " is hit");
+
 			if (hackableLayer == (hackableLayer | 1 << hit.transform.gameObject.layer)) //The | is needed if the Layermask Stores multiple layers
 			{
 				IHackable hackable = hit.transform.GetComponent<IHackable>();

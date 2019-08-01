@@ -153,7 +153,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1847
+    m_Bits: 20279
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -314,6 +314,7 @@ MonoBehaviour:
   manager: 0
   patrol: 1
   hacked: 0
+  disable: 0
   patrolPoints:
   - {fileID: 2805370165609038085}
   - {fileID: 2805370165569645627}
@@ -349,10 +350,10 @@ MonoBehaviour:
   walkSpeed: 10
   groundOffset: 0.02
   onSlope: 0
-  slopeForce: 0
+  slopeForce: 10
   slopeLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   distFromGround: 0
 --- !u!195 &2805370165156913030
 NavMeshAgent:

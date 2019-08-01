@@ -2,14 +2,11 @@
 
 public class temp : MonoBehaviour
 {
-	public PatrollingAI[] ais;
-
-    void EndAlarm () 
+	void Update ()
 	{
-		foreach (PatrollingAI ai in ais)
+		if (Input.GetKeyDown (key: KeyCode.F))
 		{
-			ai.alarmed = false;
-			ai.sentBack = false;
+			Cursor.lockState = CursorLockMode.None;
 		}
 	}
 }

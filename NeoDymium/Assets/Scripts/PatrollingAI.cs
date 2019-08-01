@@ -4,12 +4,21 @@ using UnityEngine.AI;
 
 public class PatrollingAI : MonoBehaviour
 {
+	[System.Serializable]
+	public struct PatrolPoint
+	{
+		public Transform point;
+		public bool randomiseIdle;
+		public bool alwaysIdle;
+	}
+	
 	public bool manager = false;
 	public bool patrol = true;
 	public bool hacked = false;
 	public bool disable = false;
+	public float idleDuration = 1;
 	
-	public Transform[] patrolPoints;
+	public PatrolPoint[] patrolPoints;
 
 	public int currentIndex;
 	public bool registered = false;
@@ -30,8 +39,8 @@ public class PatrollingAI : MonoBehaviour
 		sentBack = false;
 		disable = false;
 
-		foreach (Transform trans in patrolPoints)
-			colliders.Add (trans.GetComponent<Collider> ());
+		foreach (PatrolPoint point in patrolPoints)
+			colliders.Add (point.point.GetComponent<Collider> ());
 	}
 
 	void Update () 
@@ -45,20 +54,50 @@ public class PatrollingAI : MonoBehaviour
 		sentBack = true;
 		if (patrol)
 		{
-			Transform nearestPatrolPoint = patrolPoints[0];
+			Transform nearestPatrolPoint = patrolPoints[0].point;
 			currentIndex = 0;
 			for (int i = 1; i < patrolPoints.Length; i++)
-				if ((patrolPoints[i].position - transform.position).magnitude < (nearestPatrolPoint.position - transform.position).magnitude) 
+				if ((patrolPoints[i].point.position - transform.position).magnitude < (nearestPatrolPoint.position - transform.position).magnitude) 
 				{
 					currentIndex = i;
-					nearestPatrolPoint = patrolPoints[i];
+					nearestPatrolPoint = patrolPoints[i].point;
 				}
 			agent.SetDestination (nearestPatrolPoint.position);
 		}
 		else
 		{
-			agent.SetDestination (patrolPoints[0].position);
+			agent.SetDestination (patrolPoints[0].point.position);
 		}
+	}
+
+	bool RandomBool ()
+	{
+		return Random.Range (0, 2) == 1 ? true : false;
+	}
+
+	void Idle ()
+	{
+		bool passed = false;
+		if (patrolPoints[currentIndex].randomiseIdle)
+		{
+			if (RandomBool ())
+				passed = true;
+		} 
+		else
+		{
+			passed = patrolPoints[currentIndex].alwaysIdle;
+		}
+
+		if (passed)
+		{
+			agent.isStopped = true;
+			Invoke ("IdleEnd", idleDuration);
+		}
+	}
+
+	void IdleEnd ()
+	{
+		agent.isStopped = false;
 	}
 
 	void OnTriggerStay (Collider other) 
@@ -69,16 +108,18 @@ public class PatrollingAI : MonoBehaviour
 
 			if (patrol && colliders.Contains (other)) 
 			{
+				Idle ();
+
 				if (currentIndex + 1 >= patrolPoints.Length)
 					currentIndex = 0;
 				else 
 					currentIndex++;
-				agent.SetDestination (patrolPoints[currentIndex].position);
+				agent.SetDestination (patrolPoints[currentIndex].point.position);
 			}
 			else if (!patrol)
 			{
 				agent.SetDestination (transform.position);
-				transform.eulerAngles = patrolPoints[0].eulerAngles;
+				transform.eulerAngles = patrolPoints[0].point.eulerAngles;
 			}
 		}
 	}

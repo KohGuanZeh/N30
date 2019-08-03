@@ -32,7 +32,7 @@ public class IHackable : MonoBehaviour
 		//May want a Threshold to activate this so this function does not keep calling
 		//Scared that this(IsVisibleFrom()) will lag the game
 		//Game Over for Stealth Gauge is implemented in Player Script
-		if (playerRenderer.IsVisibleFrom(camera)) player.stealthGauge = Mathf.Min(player.stealthGauge + Time.deltaTime * player.increaseMultiplier, player.stealthThreshold);
+		if (player.GetPlayerCollider().IsVisibleFrom(camera)) player.stealthGauge = Mathf.Min(player.stealthGauge + Time.deltaTime * player.increaseMultiplier, player.stealthThreshold);
 	}
 
 	public virtual void OnHack()

@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour
 	[Header("General Variables")]
 	public static PlayerController inst;
 	public Renderer playerRenderer; //Used for recalculating bounds
-	public MeshFilter mesh;
 	[SerializeField] UIManager ui;
 
 	[Header("Player Movement")]
@@ -66,7 +65,6 @@ public class PlayerController : MonoBehaviour
 	{
 		inst = this;
 		playerRenderer = GetComponentInChildren<Renderer>();
-		mesh = GetComponentInChildren<MeshFilter>();
 	}
 
     void Start()
@@ -334,6 +332,11 @@ public class PlayerController : MonoBehaviour
 	public Camera GetPlayerCamera()
 	{
 		return playerCam;
+	}
+
+	public Collider GetPlayerCollider()
+	{
+		return detectionColl;
 	}
 
 	public Transform GetHeadRefTransform()

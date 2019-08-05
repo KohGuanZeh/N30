@@ -32,12 +32,12 @@ public class EmergencyAlarm : IHackable
 		if (hacked) ExecuteHackingFunctionaliy();
 	}
 
-	public override void Disable ()
+	/*public override void Disable ()
 	{
 		gameObject.layer = 0;
 		camera.enabled = false;
 		disabled = true;
-	}
+	}*/
 
 	protected override void ExecuteHackingFunctionaliy ()
 	{

@@ -16,8 +16,8 @@ public class ControlPanel : MonoBehaviour
 		{
 			activated = true;
 			IHackable[] items = FindObjectsOfType<IHackable> ();
-			foreach (IHackable item in items)
-				item.Disable ();
+			/*foreach (IHackable item in items)
+				item.Disable ();*/
 		}
 	}
 }

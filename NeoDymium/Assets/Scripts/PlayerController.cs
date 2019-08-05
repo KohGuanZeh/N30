@@ -5,18 +5,24 @@ public class PlayerController : MonoBehaviour
 {
 	[Header("General Variables")]
 	public static PlayerController inst;
-	public Renderer playerRenderer; //Used for recalculating bounds
+	[SerializeField] CapsuleCollider detectionColl; //Capsule Collider that is same size as Char Controller Collider. Char Controller Collider cant have proper raycast on its hemisphere so need to use this
 	[SerializeField] UIManager ui;
 
 	[Header("Player Movement")]
 	[SerializeField] CharacterController controller;
-	[SerializeField] CapsuleCollider detectionColl; //Capsule Collider that is same size as Char Controller Collider. Char Controller Collider cant have proper raycast on its hemisphere so need to use this
 	[SerializeField] Camera playerCam;
 	[SerializeField] float horLookSpeed = 1, vertLookSpeed = 1;
 	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
 	[SerializeField] Vector3 velocity; //Player Velocity
 	public float crouchSpeed = 5, walkSpeed = 10, runSpeed = 20; //Different Move Speed for Different Movement Action
-	public float groundOffset = 0.02f;
+	[SerializeField] bool isGrounded, onSlope;
+	[SerializeField] LayerMask groundLayer;
+	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
+	public float groundOffset = 0.1f;
+	public float DistFromGround
+	{
+		get { return (controller.height / 2) + groundOffset; } //playerCollider.bounds.extents.y + 0.2f; This is via collider}
+	}
 
 	[Header ("For Crouching")]
 	public bool isCrouching = false;
@@ -24,21 +30,19 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] float playerStandHeight, playerCrouchHeight;
 	float crouchStandLerpTime;
 
-	[Header("For Hacking")]
+	[Header("For Hacking and INteractions")]
+	[SerializeField] Camera currentViewingCamera;
+	public bool focus = false;
 	public bool isHacking = false;
 	public IHackable hackedObj;
-	public LayerMask hackingRaycastLayers;
-	public LayerMask hackableLayer;
-	[SerializeField] Camera currentViewingCamera;
+	public LayerMask aimingRaycastLayers;
+	public LayerMask hackableInteractableLayer;
+	[SerializeField] RaycastHit aimRayHit;
 
-	[Header("Movement on Slope")]
-	public bool onSlope;
-	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
-	public LayerMask slopeLayer;
-	public float distFromGround
-	{
-		get { return (controller.height / 2) + groundOffset; } //playerCollider.bounds.extents.y + 0.2f; This is via collider}
-	}  //Stores the Collider.Bounds.Extents.Y. (Extents is always half of the collider size). With Controller, it is CharacterController.Height/2
+	[Header("For Storing Previous Frame Hacking")]
+	[SerializeField] Collider prevCollider;
+	[SerializeField] IHackable focusedHackable;
+	[SerializeField] IInteractable focusedInteractable;
 
 	[Header("Stealth Gauge")]
 	public float stealthThreshold;
@@ -64,7 +68,6 @@ public class PlayerController : MonoBehaviour
 	void Awake ()
 	{
 		inst = this;
-		playerRenderer = GetComponentInChildren<Renderer>();
 	}
 
     void Start()
@@ -98,14 +101,15 @@ public class PlayerController : MonoBehaviour
 
 			if (!isHacking)
 			{
-				SlopeCheck();
+				GroundAndSlopeCheck();
 				ToggleCrouch();
 				PlayerRotation();
 				PlayerMovement();
-				Interact ();
 			}
 
 			//if (Input.GetKeyDown(KeyCode.P)) ResetHeadBob();
+			Aim();
+			if (Input.GetKeyDown(KeyCode.E)) Interact();
 			if (Input.GetMouseButtonDown(0)) Hack();
 			if (Input.GetMouseButtonDown(1)) Unhack();
 
@@ -114,40 +118,6 @@ public class PlayerController : MonoBehaviour
 			prevStealthGauge = stealthGauge;
 			
 			if (action != null) action();
-		}
-	}
-
-	void Interact ()
-	{
-		if (Input.GetKeyDown (KeyCode.E))
-		{
-			RaycastHit hit;
-			Physics.Raycast (playerCam.transform.position, playerCam.transform.forward , out hit, 3);
-
-			if (hit.collider != null)
-			{
-				switch (hit.collider.tag)
-				{
-					case ("ControlPanel"):
-					{
-						hit.collider.GetComponent<ControlPanel> ().Activate ();
-					}
-					break;
-
-					case ("ServerPanel"):
-					{
-						FindObjectOfType<ExitDoor> ().locked = false;
-					}
-					break;
-
-					case ("ExitDoor"):
-					{
-						if (!hit.collider.GetComponent<ExitDoor> ().locked)
-						hit.collider.GetComponent<ExitDoor> ().OpenDoor ();
-					}
-					break;
-				}
-			}
 		}
 	}
 
@@ -182,7 +152,7 @@ public class PlayerController : MonoBehaviour
 		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 
 		//Applying Gravity before moving
-		velocity.y = onSlope ? -slopeForce : -9.81f * Time.deltaTime;
+		velocity.y = isGrounded ? onSlope ? -slopeForce : -9.81f * Time.deltaTime : velocity.y - 9.81f * Time.deltaTime;
 
 		controller.Move(velocity * Time.deltaTime);
 	}
@@ -242,10 +212,19 @@ public class PlayerController : MonoBehaviour
 		currentViewingCamera.transform.position = headRefPoint.position + currentHeadBobOffset;
 	}
 
-	void SlopeCheck()
+	void GroundAndSlopeCheck()
 	{
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position, -Vector3.up, out hit, distFromGround, slopeLayer)) onSlope = true;
+		if (Physics.Raycast(transform.position + controller.center, -Vector3.up, out hit, DistFromGround, groundLayer))
+		{
+			isGrounded = true;
+			onSlope = hit.normal != Vector3.up ? true : false;
+		}
+		else
+		{
+			isGrounded = false;
+			onSlope = false;
+		}
 	}
 
 	//Do not want Controller.Move to be manipulated directly by other Scripts
@@ -254,9 +233,98 @@ public class PlayerController : MonoBehaviour
 		velocity = new Vector3 (0, -9.81f * Time.deltaTime, 0);
 	}
 
+	void Aim()
+	{
+		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out aimRayHit, Mathf.Infinity, aimingRaycastLayers, QueryTriggerInteraction.Ignore))
+		{
+			if (aimRayHit.collider == null) return;
+			if (prevCollider == aimRayHit.collider) return;
+			else prevCollider = aimRayHit.collider;
+
+			//The | is needed if the Layermask Stores multiple layers
+			if (hackableInteractableLayer == (hackableInteractableLayer | 1 << aimRayHit.transform.gameObject.layer))
+			{
+				focus = true;
+
+				switch (aimRayHit.collider.tag)
+				{
+					case ("Hackable"):
+						focusedHackable = aimRayHit.collider.GetComponent<IHackable>();
+						focusedInteractable = null;
+						break;
+					case ("Interactable"):
+						focusedInteractable = aimRayHit.collider.GetComponent<IInteractable>();
+						focusedHackable = null;
+						break;
+				}
+			}
+			else
+			{
+				focusedHackable = null;
+				focusedInteractable = null;
+				focus = false;
+			}
+
+			ui.AimFeedback(focus);
+		}
+	}
+
+	void Interact()
+	{
+		if (!focusedInteractable || (aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) return;
+
+		if (focusedInteractable.allowPlayerInteraction) focusedInteractable.Interact();
+
+		#region Old Interact
+		/*void Interact ()
+		{
+			if (Input.GetKeyDown (KeyCode.E))
+			{
+				RaycastHit hit;
+				Physics.Raycast (playerCam.transform.position, playerCam.transform.forward , out hit, 3);
+
+				if (hit.collider != null)
+				{
+					switch (hit.collider.tag)
+					{
+						case ("ControlPanel"):
+						{
+							hit.collider.GetComponent<ControlPanel> ().Activate ();
+						}
+						break;
+
+						case ("ServerPanel"):
+						{
+							FindObjectOfType<ExitDoor> ().locked = false;
+						}
+						break;
+
+						case ("ExitDoor"):
+						{
+							if (!hit.collider.GetComponent<ExitDoor> ().locked)
+							hit.collider.GetComponent<ExitDoor> ().OpenDoor ();
+						}
+						break;
+					}
+				}
+			}
+		}*/
+		#endregion
+	}
+
 	void Hack()
 	{
-		RaycastHit hit;
+		if (!focusedHackable) return;
+
+		ui.StartHacking();
+		if (hackedObj) hackedObj.OnUnhack();
+		isHacking = true;
+		hackedObj = focusedHackable;
+		focusedHackable = null;
+		hackedObj.OnHack();
+
+		#region Old Hacking
+		/*RaycastHit hit;
 		Debug.DrawLine(currentViewingCamera.transform.position, currentViewingCamera.transform.position + currentViewingCamera.transform.forward * 100, Color.green, 5);
 		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity, hackingRaycastLayers, QueryTriggerInteraction.Ignore))
 		{
@@ -276,7 +344,8 @@ public class PlayerController : MonoBehaviour
 					hackedObj.OnHack();
 				}
 			}
-		}
+		}*/
+		#endregion
 	}
 
 	public void Unhack()

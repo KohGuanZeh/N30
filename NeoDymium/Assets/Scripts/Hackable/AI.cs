@@ -51,7 +51,7 @@ public class AI : IHackable
 		ai.GetComponent<Rigidbody> ().useGravity = false;
 	}
 
-	public override void Disable ()
+	/*public override void Disable ()
 	{
 		if (ai.manager)
 			gameObject.layer = 9;
@@ -61,7 +61,7 @@ public class AI : IHackable
 			ai.enabled = false;
 			base.Disable ();
 		}	
-	}
+	}*/
 
     protected override void ExecuteHackingFunctionaliy ()
 	{

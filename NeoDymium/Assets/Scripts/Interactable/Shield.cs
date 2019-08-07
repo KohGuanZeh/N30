@@ -10,6 +10,11 @@ public class Shield : MonoBehaviour
 	[SerializeField] Renderer renderer; //If the Shield has a Renderer
 	[SerializeField] Collider collider; //If the Shield has a Collider
 
+	void Start ()
+	{
+		renderer = GetComponent<Renderer> ();
+	}
+
 	public void EnableDisableShield(bool enable)
 	{
 		isDisabled = !enable;
@@ -25,6 +30,6 @@ public class Shield : MonoBehaviour
 
 	void OnShieldDisable()
 	{
-		//For Any Lerp Functions
+		renderer.enabled = false;
 	}
 }

@@ -68,10 +68,10 @@ public class AI : IHackable
 		PlayerRotation ();
 		PlayerMovement ();
 		SlopeCheck ();
-		ControlPanelCheck ();
+		Interact ();
 	}
 
-	void ControlPanelCheck () 
+	void Interact () 
 	{
 		if (Input.GetKeyDown (key: KeyCode.E))
 		{
@@ -79,11 +79,8 @@ public class AI : IHackable
 			Physics.Raycast (camera.transform.position, camera.transform.forward, out hit, 3);
 
 			if (hit.collider != null) 
-				if (hit.collider.tag == "ControlPanel")
-				{
-					PlayerController.inst.Unhack();
-					hit.collider.GetComponent<ControlPanel> ().Activate ();
-				}	
+				if (hit.collider.tag == "Interactable")
+					hit.collider.GetComponent<IInteractable> ().TryInteract (color);
 		}
 	}
 
@@ -120,11 +117,5 @@ public class AI : IHackable
 	{
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, -Vector3.up, out hit, distFromGround, slopeLayer)) onSlope = true;
-	}
-
-	void OnTriggerEnter (Collider other) 
-	{
-		if (other.gameObject.tag == "ManagerDoor" && ai.manager)
-			Destroy (other.gameObject);
 	}
 }

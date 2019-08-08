@@ -8,6 +8,7 @@ public class EmergencyAlarm : IInteractable
 
 	public override void Interact ()
 	{
+		print (gameObject.name);
 		StartAlarm ();
 	}
 
@@ -18,6 +19,7 @@ public class EmergencyAlarm : IInteractable
 			ai.alarmed = true;
 			ai.agent.SetDestination (alarmPosition.position);
 		}
+		Invoke ("EndAlarm", duration);
 	}
 
 	void EndAlarm () 

@@ -8,7 +8,9 @@ public class Shield : MonoBehaviour
 	public ColorIdentifier color;
 	public bool isDisabled;
 	[SerializeField] Renderer renderer; //If the Shield has a Renderer
-	[SerializeField] Collider collider; //If the Shield has a Collider
+	//[SerializeField] Collider collider; //If the Shield has a Collider
+
+	//If Shield is to have a Collider, need to make it a Different Layer
 
 	void Start ()
 	{
@@ -26,6 +28,7 @@ public class Shield : MonoBehaviour
 	void OnShieldEnable()
 	{
 		//For Any Lerp Functions
+		renderer.enabled = true;
 	}
 
 	void OnShieldDisable()

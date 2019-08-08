@@ -98,38 +98,46 @@ public class IHackable : MonoBehaviour
 		EnableDisableHackable(isEnabler, controlPanelColor);
 	}
 	
-	public virtual void EnableDisableHackable(bool enable, ColorIdentifier controlPanelColor)
+	public virtual void EnableDisableHackable(bool isEnable, ColorIdentifier controlPanelColor)
 	{
 		if (color != controlPanelColor) return;
-		isDisabled = !enable;
+		isDisabled = !isEnable;
 	}
 
 	public virtual void EnableDisableShield(bool enable, ColorIdentifier controlPanelColor)
 	{
 		if (hasNoShields) return;
+		
+		List<int> indexesToRemove = new List<int>();
 
 		if (enable)
 		{
-			foreach (Shield shield in disabledShields)
+			for (int i = 0; i < disabledShields.Count; i++)
 			{
-				if (shield.color == controlPanelColor)
-				{
-					shield.EnableDisableShield(true);
-					disabledShields.Remove(shield);
-					enabledShields.Add(shield);
-				}
+				if (disabledShields[i].color == controlPanelColor) indexesToRemove.Add(i);
+			}
+
+			for (int i = 0; i < indexesToRemove.Count; i ++)
+			{
+				Shield shield = disabledShields[indexesToRemove[i]];
+				shield.EnableDisableShield(true);
+				disabledShields.Remove(shield);
+				enabledShields.Add(shield);
 			}
 		}
 		else
 		{
-			foreach (Shield shield in enabledShields)
+			for (int i = 0; i < enabledShields.Count; i++)
 			{
-				if (shield.color == controlPanelColor)
-				{
-					shield.EnableDisableShield(false);
-					enabledShields.Remove(shield);
-					disabledShields.Add(shield);
-				}
+				if (enabledShields[i].color == controlPanelColor) indexesToRemove.Add(i);
+			}
+
+			for (int i = 0; i < indexesToRemove.Count; i ++)
+			{
+				Shield shield = enabledShields[indexesToRemove[i]];
+				shield.EnableDisableShield(false);
+				enabledShields.Remove(shield);
+				disabledShields.Add(shield);
 			}
 		}
 	}

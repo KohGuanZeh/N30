@@ -314,7 +314,8 @@ public class PlayerController : MonoBehaviour
 
 	void Hack()
 	{
-		if (!focusedHackable) return;
+		if (!focusedHackable || hackedObj == focusedHackable) return;
+		if (focusedHackable.enabledShields.Count > 0) return;
 
 		ui.StartHacking();
 		if (hackedObj) hackedObj.OnUnhack();

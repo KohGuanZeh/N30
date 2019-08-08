@@ -12,7 +12,6 @@ public class PatrollingAI : MonoBehaviour
 		public bool alwaysIdle;
 	}
 	
-	public bool manager = false;
 	public bool patrol = true;
 	public bool hacked = false;
 	public bool disable = false;
@@ -27,11 +26,13 @@ public class PatrollingAI : MonoBehaviour
 	
 	[HideInInspector] public NavMeshAgent agent;
 	List<Collider> colliders;
+	AI ai;
 
 	void Start ()
 	{
 		colliders = new List<Collider> ();
 		agent = GetComponent<NavMeshAgent> ();
+		ai = GetComponent<AI> ();
 
 		currentIndex = 0;
 		registered = false;
@@ -45,7 +46,7 @@ public class PatrollingAI : MonoBehaviour
 
 	void Update () 
 	{
-		if (!alarmed && !sentBack)
+		if (!alarmed && !sentBack && !ai.isDisabled)
 			ReRoute ();
 	}
 	
@@ -102,14 +103,13 @@ public class PatrollingAI : MonoBehaviour
 
 	void OnTriggerStay (Collider other) 
 	{
-		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed)
+		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed && !ai.isDisabled)
 		{
 			registered = true;
 
 			if (patrol && colliders.Contains (other)) 
 			{
 				Idle ();
-
 				if (currentIndex + 1 >= patrolPoints.Length)
 					currentIndex = 0;
 				else 

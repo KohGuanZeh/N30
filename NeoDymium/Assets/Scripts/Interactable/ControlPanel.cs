@@ -4,6 +4,7 @@
 public class ControlPanel : IInteractable
 {
 	public List<IHackable> affectedItems;
+	public List<EmergencyAlarm> affectedEmergencyAlarm;
 
 	public bool activated = false;
 
@@ -19,6 +20,8 @@ public class ControlPanel : IInteractable
 			activated = true;
 			foreach (IHackable item in affectedItems)
 				item.EnableDisable (false, color);
+			foreach (EmergencyAlarm item in affectedEmergencyAlarm)
+				item.EndAlarm ();
 		}
 	}
 }

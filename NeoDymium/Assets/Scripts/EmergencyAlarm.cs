@@ -22,8 +22,9 @@ public class EmergencyAlarm : IInteractable
 		Invoke ("EndAlarm", duration);
 	}
 
-	void EndAlarm () 
+	public void EndAlarm () 
 	{
+		CancelInvoke ();
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = false;

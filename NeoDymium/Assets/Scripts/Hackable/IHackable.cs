@@ -23,11 +23,16 @@ public class IHackable : MonoBehaviour
 	public ColorIdentifier color;
 	public bool hacked = false;
 	public bool isDisabled = false;
+	public Material disabledMaterial;
+	public Renderer[] renderersToChangeMaterial;
 
 	[Header("For Checking of Shields")]
 	public bool hasNoShields;
 	public List<Shield> enabledShields;
 	public List<Shield> disabledShields;
+
+	[Header ("Player Detection")]
+	public GameObject exclamationMark;
 
 	protected virtual void Start()
 	{
@@ -62,7 +67,16 @@ public class IHackable : MonoBehaviour
 		//May want a Threshold to activate this so this function does not keep calling
 		//Scared that this(IsVisibleFrom()) will lag the game
 		//Game Over for Stealth Gauge is implemented in Player Script
-		if (player.GetPlayerCollider().IsVisibleFrom(camera)) player.stealthGauge = Mathf.Min(player.stealthGauge + Time.deltaTime * player.increaseMultiplier, player.stealthThreshold);
+		if (player.GetPlayerCollider().IsVisibleFrom(camera)) 
+		{
+			player.stealthGauge = Mathf.Min(player.stealthGauge + Time.deltaTime * player.increaseMultiplier, player.stealthThreshold);
+			exclamationMark.SetActive (true);
+			exclamationMark.transform.LookAt (player.transform);
+		}
+		else
+		{
+			exclamationMark.SetActive (false);
+		}
 	}
 
 	public virtual void ForcedUnhack()
@@ -102,6 +116,10 @@ public class IHackable : MonoBehaviour
 	{
 		if (color != controlPanelColor) return;
 		isDisabled = !isEnable;
+		exclamationMark.SetActive (false);
+
+		for (int i = 0; i < renderersToChangeMaterial.Length; i++)
+			renderersToChangeMaterial[i].material = disabledMaterial;
 	}
 
 	public virtual void EnableDisableShield(bool enable, ColorIdentifier controlPanelColor)

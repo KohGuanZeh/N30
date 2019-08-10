@@ -110,10 +110,11 @@ public class PatrollingAI : MonoBehaviour
 			if (patrol && colliders.Contains (other)) 
 			{
 				Idle ();
-				if (currentIndex + 1 >= patrolPoints.Length)
+
+				currentIndex++;	
+				if (currentIndex >= patrolPoints.Length)
 					currentIndex = 0;
-				else 
-					currentIndex++;
+
 				agent.SetDestination (patrolPoints[currentIndex].point.position);
 			}
 			else if (!patrol)

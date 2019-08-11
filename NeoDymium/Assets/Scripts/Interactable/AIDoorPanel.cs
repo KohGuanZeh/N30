@@ -3,7 +3,7 @@
 	
     public override void Interact ()
 	{
-		GetComponentInParent<AIDoor> ().unlocked = true;
+		//GetComponentInParent<AIDoor> ().unlocked = true;
 	}
 	
 }

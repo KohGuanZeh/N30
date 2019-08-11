@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 	[Header ("General Properties")]
 	public static UIManager inst;
 	[SerializeField] PlayerController player;
+	[SerializeField] Animator guiAnim; //Stand in for now... Will think about how to better integrate Animations
 
 	[Header ("Menus")]
 	[SerializeField] RectTransform pauseScreen;
@@ -26,9 +27,6 @@ public class UIManager : MonoBehaviour
 	[SerializeField] Image stealthGauge;
 	[SerializeField] bool displayWarning;
 	[SerializeField] Image detectedWarning;
-
-	[Header("Static Screen")]
-	[SerializeField] Image staticScreen;
 
 	[Header("Game States")]
 	//May want to use Enum for Game States
@@ -137,12 +135,12 @@ public class UIManager : MonoBehaviour
 
 	public void ShowStaticScreen()
 	{
-		staticScreen.gameObject.SetActive(true);
+		guiAnim.SetTrigger("Static");
 	}
 
-	public void HideStaticScreen()
+	public void StaticScreenAnimEvent()
 	{
-		staticScreen.gameObject.SetActive(false);
+		player.ForcedUnhackAnimEvent();
 	}
 
 	//Button Functions

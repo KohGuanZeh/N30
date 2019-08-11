@@ -8967,8 +8967,11 @@ MonoBehaviour:
   playerStandHeight: 1.6
   playerCrouchHeight: 0.95
   currentViewingCamera: {fileID: 0}
-  focus: 0
+  prevViewingCamera: {fileID: 0}
+  hackingLerpTime: 0
   isHacking: 0
+  detected: 0
+  inHackable: 0
   hackedObj: {fileID: 0}
   aimingRaycastLayers:
     serializedVersion: 2
@@ -8977,8 +8980,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   prevCollider: {fileID: 0}
-  focusedHackable: {fileID: 0}
-  focusedInteractable: {fileID: 0}
+  detectedHackable: {fileID: 0}
+  detectedInteractable: {fileID: 0}
   stealthThreshold: 5
   prevStealthGauge: 0
   stealthGauge: 0
@@ -12198,6 +12201,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1268972305}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!95 &1273188745 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8835226836788412131, guid: 2397738c107c17c4bb6abe0d863af3f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 6881245114915752545}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1275972566 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: d2cea741c8ea3dd4cad5e728d2a9569f,
@@ -20166,6 +20175,41 @@ PrefabInstance:
     - target: {fileID: 8332417826136480229, guid: 2397738c107c17c4bb6abe0d863af3f8,
         type: 3}
       propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8332417826136480228, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: guiAnim
+      value: 
+      objectReference: {fileID: 1273188745}
+    - target: {fileID: 2718476380799176763, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9218070935067155383, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9218070935067155383, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9218070935067155383, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9218070935067155383, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9218070935067155383, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

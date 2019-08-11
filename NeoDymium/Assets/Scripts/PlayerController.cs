@@ -369,7 +369,7 @@ public class PlayerController : MonoBehaviour
 		hackedObj.OnHack();
 	}
 
-	public void Unhack()
+	public void Unhack(bool forced = false) //Check if it is Forced Unhacking
 	{
 		if (!inHackable) return;
 
@@ -381,9 +381,10 @@ public class PlayerController : MonoBehaviour
 		detectedHackable = null;
 
 		prevViewingCamera = currentViewingCamera;
-
 		currentViewingCamera = playerCam;
 		currentViewingCamera.depth = 0;
+
+		if (forced) return; //If Forced Unhacking, immediately set Previous Viewing Camera to Null
 
 		ResetHeadBob(GetHeadRefTransform()); //Need to somehow get Head Bobbing for AI
 		currentViewingCamera.enabled = true;
@@ -391,6 +392,19 @@ public class PlayerController : MonoBehaviour
 		//hackingLerpTime = 1;
 		action -= HackUnhackAnimation;
 		action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera
+	}
+
+	public void ForcedUnhackAnimEvent() //Change Camera View Once Static Screen Appears
+	{
+		ResetHeadBob(GetHeadRefTransform()); //Need to somehow get Head Bobbing for AI
+		currentViewingCamera.enabled = true;
+
+		prevViewingCamera.rect = new Rect(Vector2.zero, new Vector2(1, 0));
+		prevViewingCamera.depth = -1;
+		prevViewingCamera.enabled = false;
+		prevViewingCamera = null;
+
+		isHacking = false;
 	}
 
 	void HackUnhackAnimation()

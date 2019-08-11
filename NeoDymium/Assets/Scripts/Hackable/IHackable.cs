@@ -95,8 +95,8 @@ public class IHackable : MonoBehaviour
 	public virtual void ForcedUnhack()
 	{
 		//For Animations for Forced Unhack
+		player.Unhack(true);
 		ui.ShowStaticScreen();
-		player.Unhack();
 	}
 
 	public virtual void OnHack()

@@ -76,10 +76,10 @@ public class AI : IHackable
 		PlayerRotation ();
 		PlayerMovement ();
 		SlopeCheck ();
-		Interact ();
+		//Interact ();
 	}
 
-	void Interact () 
+	/*void Interact () 
 	{
 		if (Input.GetKeyDown (key: KeyCode.E))
 		{
@@ -90,7 +90,7 @@ public class AI : IHackable
 				if (hit.collider.tag == "Interactable")
 					hit.collider.GetComponent<IInteractable> ().TryInteract (color);
 		}
-	}
+	}*/
 
 	void PlayerRotation()
 	{

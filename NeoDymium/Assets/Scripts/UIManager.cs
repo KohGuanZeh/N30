@@ -15,21 +15,20 @@ public class UIManager : MonoBehaviour
 	[SerializeField] RectTransform optionsScreen;
 	[SerializeField] RectTransform gameOverScreen;
 
-	[Header("Player UI")]
-	[SerializeField] bool detectedHackable;
-	[SerializeField] Image crosshair;
+	[Header("Crosshair")]
+	[SerializeField] bool isFocusing; //Check if a Hackable or Interactable Object has been focused on
+	[SerializeField] Image[] rings; //For Rotation of Rings. 0 is Inner, 1 is Middle, 2 is Outer
+	[SerializeField] float[] ringRotSpeeds; //For Rotation of Rings
 	[SerializeField] float crosshairLerpTime;
-	[SerializeField] bool crosshairIsLerping;
+	[SerializeField] bool crosshairIsLerping; //Check if the Focus Animation is Ongoing
 
+	[Header ("Stealth Gauge")]
 	[SerializeField] Image stealthGauge;
+	[SerializeField] bool displayWarning;
+	[SerializeField] Image detectedWarning;
 
-	[SerializeField] Image animatedRing;
-	[SerializeField] float hackingLerpTime;
-
-	[SerializeField] bool showError;
-	[SerializeField] Image errorScreen, errorLineImg;
-	[SerializeField] Material errorLineMat;
-	[SerializeField] float errorScreenLerpTime;
+	[Header("Static Screen")]
+	[SerializeField] Image staticScreen;
 
 	[Header("Game States")]
 	//May want to use Enum for Game States
@@ -47,15 +46,23 @@ public class UIManager : MonoBehaviour
 	{
 		player = PlayerController.inst;
 
-		errorLineMat = new Material(errorLineImg.material);
-		errorLineImg.material = errorLineMat;
+		//Set Rings to Correct Local Scale First Before Game Start
+		rings[0].rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+		rings[2].rectTransform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+		rings[0].gameObject.SetActive(false);
+		rings[2].gameObject.SetActive(false);
+		action += RotateRings;
+
+		//animationEvent.functionName = "Hide Static Screen";
+		//errorLineMat = new Material(errorLineImg.material);
+		//errorLineImg.material = errorLineMat;
 	}
 
 	void Update () 
 	{
 		stealthGauge.fillAmount = (player.stealthGauge / player.stealthThreshold);
+
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver) PausePlay();
-		if (Input.GetKeyDown(KeyCode.P)) ForcedUnhack();
 
 		if (action != null) action();
 	}
@@ -74,81 +81,68 @@ public class UIManager : MonoBehaviour
 		gameOverScreen.gameObject.SetActive(true);
 	}
 
-	public void AimFeedback(bool detected)
+	public void Focus(bool detected)
 	{
-		if (detected && !detectedHackable) detectedHackable = true;
-		else if (!detected && detectedHackable) detectedHackable = false;
+		if (detected && !isFocusing) isFocusing = true;
+		else if (!detected && isFocusing) isFocusing = false;
 		else return;
 
 		if (crosshairIsLerping) return;
 
+		rings[0].gameObject.SetActive(true);
+		rings[2].gameObject.SetActive(true);
 		crosshairIsLerping = true;
-		action += LerpAimFeedback;
-	}
-
-	public void StartHacking()
-	{
-		action += Hacking;
-		animatedRing.gameObject.SetActive(true);
-	}
-
-	public void ForcedUnhack()
-	{
-		errorScreenLerpTime = 0;
-		errorScreen.rectTransform.localScale = new Vector2(1, 0);
-		errorLineImg.material.SetTextureOffset("_MainTex", Vector2.zero);
-		errorScreen.gameObject.SetActive(true);
-		action += ErrorMsg;
+		action += LerpFocusFeedback;
 	}
 
 	//GUI Animations
-	void LerpAimFeedback()
+	void LerpFocusFeedback()
 	{
-		crosshairLerpTime = detectedHackable ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
-		crosshair.rectTransform.localScale = Vector3.Lerp(Vector3.one, new Vector3(0.5f, 0.5f, 05f), crosshairLerpTime);
+		crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
+		rings[0].rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, crosshairLerpTime);
+		rings[2].rectTransform.localScale = Vector3.Lerp(new Vector3(0.75f, 0.75f, 0.75f), Vector3.one, crosshairLerpTime);
 
-		if (crosshairLerpTime >= 1 && detectedHackable)
+		if (crosshairLerpTime >= 1 && isFocusing)
 		{
-			crosshair.rectTransform.localScale = new Vector3(0.5f, 0.5f, 05f);
+			crosshairLerpTime = 1;
+			rings[0].rectTransform.localScale = Vector3.one;
+			rings[2].rectTransform.localScale = Vector3.one;
+
 			crosshairIsLerping = false;
-			action -= LerpAimFeedback;
+			action -= LerpFocusFeedback;
 		}
-		else if (crosshairLerpTime <= 0 && !detectedHackable)
+		else if (crosshairLerpTime <= 0 && !isFocusing)
 		{
-			crosshair.rectTransform.localScale = Vector3.one;
+			crosshairLerpTime = 0;
+			rings[0].rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+			rings[2].rectTransform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+
+			rings[0].gameObject.SetActive(false);
+			rings[2].gameObject.SetActive(false);
+
 			crosshairIsLerping = false;
-			action -= LerpAimFeedback;
+			action -= LerpFocusFeedback;
 		}
 	}
 
-	void Hacking()
+	void RotateRings()
 	{
-		hackingLerpTime += Time.deltaTime * 5;
-		animatedRing.rectTransform.localScale = Vector3.Lerp(new Vector3(1, 1, 1), new Vector3(20, 20, 20), hackingLerpTime);
+		rings[1].rectTransform.Rotate(0, 0, ringRotSpeeds[1] * Time.deltaTime);
 
-		if (hackingLerpTime >= 1)
-		{
-			action -= Hacking;
-			hackingLerpTime = 0;
-			animatedRing.gameObject.SetActive(false);
-			animatedRing.rectTransform.localScale = Vector3.one;
-		}
+		if (!rings[0].gameObject.activeInHierarchy) return;
+
+		rings[0].rectTransform.Rotate(0, 0, ringRotSpeeds[0] * Time.deltaTime);
+		rings[2].rectTransform.Rotate(0, 0, ringRotSpeeds[2] * Time.deltaTime);
 	}
 
-	void ErrorMsg()
+	public void ShowStaticScreen()
 	{
-		errorScreenLerpTime = Mathf.Min(errorScreenLerpTime + Time.deltaTime, 1);
-		float errorScreenExpandTime = Mathf.Min(errorScreenLerpTime, 0.3f) / 0.3f;
+		staticScreen.gameObject.SetActive(true);
+	}
 
-		errorScreen.rectTransform.localScale = Vector2.Lerp(new Vector2(1,0), Vector2.one, errorScreenExpandTime);
-		Vector2 offset = Vector2.Lerp(Vector2.zero, new Vector2(0, -5), errorScreenLerpTime);
-		errorLineImg.material.SetTextureOffset("_MainTex", offset);
-
-		if (errorScreenLerpTime >= 1)
-		{
-			action -= ErrorMsg;
-			errorScreen.gameObject.SetActive(false);
-		}
+	public void HideStaticScreen()
+	{
+		staticScreen.gameObject.SetActive(false);
 	}
 
 	//Button Functions

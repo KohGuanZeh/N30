@@ -51,6 +51,11 @@ public class AI : IHackable
 		ai.GetComponent<Rigidbody> ().useGravity = false;
 	}
 
+	public override Transform GetCameraRefPoint()
+	{
+		return camPos;
+	}
+
 	/*public override void Disable ()
 	{
 		if (ai.manager)
@@ -63,7 +68,7 @@ public class AI : IHackable
 		}	
 	}*/
 
-    protected override void ExecuteHackingFunctionaliy ()
+	protected override void ExecuteHackingFunctionaliy ()
 	{
 		PlayerRotation ();
 		PlayerMovement ();

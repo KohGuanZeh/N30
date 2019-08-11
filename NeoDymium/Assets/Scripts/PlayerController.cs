@@ -31,9 +31,13 @@ public class PlayerController : MonoBehaviour
 	float crouchStandLerpTime;
 
 	[Header("For Hacking and INteractions")]
+	//[SerializeField] RenderTexture renderTexture; //May be used if current feedback fails
 	[SerializeField] Camera currentViewingCamera;
-	public bool focus = false;
-	public bool isHacking = false;
+	[SerializeField] Camera prevViewingCamera;
+	[SerializeField] float hackingLerpTime;
+	[SerializeField] bool isHacking = false; //Returns true if Player is undergoing Hacking Animation
+	public bool detected = false; //Check if it has Detected any Interactable or Hackable
+	public bool inHackable = false; //Checks if the Player is in a Hackable Object
 	public IHackable hackedObj;
 	public LayerMask aimingRaycastLayers;
 	public LayerMask hackableInteractableLayer;
@@ -41,8 +45,8 @@ public class PlayerController : MonoBehaviour
 
 	[Header("For Storing Previous Frame Hacking")]
 	[SerializeField] Collider prevCollider;
-	[SerializeField] IHackable focusedHackable;
-	[SerializeField] IInteractable focusedInteractable;
+	[SerializeField] IHackable detectedHackable;
+	[SerializeField] IInteractable detectedInteractable;
 
 	[Header("Stealth Gauge")]
 	public float stealthThreshold;
@@ -65,9 +69,28 @@ public class PlayerController : MonoBehaviour
 	[Header ("Others")]
 	public Action action;
 
+	//For Getting Private Components. May want to use Properties instead
+	public Camera GetPlayerCamera()
+	{
+		return playerCam;
+	}
+
+	public Collider GetPlayerCollider()
+	{
+		return detectionColl;
+	}
+
+	public Transform GetHeadRefTransform()
+	{
+		return isCrouching ? crouchCamPos : standCamPos;
+	}
+
 	void Awake ()
 	{
 		inst = this;
+
+		/*renderTexture.width = Screen.width;
+		renderTexture.height = Screen.height;*/
 	}
 
     void Start()
@@ -99,7 +122,7 @@ public class PlayerController : MonoBehaviour
 		{
 			//mesh.mesh.RecalculateBounds();
 
-			if (!isHacking)
+			if (!inHackable)
 			{
 				GroundAndSlopeCheck();
 				ToggleCrouch();
@@ -110,7 +133,7 @@ public class PlayerController : MonoBehaviour
 			//if (Input.GetKeyDown(KeyCode.P)) ResetHeadBob();
 			Aim();
 			if (Input.GetKeyDown(KeyCode.E)) Interact();
-			if (Input.GetMouseButtonDown(0)) Hack();
+			if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
 			if (Input.GetMouseButtonDown(1)) Unhack();
 
 			if (stealthGauge >= stealthThreshold) ui.GameOver(); //May want to Add a Return if Stealth Gauge is over Stealth Threshold
@@ -121,6 +144,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	#region Player Movement
 	void PlayerRotation()
 	{
 		//Camera and Player Rotation
@@ -157,6 +181,21 @@ public class PlayerController : MonoBehaviour
 		controller.Move(velocity * Time.deltaTime);
 	}
 
+	void GroundAndSlopeCheck()
+	{
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position + controller.center, -Vector3.up, out hit, DistFromGround, groundLayer))
+		{
+			isGrounded = true;
+			onSlope = hit.normal != Vector3.up ? true : false;
+		}
+		else
+		{
+			isGrounded = false;
+			onSlope = false;
+		}
+	}
+
 	void ToggleCrouch()
 	{
 		if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -164,7 +203,7 @@ public class PlayerController : MonoBehaviour
 			isCrouching = !isCrouching;
 			anim.SetBool("Crouch", isCrouching);
 			action += LerpCrouchStand;
-			if (!isHacking) headRefPoint = isCrouching ? crouchCamPos : standCamPos;
+			if (!inHackable) headRefPoint = isCrouching ? crouchCamPos : standCamPos;
 			headBob = false;
 		}
 	}
@@ -203,28 +242,11 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	void LerpHeadBob()
+	void SetDetectionCollider()
 	{
-		if (!headBob) return;
-
-		headBobLerpTime += Time.deltaTime;
-		currentHeadBobOffset = new Vector3(0, MathFunctions.SmoothPingPong(headBobLerpTime, maxHeadBobOffset, bobSpeed), 0);
-		currentViewingCamera.transform.position = headRefPoint.position + currentHeadBobOffset;
-	}
-
-	void GroundAndSlopeCheck()
-	{
-		RaycastHit hit;
-		if (Physics.Raycast(transform.position + controller.center, -Vector3.up, out hit, DistFromGround, groundLayer))
-		{
-			isGrounded = true;
-			onSlope = hit.normal != Vector3.up ? true : false;
-		}
-		else
-		{
-			isGrounded = false;
-			onSlope = false;
-		}
+		detectionColl.center = controller.center;
+		detectionColl.height = controller.height;
+		detectionColl.radius = controller.radius;
 	}
 
 	//Do not want Controller.Move to be manipulated directly by other Scripts
@@ -232,7 +254,9 @@ public class PlayerController : MonoBehaviour
 	{
 		velocity = new Vector3 (0, -9.81f * Time.deltaTime, 0);
 	}
+	#endregion
 
+	#region Hacking
 	void Aim()
 	{
 		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out aimRayHit, Mathf.Infinity, aimingRaycastLayers, QueryTriggerInteraction.Ignore))
@@ -244,36 +268,37 @@ public class PlayerController : MonoBehaviour
 			//The | is needed if the Layermask Stores multiple layers
 			if (hackableInteractableLayer == (hackableInteractableLayer | 1 << aimRayHit.transform.gameObject.layer))
 			{
-				focus = true;
+				detected = true;
 
 				switch (aimRayHit.collider.tag)
 				{
 					case ("Hackable"):
-						focusedHackable = aimRayHit.collider.GetComponent<IHackable>();
-						focusedInteractable = null;
+						detectedHackable = aimRayHit.collider.GetComponent<IHackable>();
+						detectedInteractable = null;
 						break;
 					case ("Interactable"):
-						focusedInteractable = aimRayHit.collider.GetComponent<IInteractable>();
-						focusedHackable = null;
+						detectedInteractable = aimRayHit.collider.GetComponent<IInteractable>();
+						detectedHackable = null;
 						break;
 				}
 			}
 			else
 			{
-				focusedHackable = null;
-				focusedInteractable = null;
-				focus = false;
+				detectedHackable = null;
+				detectedInteractable = null;
+				detected = false;
 			}
 
-			ui.AimFeedback(focus);
+			//If Interactable or Hackable has been detected, Crosshair should focus
+			ui.Focus(detected);
 		}
 	}
 
 	void Interact()
 	{
-		if (!focusedInteractable || (aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) return;
+		if (!detectedInteractable || (aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) return;
 
-		if (focusedInteractable.allowPlayerInteraction) focusedInteractable.Interact();
+		if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();
 
 		#region Old Interact
 		/*void Interact ()
@@ -314,15 +339,118 @@ public class PlayerController : MonoBehaviour
 
 	void Hack()
 	{
-		if (!focusedHackable || hackedObj == focusedHackable) return;
-		if (focusedHackable.enabledShields.Count > 0) return;
+		//Note that Player Camera 
+		if (!detectedHackable || hackedObj == detectedHackable) return;
+		if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;
 
-		ui.StartHacking();
-		if (hackedObj) hackedObj.OnUnhack();
 		isHacking = true;
-		hackedObj = focusedHackable;
-		focusedHackable = null;
+		inHackable = true;
+		if (hackedObj) hackedObj.OnUnhack();
+		hackedObj = detectedHackable;
+		ResetHeadBob(hackedObj.GetCameraRefPoint()); //Need to somehow get Head Bobbing for AI
+		detectedHackable = null;
+
+		if (hackedObj.camera)
+		{
+			prevViewingCamera = currentViewingCamera;
+			currentViewingCamera = hackedObj.camera;
+
+			currentViewingCamera.rect = new Rect(Vector2.zero, new Vector2(1, 0));
+
+			prevViewingCamera.depth = 1; //If Previous Viewing Camera is Player Camera, Change the Depth to 0 instead of 1
+			currentViewingCamera.depth = 2;
+
+			currentViewingCamera.enabled = true;
+
+			hackingLerpTime = 0;
+			action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera
+		}
+
 		hackedObj.OnHack();
+	}
+
+	public void Unhack()
+	{
+		if (!inHackable) return;
+
+		isHacking = true;
+
+		inHackable = false;
+		hackedObj.OnUnhack();
+		hackedObj = null;
+		detectedHackable = null;
+
+		prevViewingCamera = currentViewingCamera;
+
+		currentViewingCamera = playerCam;
+		currentViewingCamera.depth = 0;
+
+		ResetHeadBob(GetHeadRefTransform()); //Need to somehow get Head Bobbing for AI
+		currentViewingCamera.enabled = true;
+
+		//hackingLerpTime = 1;
+		action -= HackUnhackAnimation;
+		action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera
+	}
+
+	void HackUnhackAnimation()
+	{
+		hackingLerpTime =  inHackable ? Mathf.Min(hackingLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(hackingLerpTime - Time.deltaTime * 5, 0);
+		//Since the Camera Size only Clamps from 0 to 1, it is essentailly the same as Hacking Lerp Time.
+		//Therefore the Camera Viewport's size.y = hackingLerpTime
+		Vector2 size = new Vector2(1, hackingLerpTime);
+		Vector2 pos = new Vector2(0, 0.5f - (hackingLerpTime / 2));
+
+		if (inHackable)
+		{
+			currentViewingCamera.rect = new Rect(pos, size);
+
+			if (hackingLerpTime >= 1)
+			{
+				isHacking = false;
+
+				size = Vector2.one;
+				pos = Vector2.zero;
+				currentViewingCamera.rect = new Rect(pos, size);
+
+				prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
+				prevViewingCamera.enabled = false;
+				prevViewingCamera = null;
+
+				action -= HackUnhackAnimation;
+			}
+		}
+		else //If going back to Player Camera, tweak the Prev Viewing Camera instead
+		{
+			prevViewingCamera.rect = new Rect(pos, size);
+
+			if (hackingLerpTime <= 0)
+			{
+				isHacking = false;
+
+				size = new Vector2(1, 0);
+				pos = Vector2.zero;
+				prevViewingCamera.rect = new Rect(pos, size);
+
+				prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
+				prevViewingCamera.enabled = false;
+				prevViewingCamera = null;
+
+				action -= HackUnhackAnimation;
+			}
+		}
+	}
+
+	/*void Hack()
+	{
+		if (!detectedHackable || hackedObj == detectedHackable) return;
+		if (detectedHackable.enabledShields.Count > 0) return;
+
+		if (hackedObj) hackedObj.OnUnhack();
+		inHackable = true;
+		hackedObj = detectedHackable;
+		detectedHackable = null;
+		hackedObj.OnHack();*/
 
 		#region Old Hacking
 		/*RaycastHit hit;
@@ -340,22 +468,22 @@ public class PlayerController : MonoBehaviour
 				{
 					ui.StartHacking();
 					if (hackedObj) hackedObj.OnUnhack();
-					isHacking = true;
+					inHackable = true;
 					hackedObj = hackable;
 					hackedObj.OnHack();
 				}
 			}
 		}*/
 		#endregion
-	}
+	//}
 
-	public void Unhack()
+	/*public void Unhack()
 	{
 		if (!hackedObj) return;
 		currentViewingCamera = playerCam;
 		hackedObj.OnUnhack();
 		hackedObj = null;
-		isHacking = false;
+		inHackable = false;
 	}
 
 	public void ChangeViewCamera(Camera camera, Transform headRefPoint = null)
@@ -365,9 +493,19 @@ public class PlayerController : MonoBehaviour
 		currentViewingCamera = camera;
 		currentViewingCamera.depth = 2;
 		MinimapCamera.inst.ChangeTarget (camera.transform);
+	}*/
+	#endregion
+
+	#region Head Bobbing
+	void LerpHeadBob()
+	{
+		if (!headBob) return;
+
+		headBobLerpTime += Time.deltaTime;
+		currentHeadBobOffset = new Vector3(0, MathFunctions.SmoothPingPong(headBobLerpTime, maxHeadBobOffset, bobSpeed), 0);
+		currentViewingCamera.transform.position = headRefPoint.position + currentHeadBobOffset;
 	}
 
-	//Specific For Head Bobbing
 	void ResetHeadBob(Transform newHeadRefPoint = null)
 	{
 		ResetHeadBobTime();
@@ -376,7 +514,7 @@ public class PlayerController : MonoBehaviour
 		//Overrides into new Head Reference Point
 		headRefPoint = newHeadRefPoint;
 		headBob = (bool)headRefPoint;
-		print("Called and Head Bob is " + headBob + ". Time stamp is " + Time.time);
+		//print("Called and Head Bob is " + headBob + ". Time stamp is " + Time.time);
 	}
 
 	void ResetHeadBobTime()
@@ -390,27 +528,5 @@ public class PlayerController : MonoBehaviour
 		bobSpeed = speed;
 		maxHeadBobOffset = maxOffset;
 	}
-
-	void SetDetectionCollider()
-	{
-		detectionColl.center = controller.center;
-		detectionColl.height = controller.height;
-		detectionColl.radius = controller.radius;
-	}
-
-	//For Getting Private Components
-	public Camera GetPlayerCamera()
-	{
-		return playerCam;
-	}
-
-	public Collider GetPlayerCollider()
-	{
-		return detectionColl;
-	}
-
-	public Transform GetHeadRefTransform()
-	{
-		return isCrouching ? crouchCamPos : standCamPos;
-	}
+	#endregion
 }

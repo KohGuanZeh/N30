@@ -255,7 +255,7 @@ public class PlayerController : MonoBehaviour
 	}
 	#endregion
 
-	#region Hacking
+	#region Hacking and Interaction
 	void Aim()
 	{
 		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out aimRayHit, Mathf.Infinity, aimingRaycastLayers, QueryTriggerInteraction.Ignore))
@@ -314,8 +314,8 @@ public class PlayerController : MonoBehaviour
 
 		ui.DisplayInstructionsAndErrors(false, "");
 
-		if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();
-		else if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
+		if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
+		else if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();
 
 		#region Old Interact
 		/*void Interact ()

@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] Camera prevViewingCamera;
 	[SerializeField] float hackingLerpTime;
 	[SerializeField] bool isHacking = false; //Returns true if Player is undergoing Hacking Animation
-	public bool detected = false; //Check if it has Detected any Interactable or Hackable
+	public bool detected = false; //Check if it has Detected any Interactable or Hackable. //Passed to UI Manager to check what Info it should Display
 	public bool inHackable = false; //Checks if the Player is in a Hackable Object
 	public IHackable hackedObj;
 	public LayerMask aimingRaycastLayers;
@@ -266,16 +266,27 @@ public class PlayerController : MonoBehaviour
 			if (hackableInteractableLayer == (hackableInteractableLayer | 1 << aimRayHit.transform.gameObject.layer))
 			{
 				detected = true;
+				string msg = "";
 
 				switch (aimRayHit.collider.tag)
 				{
 					case ("Hackable"):
 						detectedHackable = aimRayHit.collider.GetComponent<IHackable>();
 						detectedInteractable = null;
+
+						
+						if (detectedHackable.isDisabled) msg = "Error. System is Disabled";
+						else if (detectedHackable.enabledShields.Count > 0) msg = "Error. System Protection Level Too High";
+
+						ui.DisplayInstructionsAndErrors(true, msg);
 						break;
 					case ("Interactable"):
 						detectedInteractable = aimRayHit.collider.GetComponent<IInteractable>();
 						detectedHackable = null;
+
+						if ((aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) msg = "Error. Object is too far for Interaction";
+						ui.DisplayInstructionsAndErrors(false, msg);
+
 						break;
 				}
 			}
@@ -293,9 +304,16 @@ public class PlayerController : MonoBehaviour
 
 	void Interact()
 	{
-		if (!detectedInteractable || (aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) return;
+		if (!detectedInteractable || (aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9)
+		{
+			ui.DisplayInstructionsAndErrors(false, "Error. Object is too far for Interaction");
+			return;
+		} 
+
+		ui.DisplayInstructionsAndErrors(false, "");
 
 		if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();
+		else if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
 
 		#region Old Interact
 		/*void Interact ()

@@ -55,6 +55,7 @@ public class PatrollingAI : MonoBehaviour
 		sentBack = true;
 		if (patrol)
 		{
+			ai.anim.SetFloat("Speed", 1);
 			Transform nearestPatrolPoint = patrolPoints[0].point;
 			currentIndex = 0;
 			for (int i = 1; i < patrolPoints.Length; i++)
@@ -92,6 +93,7 @@ public class PatrollingAI : MonoBehaviour
 		if (passed)
 		{
 			agent.isStopped = true;
+			ai.anim.SetFloat("Speed", 0);
 			Invoke ("IdleEnd", idleDuration);
 		}
 	}
@@ -99,6 +101,7 @@ public class PatrollingAI : MonoBehaviour
 	void IdleEnd ()
 	{
 		agent.isStopped = false;
+		ai.anim.SetFloat("Speed", 1);
 	}
 
 	void OnTriggerStay (Collider other) 

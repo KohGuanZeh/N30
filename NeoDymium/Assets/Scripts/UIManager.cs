@@ -28,6 +28,14 @@ public class UIManager : MonoBehaviour
 	[SerializeField] bool displayWarning;
 	[SerializeField] Image detectedWarning;
 
+	[Header("Instructions and Error Msgs")]
+	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
+	[SerializeField] TextMeshProUGUI controlsInfo;
+	[SerializeField] Image controlsIcon;
+	[SerializeField] RectTransform controlsBackDrop;
+	[SerializeField] TextMeshProUGUI errorMsg;
+	[SerializeField] float instructionsLerpTime;
+
 	[Header("Game States")]
 	//May want to use Enum for Game States
 	public bool isGameOver;
@@ -51,9 +59,13 @@ public class UIManager : MonoBehaviour
 		rings[2].gameObject.SetActive(false);
 		action += RotateRings;
 
-		//animationEvent.functionName = "Hide Static Screen";
-		//errorLineMat = new Material(errorLineImg.material);
-		//errorLineImg.material = errorLineMat;
+		Color startColor = Color.clear;
+		controlsBackDrop.anchoredPosition = new Vector2(125, 0);
+		controlsInfo.color = startColor;
+		controlsIcon.color = startColor;
+		errorMsg.color = startColor;
+
+		action += LerpInstructions; //Instructions will only Lerp based on Boolean
 	}
 
 	void Update () 
@@ -93,7 +105,33 @@ public class UIManager : MonoBehaviour
 		action += LerpFocusFeedback;
 	}
 
+	public void DisplayInstructionsAndErrors(bool isHackableObj, string errorTxt = "")
+	{
+		if (isHackableObj)
+		{
+			controlsIcon.sprite = controlsSprites[0];
+			controlsInfo.text = "Hack";
+		}
+		else
+		{
+			controlsIcon.sprite = controlsSprites[1];
+			controlsInfo.text = "Interact";
+		}
+
+		errorMsg.text = errorTxt;
+	}
+
 	//GUI Animations
+	void RotateRings()
+	{
+		rings[1].rectTransform.Rotate(0, 0, ringRotSpeeds[1] * Time.deltaTime);
+
+		if (!rings[0].gameObject.activeInHierarchy) return;
+
+		rings[0].rectTransform.Rotate(0, 0, ringRotSpeeds[0] * Time.deltaTime);
+		rings[2].rectTransform.Rotate(0, 0, ringRotSpeeds[2] * Time.deltaTime);
+	}
+
 	void LerpFocusFeedback()
 	{
 		crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
@@ -123,16 +161,39 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	void RotateRings()
+	void LerpInstructions()
 	{
-		rings[1].rectTransform.Rotate(0, 0, ringRotSpeeds[1] * Time.deltaTime);
+		//Do not Lerp at all if it has reached desired Position/Color
+		if ((instructionsLerpTime >= 1 && player.detected) || (instructionsLerpTime <= 0 && !player.detected)) return;
 
-		if (!rings[0].gameObject.activeInHierarchy) return;
+		instructionsLerpTime = player.detected ? Mathf.Min(instructionsLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(instructionsLerpTime - Time.deltaTime * 5, 0);
+		controlsBackDrop.anchoredPosition = Vector2.Lerp(new Vector2(125, 0), Vector2.zero, instructionsLerpTime);
 
-		rings[0].rectTransform.Rotate(0, 0, ringRotSpeeds[0] * Time.deltaTime);
-		rings[2].rectTransform.Rotate(0, 0, ringRotSpeeds[2] * Time.deltaTime);
+		Color infoColor = Color.Lerp(Color.clear, Color.white, instructionsLerpTime);
+		controlsInfo.color = infoColor;
+		controlsIcon.color = infoColor;
+
+		errorMsg.color = Color.Lerp(Color.clear, Color.red, instructionsLerpTime);
+
+		if (instructionsLerpTime >= 1 && player.detected)
+		{
+			infoColor = Color.white;
+			controlsBackDrop.anchoredPosition = Vector2.zero;
+			controlsInfo.color = infoColor;
+			controlsIcon.color = infoColor;
+			errorMsg.color = Color.red;
+		}
+		else if (instructionsLerpTime <= 0 && !player.detected)
+		{
+			infoColor = Color.clear;
+			controlsBackDrop.anchoredPosition = new Vector2(125, 0);
+			controlsInfo.color = infoColor;
+			controlsIcon.color = infoColor;
+			errorMsg.color = infoColor;
+		}
 	}
 
+	//Animation Events
 	public void ShowStaticScreen()
 	{
 		guiAnim.SetTrigger("Static");

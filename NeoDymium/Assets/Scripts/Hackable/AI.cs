@@ -17,11 +17,14 @@ public class AI : IHackable
 	public LayerMask slopeLayer;
 	public float distFromGround;
 
+	public Animator anim;
+
 	protected override void Start ()
 	{
 		base.Start ();
 		controller = GetComponent<CharacterController>();
 		ai = GetComponent<PatrollingAI> ();
+		anim = GetComponentInChildren<Animator>();
 		distFromGround = GetComponentInChildren<Renderer>().bounds.extents.y + 0.02f ;
 		controller.enabled = false;
 		ai.enabled = true;
@@ -108,8 +111,11 @@ public class AI : IHackable
 		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
 		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 		Vector3 horVelocity = (xMovement + zMovement).normalized * walkSpeed;
+		anim.SetFloat("Speed", horVelocity.sqrMagnitude);
+
 		if (horVelocity.sqrMagnitude != 0) player.SetBobSpeedAndOffset(5f, 0.03f);
 		else player.SetBobSpeedAndOffset(1f, 0.015f);
+
 		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 
 		//Applying Gravity before moving
@@ -122,5 +128,11 @@ public class AI : IHackable
 	{
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, -Vector3.up, out hit, distFromGround, slopeLayer)) onSlope = true;
+	}
+
+	public override void EnableDisableHackable(bool isEnable, ColorIdentifier controlPanelColor)
+	{
+		base.EnableDisableHackable(isEnable, controlPanelColor);
+		anim.SetBool("Disabled", isDisabled);
 	}
 }

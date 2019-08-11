@@ -30,6 +30,15 @@ public class AI : IHackable
 		ai.enabled = true;
 	}
 
+	protected override void Update ()
+	{
+		base.Update ();
+		if (!hacked)
+			anim.SetFloat ("Speed", ai.agent.velocity.magnitude);
+		else
+			anim.SetFloat ("Speed", controller.velocity.magnitude);
+	}
+
 	public override void OnHack ()
 	{
 		base.OnHack ();

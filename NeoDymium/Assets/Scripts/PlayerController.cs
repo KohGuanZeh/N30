@@ -88,9 +88,6 @@ public class PlayerController : MonoBehaviour
 	void Awake ()
 	{
 		inst = this;
-
-		/*renderTexture.width = Screen.width;
-		renderTexture.height = Screen.height;*/
 	}
 
     void Start()
@@ -343,6 +340,8 @@ public class PlayerController : MonoBehaviour
 		if (!detectedHackable || hackedObj == detectedHackable) return;
 		if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;
 
+		anim.SetBool("Hacking", true);
+
 		isHacking = true;
 		inHackable = true;
 		if (hackedObj) hackedObj.OnUnhack();
@@ -373,8 +372,9 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!inHackable) return;
 
-		isHacking = true;
+		anim.SetBool("Hacking", false);
 
+		isHacking = true;
 		inHackable = false;
 		hackedObj.OnUnhack();
 		hackedObj = null;

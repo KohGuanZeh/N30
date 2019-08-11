@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public enum ColorIdentifier { none, red, blue };
 
@@ -20,6 +21,8 @@ public class IHackable : MonoBehaviour
 
 	[Header ("Hacking Related Variables")]
 	public new Camera camera;
+	public PostProcessVolume postProcessVolume;
+	public PostProcessProfile ppp;
 	public ColorIdentifier color;
 	public bool hacked = false;
 	public bool isDisabled = false;
@@ -110,6 +113,7 @@ public class IHackable : MonoBehaviour
 		#endregion
 
 		hacked = true;
+		postProcessVolume.profile = ppp;
 	}
 
 	public virtual void OnUnhack()
@@ -122,6 +126,7 @@ public class IHackable : MonoBehaviour
 		}*/
 		#endregion
 
+		postProcessVolume.profile = player.ppp;
 		hacked = false;
 	}
 

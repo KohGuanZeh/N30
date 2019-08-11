@@ -36,12 +36,17 @@ public class IHackable : MonoBehaviour
 
 	[Header ("Player Detection")]
 	public GameObject exclamationMark;
+	
+	[Header ("Minimap Related")]
+	public SpriteRenderer minimapIcon;
+	MinimapCamera minimap;
 
 	protected virtual void Start()
 	{
 		//General
 		player = PlayerController.inst;
 		ui = UIManager.inst;
+		minimap = MinimapCamera.inst;
 
 		//Camera
 		camera = GetComponentInChildren<Camera>();
@@ -114,6 +119,7 @@ public class IHackable : MonoBehaviour
 
 		hacked = true;
 		postProcessVolume.profile = ppp;
+		minimap.ChangeTarget (transform);
 	}
 
 	public virtual void OnUnhack()
@@ -127,6 +133,7 @@ public class IHackable : MonoBehaviour
 		#endregion
 
 		postProcessVolume.profile = player.ppp;
+		minimap.ChangeTarget (player.transform);
 		hacked = false;
 	}
 
@@ -142,6 +149,7 @@ public class IHackable : MonoBehaviour
 		if (color != controlPanelColor) return;
 		isDisabled = !isEnable;
 		exclamationMark.SetActive (false);
+		minimapIcon.color = new Color32 (123, 123, 123, 255);
 
 		for (int i = 0; i < renderersToChangeMaterial.Length; i++)
 			renderersToChangeMaterial[i].material = disabledMaterial;

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using System;
 
 public class PlayerController : MonoBehaviour
@@ -68,6 +69,7 @@ public class PlayerController : MonoBehaviour
 
 	[Header ("Others")]
 	public Action action;
+	public PostProcessProfile ppp;
 
 	//For Getting Private Components. May want to use Properties instead
 	public Camera GetPlayerCamera()

@@ -24,7 +24,10 @@ public class AIDoor : MonoBehaviour
 	void OnTriggerStay (Collider other)
 	{
 		if ((other.tag == "Hackable"/*9*/ && other.GetComponent<IHackable> ().color == requiredColor)) //|| (unlocked && other.gameObject.layer == unlockedLayer))//(other.gameObject.layer == 9 || other.gameObject.layer == 8)))
-			gameObject.SetActive (false);	
+		{
+			gameObject.SetActive (false);
+			transform.GetChild (0).gameObject.SetActive (false);
+		}
 
 		/*if ((other.gameObject.layer == 9 && other.GetComponent<IHackable> ().color == color) || (unlocked && (other.gameObject.layer == 9 || other.gameObject.layer == 8)))
 			door.SetActive (false);*/

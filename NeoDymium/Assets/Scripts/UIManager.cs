@@ -25,8 +25,8 @@ public class UIManager : MonoBehaviour
 
 	[Header ("Stealth Gauge")]
 	[SerializeField] Image stealthGauge;
-	[SerializeField] bool displayWarning;
 	[SerializeField] Image detectedWarning;
+	[SerializeField] float warningTime;
 
 	[Header("Instructions and Error Msgs")]
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
@@ -58,6 +58,9 @@ public class UIManager : MonoBehaviour
 		rings[0].gameObject.SetActive(false);
 		rings[2].gameObject.SetActive(false);
 		action += RotateRings;
+
+		action += FlashDetectedWarning;
+		detectedWarning.color = new Color(detectedWarning.color.r, detectedWarning.color.g, detectedWarning.color.b, 0);
 
 		Color startColor = Color.clear;
 		controlsBackDrop.anchoredPosition = new Vector2(125, 0);
@@ -91,10 +94,10 @@ public class UIManager : MonoBehaviour
 		gameOverScreen.gameObject.SetActive(true);
 	}
 
-	public void Focus(bool detected)
+	public void Focus(bool playerIsFocusing)
 	{
-		if (detected && !isFocusing) isFocusing = true;
-		else if (!detected && isFocusing) isFocusing = false;
+		if (playerIsFocusing && !isFocusing) isFocusing = true;
+		else if (!playerIsFocusing && isFocusing) isFocusing = false;
 		else return;
 
 		if (crosshairIsLerping) return;
@@ -161,12 +164,30 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
+	void FlashDetectedWarning()
+	{
+		if (warningTime == 0 && !player.isDetected) return;
+
+		float alpha = 0;
+		Color newColor = detectedWarning.color;
+
+		if (player.isDetected)
+		{
+			warningTime += Time.deltaTime * 3;
+			alpha = Mathf.PingPong(warningTime, 1);
+		}
+		else warningTime = 0;
+
+		newColor.a = alpha;
+		detectedWarning.color = newColor;
+	}
+
 	void LerpInstructions()
 	{
 		//Do not Lerp at all if it has reached desired Position/Color
-		if ((instructionsLerpTime >= 1 && player.detected) || (instructionsLerpTime <= 0 && !player.detected)) return;
+		if ((instructionsLerpTime >= 1 && player.isFocusing) || (instructionsLerpTime <= 0 && !player.isFocusing)) return;
 
-		instructionsLerpTime = player.detected ? Mathf.Min(instructionsLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(instructionsLerpTime - Time.deltaTime * 5, 0);
+		instructionsLerpTime = player.isFocusing ? Mathf.Min(instructionsLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(instructionsLerpTime - Time.deltaTime * 5, 0);
 		controlsBackDrop.anchoredPosition = Vector2.Lerp(new Vector2(125, 0), Vector2.zero, instructionsLerpTime);
 
 		Color infoColor = Color.Lerp(Color.clear, Color.white, instructionsLerpTime);
@@ -175,7 +196,7 @@ public class UIManager : MonoBehaviour
 
 		errorMsg.color = Color.Lerp(Color.clear, Color.red, instructionsLerpTime);
 
-		if (instructionsLerpTime >= 1 && player.detected)
+		if (instructionsLerpTime >= 1 && player.isFocusing)
 		{
 			infoColor = Color.white;
 			controlsBackDrop.anchoredPosition = Vector2.zero;
@@ -183,7 +204,7 @@ public class UIManager : MonoBehaviour
 			controlsIcon.color = infoColor;
 			errorMsg.color = Color.red;
 		}
-		else if (instructionsLerpTime <= 0 && !player.detected)
+		else if (instructionsLerpTime <= 0 && !player.isFocusing)
 		{
 			infoColor = Color.clear;
 			controlsBackDrop.anchoredPosition = new Vector2(125, 0);

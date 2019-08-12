@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] Camera prevViewingCamera;
 	[SerializeField] float hackingLerpTime;
 	[SerializeField] bool isHacking = false; //Returns true if Player is undergoing Hacking Animation
-	public bool detected = false; //Check if it has Detected any Interactable or Hackable. //Passed to UI Manager to check what Info it should Display
+	public bool isFocusing = false; //Check if Player is focusing on any Interactable or Hackable. //Passed to UI Manager to check what Info it should Display
 	public bool inHackable = false; //Checks if the Player is in a Hackable Object
 	public IHackable hackedObj;
 	public LayerMask aimingRaycastLayers;
@@ -50,9 +50,10 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] IInteractable detectedInteractable;
 
 	[Header("Stealth Gauge")]
-	public float stealthThreshold;
-	[SerializeField] float prevStealthGauge;
+	public bool isDetected;
 	public float stealthGauge;
+	public float stealthThreshold;
+	[SerializeField] float prevStealthGauge; //Keeps track of Previous Frame Stealth Gauge Value. If there is no change, it means that Player is no longer Detected
 	public float increaseMultiplier;
 	public float decreaseMultiplier;
 
@@ -135,9 +136,7 @@ public class PlayerController : MonoBehaviour
 			if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
 			if (Input.GetMouseButtonDown(1)) Unhack();
 
-			if (stealthGauge >= stealthThreshold) ui.GameOver(); //May want to Add a Return if Stealth Gauge is over Stealth Threshold
-			if (prevStealthGauge == stealthGauge) stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMultiplier, 0);
-			prevStealthGauge = stealthGauge;
+			if (prevStealthGauge == stealthGauge) DecreaseStealthGauge();
 			
 			if (action != null) action();
 		}
@@ -267,7 +266,7 @@ public class PlayerController : MonoBehaviour
 			//The | is needed if the Layermask Stores multiple layers
 			if (hackableInteractableLayer == (hackableInteractableLayer | 1 << aimRayHit.transform.gameObject.layer))
 			{
-				detected = true;
+				isFocusing = true;
 				string msg = "";
 
 				switch (aimRayHit.collider.tag)
@@ -296,11 +295,11 @@ public class PlayerController : MonoBehaviour
 			{
 				detectedHackable = null;
 				detectedInteractable = null;
-				detected = false;
+				isFocusing = false;
 			}
 
-			//If Interactable or Hackable has been detected, Crosshair should focus
-			ui.Focus(detected);
+			//If Interactable or Hackable is being Focused on, Crosshair should focus
+			ui.Focus(isFocusing);
 		}
 	}
 
@@ -486,29 +485,29 @@ public class PlayerController : MonoBehaviour
 		detectedHackable = null;
 		hackedObj.OnHack();*/
 
-		#region Old Hacking
-		/*RaycastHit hit;
-		Debug.DrawLine(currentViewingCamera.transform.position, currentViewingCamera.transform.position + currentViewingCamera.transform.forward * 100, Color.green, 5);
-		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity, hackingRaycastLayers, QueryTriggerInteraction.Ignore))
+	#region Old Hacking
+	/*RaycastHit hit;
+	Debug.DrawLine(currentViewingCamera.transform.position, currentViewingCamera.transform.position + currentViewingCamera.transform.forward * 100, Color.green, 5);
+	if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity, hackingRaycastLayers, QueryTriggerInteraction.Ignore))
+	{
+		if (hit.collider != null) Debug.Log(hit.collider.name + " is hit");
+
+		if (hackableLayer == (hackableLayer | 1 << hit.transform.gameObject.layer)) //The | is needed if the Layermask Stores multiple layers
 		{
-			if (hit.collider != null) Debug.Log(hit.collider.name + " is hit");
+			IHackable hackable = hit.transform.GetComponent<IHackable>();
 
-			if (hackableLayer == (hackableLayer | 1 << hit.transform.gameObject.layer)) //The | is needed if the Layermask Stores multiple layers
+			if (!hackable) return;
+			else
 			{
-				IHackable hackable = hit.transform.GetComponent<IHackable>();
-
-				if (!hackable) return;
-				else
-				{
-					ui.StartHacking();
-					if (hackedObj) hackedObj.OnUnhack();
-					inHackable = true;
-					hackedObj = hackable;
-					hackedObj.OnHack();
-				}
+				ui.StartHacking();
+				if (hackedObj) hackedObj.OnUnhack();
+				inHackable = true;
+				hackedObj = hackable;
+				hackedObj.OnHack();
 			}
-		}*/
-		#endregion
+		}
+	}*/
+	#endregion
 	//}
 
 	/*public void Unhack()
@@ -528,6 +527,24 @@ public class PlayerController : MonoBehaviour
 		currentViewingCamera.depth = 2;
 		MinimapCamera.inst.ChangeTarget (camera.transform);
 	}*/
+	#endregion
+
+	#region Player Detection
+	public void IncreaseStealthGauge()
+	{
+		isDetected = true;
+		stealthGauge = Mathf.Min(stealthGauge + Time.deltaTime * increaseMultiplier, stealthThreshold);
+		if (stealthGauge >= stealthThreshold) ui.GameOver();
+		prevStealthGauge = stealthGauge;
+	}
+
+	public void DecreaseStealthGauge()
+	{
+		if (stealthGauge <= 0) return;
+		isDetected = false;
+		stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMultiplier, 0);
+		prevStealthGauge = stealthGauge;
+	}
 	#endregion
 
 	#region Head Bobbing

@@ -85,7 +85,7 @@ public class IHackable : MonoBehaviour
 		//Game Over for Stealth Gauge is implemented in Player Script
 		if (player.GetPlayerCollider().IsVisibleFrom(camera)) 
 		{
-			player.stealthGauge = Mathf.Min(player.stealthGauge + Time.deltaTime * player.increaseMultiplier, player.stealthThreshold);
+			player.IncreaseStealthGauge();
 			exclamationMark.SetActive (true);
 			exclamationMark.transform.LookAt (player.transform);
 		}

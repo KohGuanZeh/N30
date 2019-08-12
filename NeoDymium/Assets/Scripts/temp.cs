@@ -2,11 +2,11 @@
 
 public class temp : MonoBehaviour
 {
-	public GameObject yesB0ss;
+	//public GameObject yesB0ss;
 
 	void Start ()
 	{
-		yesB0ss.SetActive (false);
+		//yesB0ss.SetActive (false);
 	}
 
 	void Update ()
@@ -14,7 +14,7 @@ public class temp : MonoBehaviour
 		if (Input.GetKeyDown (key: KeyCode.F))
 			Cursor.lockState = CursorLockMode.None;
 
-		if (Input.GetKeyDown (key: KeyCode.T))
-			yesB0ss.SetActive (!yesB0ss.activeSelf);
+		/*if (Input.GetKeyDown (key: KeyCode.T))
+			yesB0ss.SetActive (!yesB0ss.activeSelf);*/
 	}
 }

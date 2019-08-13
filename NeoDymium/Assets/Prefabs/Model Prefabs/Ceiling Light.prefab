@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7435466893150946102}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!108 &1493833483808846546
 Light:
@@ -42,9 +42,9 @@ Light:
   serializedVersion: 9
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.8
-  m_Range: 17
-  m_SpotAngle: 174
+  m_Intensity: 1
+  m_Range: 20
+  m_SpotAngle: 179
   m_InnerSpotAngle: 1
   m_CookieSize: 10
   m_Shadows:
@@ -76,7 +76,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -84,7 +84,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
@@ -129,12 +129,12 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1714878680412537671}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 9
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.59
-  m_Range: 10.02
+  m_Intensity: 0.5
+  m_Range: 10
   m_SpotAngle: 179
   m_InnerSpotAngle: 1
   m_CookieSize: 10
@@ -167,12 +167,12 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
@@ -192,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7435466893150946102}
   m_Layer: 0
-  m_Name: CeilingLight
+  m_Name: Ceiling Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -209,8 +209,8 @@ Transform:
   m_LocalPosition: {x: -60.710007, y: -1.968, z: 18.311}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7320918171348461311}
   - {fileID: 2644680080001733272}
+  - {fileID: 7320918171348461311}
   - {fileID: 8401599858789955244}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -265,7 +265,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 03f0313d06795894e85c89bfc12f42e9,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 03f0313d06795894e85c89bfc12f42e9,
         type: 3}

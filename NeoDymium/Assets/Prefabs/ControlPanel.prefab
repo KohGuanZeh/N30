@@ -11,13 +11,12 @@ GameObject:
   - component: {fileID: 247448340}
   - component: {fileID: 247448339}
   - component: {fileID: 247448338}
-  - component: {fileID: 247448337}
   m_Layer: 0
   m_Name: Screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &247448340
 Transform:
@@ -78,20 +77,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &247448337
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 247448336}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &4352029008813678049
 GameObject:
   m_ObjectHideFlags: 0
@@ -105,12 +90,12 @@ GameObject:
   - component: {fileID: 4352029008813678052}
   - component: {fileID: 4352029008813678051}
   - component: {fileID: 4352029008813678050}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ControlPanel
-  m_TagString: ControlPanel
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &4352029008813678054
 Transform:
@@ -200,6 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 0
   allowPlayerInteraction: 0
+  allowAiInteraction: 1
   requireColor: 0
   affectedItems: []
   controlPanelMat: {fileID: 0}
@@ -215,12 +201,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4754781450251700756}
   - component: {fileID: 2412546376897502505}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: Minimap Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &4754781450251700756
 Transform:

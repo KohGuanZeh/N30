@@ -10,6 +10,12 @@ public class ServerPanel : IInteractable
 		serverPanelMat = transform.GetChild(0).GetComponent<Renderer>().material;
 	}
 
+	//If anything hackables try to interact, deny it. Only player can interact
+	public override void TryInteract(ColorIdentifier userColor)
+	{
+		return; 
+	}
+
 	public override void Interact ()
 	{
 		linkedDoor.locked = false;

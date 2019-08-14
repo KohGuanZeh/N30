@@ -305,13 +305,14 @@ public class PlayerController : MonoBehaviour
 
 	void Interact()
 	{
-		if (!detectedInteractable || (aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9)
+		if (!detectedInteractable) return;
+
+		if ((aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9)
 		{
 			ui.DisplayInstructionsAndErrors(false, "Error. Object is too far for Interaction");
 			return;
-		} 
-
-		ui.DisplayInstructionsAndErrors(false, "");
+		}
+		else ui.DisplayInstructionsAndErrors(false, "");
 
 		if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
 		else if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();

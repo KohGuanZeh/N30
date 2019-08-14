@@ -5,132 +5,108 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-	[Header("Camera")]
-	[SerializeField] int currentScreenIndex; //0 Denotes Play, 1 Denotes Options, 2 Denotes Credits
-	[SerializeField] int nextScreenIndex;
-	[SerializeField] Vector2 currScreenDefaultPos, nextScreenDefaultPos;
-	[SerializeField] Camera mainCam;
-	[SerializeField] bool isMoving;
-	[SerializeField] float cameraLerpTime;
-	[SerializeField] Transform startPos;
-	[SerializeField] Transform[] cameraPositions;
-	[SerializeField] RectTransform[] screens;
-	[SerializeField] GameObject startIcon;
-	[SerializeField] GameObject[] icons; //0 is Options, 1 is Credits, 2 is Play 
-
 	[Header("Menus")] //Using Rect Transform in case there needs to be animation in the Future
-	[SerializeField] RectTransform optionsScreen;
-	[SerializeField] RectTransform creditsScreen;
+	[SerializeField] RectTransform backgroundOverlay;
+	[SerializeField] float backgroundOverlayDefaultXSize;
+	[SerializeField] Image mainMenuOverlay;
+	[SerializeField] float overlayLerpTime;
+	[SerializeField] bool isOpened;
+	[SerializeField] bool isLerping;
+	[SerializeField] RectTransform settingsContent;
+	[SerializeField] RectTransform creditsContent;
 
-	[SerializeField] Action action;
+	[SerializeField] RectTransform buttonParent;
+	[SerializeField] Button[] mainMenuButtons;
+
+	[SerializeField] Action lerpFunctions;
 
 	void Start () 
 	{
-		mainCam = Camera.main;
+		backgroundOverlayDefaultXSize = backgroundOverlay.sizeDelta.x;
+		backgroundOverlay.sizeDelta = new Vector2(0, backgroundOverlay.sizeDelta.y);
 
-		currentScreenIndex = -1;
-		nextScreenIndex = 0;
+		mainMenuOverlay.color = Color.clear;
 
-		foreach (RectTransform screen in screens) screen.gameObject.SetActive(false);
-
-		foreach (GameObject icon in icons) icon.SetActive(false);
+		mainMenuButtons = buttonParent.GetComponentsInChildren<Button>();
 	}
 
 	private void Update()
 	{
-		if (Input.GetMouseButtonDown(0))
-		{
-			Ray mouseRay = mainCam.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-
-			if (Physics.Raycast(mouseRay, out hit, Mathf.Infinity))
-			{
-				if (hit.collider != null)
-				{
-					print("Yes");
-					if (hit.collider.tag == "Hackable") ChangeCamera(hit.transform);;
-				}
-			}
-		}
-
-		if (action != null) action();
+		if (lerpFunctions != null) lerpFunctions();
 	}
 
-	public void LerpToNextCamPosition()
+	void LerpBackgroundOverlay()
 	{
-		cameraLerpTime = Mathf.Min(cameraLerpTime + Time.deltaTime * 5,  1);
+		overlayLerpTime = isOpened ? Mathf.Min(overlayLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(overlayLerpTime - Time.deltaTime * 5, 0);
+		float x = Mathf.Lerp(0, backgroundOverlayDefaultXSize, overlayLerpTime);
+		backgroundOverlay.sizeDelta = new Vector2(x, backgroundOverlay.sizeDelta.y);
 
-		if (currentScreenIndex > -1)
+		mainMenuOverlay.color = Color.Lerp(Color.clear, new Color(0, 0, 0, 0.75f), overlayLerpTime);
+
+		float alpha = 1 - overlayLerpTime;
+		foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = new Color(mainMenuButton.targetGraphic.color.r, mainMenuButton.targetGraphic.color.g, mainMenuButton.targetGraphic.color.b, alpha);
+
+		if (overlayLerpTime >= 1 && isOpened)
 		{
-			mainCam.transform.position = Vector3.Lerp(cameraPositions[currentScreenIndex].position, cameraPositions[nextScreenIndex].position, cameraLerpTime);
-			mainCam.transform.eulerAngles = Vector3.Lerp(cameraPositions[currentScreenIndex].eulerAngles, cameraPositions[nextScreenIndex].eulerAngles, cameraLerpTime);
-			screens[nextScreenIndex].anchoredPosition = Vector2.Lerp(nextScreenDefaultPos, Vector2.zero, cameraLerpTime);
-			screens[currentScreenIndex].anchoredPosition = Vector2.Lerp(Vector2.zero, currScreenDefaultPos, cameraLerpTime);
+			backgroundOverlay.sizeDelta = new Vector2(backgroundOverlayDefaultXSize, backgroundOverlay.sizeDelta.y);
+			mainMenuOverlay.color = new Color(0, 0, 0, 0.75f);
+			foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = new Color(mainMenuButton.targetGraphic.color.r, mainMenuButton.targetGraphic.color.g, mainMenuButton.targetGraphic.color.b, 0);
+			isLerping = false;
+			lerpFunctions -= LerpBackgroundOverlay;
 		}
-		else
+		else if (overlayLerpTime <= 0 && !isOpened)
 		{
-			mainCam.transform.position = Vector3.Lerp(startPos.position, cameraPositions[nextScreenIndex].position, cameraLerpTime);
-			mainCam.transform.eulerAngles = Vector3.Lerp(startPos.eulerAngles, cameraPositions[nextScreenIndex].eulerAngles, cameraLerpTime);
-			screens[nextScreenIndex].anchoredPosition = Vector2.Lerp(nextScreenDefaultPos, Vector2.zero, cameraLerpTime);
-		}
-
-		if (cameraLerpTime >= 1)
-		{
-			mainCam.transform.position = cameraPositions[nextScreenIndex].position;
-			mainCam.transform.eulerAngles = cameraPositions[nextScreenIndex].eulerAngles;
-			screens[nextScreenIndex].anchoredPosition = Vector2.zero;
-
-			if (currentScreenIndex > -1)
-			{
-				screens[currentScreenIndex].anchoredPosition = currScreenDefaultPos;
-				screens[currentScreenIndex].gameObject.SetActive(false);
-				icons[currentScreenIndex].SetActive(false);
-			}
-			else startIcon.gameObject.SetActive(false);
-
-			currentScreenIndex = nextScreenIndex;
-			currScreenDefaultPos = nextScreenDefaultPos;
-
-			cameraLerpTime = 0;
-			isMoving = false;
-
-			action -= LerpToNextCamPosition;
+			backgroundOverlay.sizeDelta = new Vector2(0, backgroundOverlay.sizeDelta.y);
+			mainMenuOverlay.color = Color.clear;
+			foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = new Color(mainMenuButton.targetGraphic.color.r, mainMenuButton.targetGraphic.color.g, mainMenuButton.targetGraphic.color.b, 1);
+			OnScreenClose();
+			isLerping = false;
+			lerpFunctions -= LerpBackgroundOverlay;
 		}
 	}
 
-	void ChangeCamera(Transform nextCam)
+	void OnScreenClose()
 	{
-		if (isMoving) return;
-
-		nextScreenIndex = currentScreenIndex + 1;
-		if (nextScreenIndex == screens.Length) nextScreenIndex = 0;
-
-		screens[nextScreenIndex].gameObject.SetActive(true);
-		nextScreenDefaultPos = screens[nextScreenIndex].anchoredPosition;
-
-		icons[nextScreenIndex].SetActive(true);
-
-		action += LerpToNextCamPosition;
+		settingsContent.gameObject.SetActive(false);
+		creditsContent.gameObject.SetActive(false);
 	}
 
     public void Play() 
 	{
+		if (isLerping) return;
+
 		SceneManager.LoadScene ("Office");
 	}
 
 	//May not be needed
-	public void Options()
+	public void Settings()
 	{
-		optionsScreen.gameObject.SetActive(!optionsScreen.gameObject.activeSelf);
+		if (isLerping) return;
+
+		isOpened = !isOpened;
+
+		if (isOpened) settingsContent.gameObject.SetActive(true);
+		isLerping = true;
+
+		lerpFunctions += LerpBackgroundOverlay;
 	}
 
 	public void Credits() 
 	{
-		creditsScreen.gameObject.SetActive (!creditsScreen.gameObject.activeSelf);
+		if (isLerping) return;
+
+		isOpened = !isOpened;
+
+		if (isOpened) creditsContent.gameObject.SetActive (true);
+		isLerping = true;
+
+		lerpFunctions += LerpBackgroundOverlay;
 	}
 
 	public void Quit() 
 	{
+		if (isLerping) return;
+
 		Application.Quit ();
 	}
 }

@@ -402,7 +402,7 @@ public class PlayerController : MonoBehaviour
 		if (!detectedHackable || hackedObj == detectedHackable) return;
 		if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;
 
-		anim.SetBool("Hacking", true);
+		anim.SetFloat("Speed", 0);
 
 		isHacking = true;
 		inHackable = true;
@@ -433,8 +433,6 @@ public class PlayerController : MonoBehaviour
 	public void Unhack(bool forced = false) //Check if it is Forced Unhacking
 	{
 		if (!inHackable) return;
-
-		anim.SetBool("Hacking", false);
 
 		isHacking = true;
 		inHackable = false;

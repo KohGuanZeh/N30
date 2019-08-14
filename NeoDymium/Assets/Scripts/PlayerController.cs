@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
     {
 		//Lock Cursor in Middle of Screen
 		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = true;
+		Cursor.visible = false;
 		yaw = transform.eulerAngles.y;
 
 		//Getting Components

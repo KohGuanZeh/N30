@@ -25,6 +25,9 @@ public class MainMenu : MonoBehaviour
 
 	void Start () 
 	{
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
+
 		backgroundOverlayDefaultXSize = backgroundOverlay.sizeDelta.x;
 		backgroundOverlay.sizeDelta = new Vector2(0, backgroundOverlay.sizeDelta.y);
 

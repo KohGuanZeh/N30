@@ -1135,7 +1135,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4218046369211427024, guid: 613539723caecd84da05991c894a0991, type: 3}
+  - {fileID: 2100000, guid: c95dbf2c653772b42867e86d849d4924, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5795,7 +5795,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 147044825}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.47, z: 0.06}
+  m_LocalPosition: {x: 0, y: 1.47, z: 0.047}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1040662699}
@@ -11004,6 +11004,16 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0.9960785
       objectReference: {fileID: 0}
+    - target: {fileID: 2805370165156913031, guid: 72558fc8b5247634daca252f1395f97a,
+        type: 3}
+      propertyPath: m_SkinWidth
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805370164314455864, guid: 72558fc8b5247634daca252f1395f97a,
+        type: 3}
+      propertyPath: near clip plane
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72558fc8b5247634daca252f1395f97a, type: 3}
 --- !u!4 &349943812 stripped
@@ -11659,6 +11669,11 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 8217485995689943876, guid: a2ed8d0b9d8ba1946abd3815ba29f53b,
+        type: 3}
+      propertyPath: volumeTrigger
+      value: 
+      objectReference: {fileID: 693810842}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
@@ -13827,7 +13842,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4218046369211427024, guid: 613539723caecd84da05991c894a0991, type: 3}
+  - {fileID: 2100000, guid: c95dbf2c653772b42867e86d849d4924, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -33339,7 +33354,7 @@ CharacterController:
   m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.1
+  m_SkinWidth: 0.02
   m_MinMoveDistance: 0.001
   m_Center: {x: -0.05, y: 0.82, z: 0}
 --- !u!136 &1040662702
@@ -38892,6 +38907,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ReceiveShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805370165156913031, guid: 72558fc8b5247634daca252f1395f97a,
+        type: 3}
+      propertyPath: m_SkinWidth
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805370164314455864, guid: 72558fc8b5247634daca252f1395f97a,
+        type: 3}
+      propertyPath: near clip plane
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72558fc8b5247634daca252f1395f97a, type: 3}
@@ -44901,6 +44926,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256528711945069440, guid: f8521e8bae9ea954d86cfd39ea5a65fc,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 247448337, guid: f8521e8bae9ea954d86cfd39ea5a65fc, type: 3}
       propertyPath: m_Enabled
@@ -56999,6 +57029,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ReceiveShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805370165156913031, guid: 72558fc8b5247634daca252f1395f97a,
+        type: 3}
+      propertyPath: m_SkinWidth
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805370164314455864, guid: 72558fc8b5247634daca252f1395f97a,
+        type: 3}
+      propertyPath: near clip plane
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72558fc8b5247634daca252f1395f97a, type: 3}

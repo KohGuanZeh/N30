@@ -132,6 +132,7 @@ public class PlayerController : MonoBehaviour
 
 			//if (Input.GetKeyDown(KeyCode.P)) ResetHeadBob();
 			Aim();
+			UpdateDisplayMessages();
 			if (Input.GetKeyDown(KeyCode.E)) Interact();
 			if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
 			if (Input.GetMouseButtonDown(1)) Unhack();
@@ -259,13 +260,24 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out aimRayHit, Mathf.Infinity, aimingRaycastLayers, QueryTriggerInteraction.Ignore))
 		{
-			if (aimRayHit.collider == null) return;
+			//Segment may not even be needed
+			if (aimRayHit.collider == null)
+			{
+				detectedHackable = null;
+				detectedInteractable = null;
+				isFocusing = false;
+				prevCollider = null;
+				ui.Focus(isFocusing);
+				return;
+			}
+
 			if (prevCollider == aimRayHit.collider) return;
 			else prevCollider = aimRayHit.collider;
 
 			//The | is needed if the Layermask Stores multiple layers
 			if (hackableInteractableLayer == (hackableInteractableLayer | 1 << aimRayHit.transform.gameObject.layer))
 			{
+				print(aimRayHit.collider.name);
 				isFocusing = true;
 				string msg = "";
 
@@ -275,17 +287,18 @@ public class PlayerController : MonoBehaviour
 						detectedHackable = aimRayHit.collider.GetComponent<IHackable>();
 						detectedInteractable = null;
 
-						
+
 						if (detectedHackable.isDisabled) msg = "Error. System is Disabled";
 						else if (detectedHackable.enabledShields.Count > 0) msg = "Error. System Protection Level Too High";
 
 						ui.DisplayInstructionsAndErrors(true, msg);
 						break;
+
 					case ("Interactable"):
 						detectedInteractable = aimRayHit.collider.GetComponent<IInteractable>();
 						detectedHackable = null;
 
-						if ((aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) msg = "Error. Object is too far for Interaction";
+						if (!WithinInteractDistance()) msg = "Error. Object is too far for Interaction";
 						ui.DisplayInstructionsAndErrors(false, msg);
 
 						break;
@@ -301,18 +314,44 @@ public class PlayerController : MonoBehaviour
 			//If Interactable or Hackable is being Focused on, Crosshair should focus
 			ui.Focus(isFocusing);
 		}
+		else
+		{
+			detectedHackable = null;
+			detectedInteractable = null;
+			isFocusing = false;
+			prevCollider = null;
+			ui.Focus(isFocusing);
+			return;
+		}
+	}
+
+
+	void UpdateDisplayMessages()
+	{
+		if (detectedInteractable)
+		{
+			if (WithinInteractDistance()) ui.DisplayInstructionsAndErrors(false);
+			else ui.DisplayInstructionsAndErrors(false, "Error. Object is too far for Interaction");
+		}
+		else if (detectedHackable)
+		{
+			if (detectedHackable.isDisabled) ui.DisplayInstructionsAndErrors(true, "Error. System is Disabled");
+			else if (detectedHackable.enabledShields.Count > 0) ui.DisplayInstructionsAndErrors(true, "Error. System Protection Level Too High");
+			else ui.DisplayInstructionsAndErrors(true);
+		}
+		else return;
+	}
+
+	bool WithinInteractDistance()
+	{
+		//Does not Check if Interactable is Null
+		if ((aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) return false;
+		else return true;
 	}
 
 	void Interact()
 	{
-		if (!detectedInteractable) return;
-
-		if ((aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9)
-		{
-			ui.DisplayInstructionsAndErrors(false, "Error. Object is too far for Interaction");
-			return;
-		}
-		else ui.DisplayInstructionsAndErrors(false, "");
+		if (!detectedInteractable || !WithinInteractDistance()) return;
 
 		if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
 		else if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();

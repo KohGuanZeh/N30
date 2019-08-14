@@ -5,8 +5,9 @@ public class ServerPanel : IInteractable
 	public ExitDoor linkedDoor;
 	public Material serverPanelMat;
 
-	public void Start()
+	protected override void Start()
 	{
+		base.Start();
 		serverPanelMat = transform.GetChild(0).GetComponent<Renderer>().material;
 	}
 

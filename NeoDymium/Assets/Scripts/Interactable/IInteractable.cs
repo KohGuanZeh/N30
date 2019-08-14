@@ -7,6 +7,11 @@ public class IInteractable : MonoBehaviour
 	public bool allowPlayerInteraction = false;
 	[SerializeField] bool requireColor;
 
+	protected virtual void Start()
+	{
+
+	}
+
 	//For Componenets that Require Color for Interaction
 	public virtual void TryInteract (ColorIdentifier userColor)
 	{

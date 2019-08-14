@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] float prevStealthGauge; //Keeps track of Previous Frame Stealth Gauge Value. If there is no change, it means that Player is no longer Detected
 	public float increaseMultiplier;
 	public float decreaseMultiplier;
+	public Outline detectedOutline; //Player Outline
 
 	[Header("Advanced Camera Movement")]
 	public bool headBob = true;
@@ -111,6 +112,9 @@ public class PlayerController : MonoBehaviour
 		//Set Ground Check. May need to change the y
 		//distFromGround = (controller.height/2) + groundOffset; //playerCollider.bounds.extents.y + 0.2f; This is via collider
 
+		detectedOutline = GetComponentInChildren<Outline>();
+		detectedOutline.enabled = false;
+
 		yaw = transform.eulerAngles.y;
 		headRefPoint = standCamPos;
 		action += LerpHeadBob;
@@ -138,6 +142,7 @@ public class PlayerController : MonoBehaviour
 			if (Input.GetMouseButtonDown(1)) Unhack();
 
 			if (prevStealthGauge == stealthGauge) DecreaseStealthGauge();
+			else prevStealthGauge = stealthGauge;
 			
 			if (action != null) action();
 		}
@@ -277,7 +282,6 @@ public class PlayerController : MonoBehaviour
 			//The | is needed if the Layermask Stores multiple layers
 			if (hackableInteractableLayer == (hackableInteractableLayer | 1 << aimRayHit.transform.gameObject.layer))
 			{
-				print(aimRayHit.collider.name);
 				isFocusing = true;
 				string msg = "";
 
@@ -286,7 +290,6 @@ public class PlayerController : MonoBehaviour
 					case ("Hackable"):
 						detectedHackable = aimRayHit.collider.GetComponent<IHackable>();
 						detectedInteractable = null;
-
 
 						if (detectedHackable.isDisabled) msg = "Error. System is Disabled";
 						else if (detectedHackable.enabledShields.Count > 0) msg = "Error. System Protection Level Too High";
@@ -573,14 +576,15 @@ public class PlayerController : MonoBehaviour
 	public void IncreaseStealthGauge()
 	{
 		isDetected = true;
+		detectedOutline.enabled = true;
 		stealthGauge = Mathf.Min(stealthGauge + Time.deltaTime * increaseMultiplier, stealthThreshold);
 		if (stealthGauge >= stealthThreshold) ui.GameOver();
-		prevStealthGauge = stealthGauge;
 	}
 
 	public void DecreaseStealthGauge()
 	{
 		if (stealthGauge <= 0) return;
+		detectedOutline.enabled = false;
 		isDetected = false;
 		stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMultiplier, 0);
 		prevStealthGauge = stealthGauge;

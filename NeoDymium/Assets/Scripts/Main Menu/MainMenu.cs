@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+using TMPro;
+
 public class MainMenu : MonoBehaviour
 {
 	[Header("Menus")] //Using Rect Transform in case there needs to be animation in the Future
@@ -15,6 +17,7 @@ public class MainMenu : MonoBehaviour
 	[SerializeField] RectTransform settingsContent;
 	[SerializeField] RectTransform creditsContent;
 
+	[SerializeField] TextMeshProUGUI gameTitle;
 	[SerializeField] RectTransform buttonParent;
 	[SerializeField] Button[] mainMenuButtons;
 
@@ -45,6 +48,7 @@ public class MainMenu : MonoBehaviour
 
 		float alpha = 1 - overlayLerpTime;
 		foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = new Color(mainMenuButton.targetGraphic.color.r, mainMenuButton.targetGraphic.color.g, mainMenuButton.targetGraphic.color.b, alpha);
+		gameTitle.color = new Color(gameTitle.color.r, gameTitle.color.g, gameTitle.color.b, alpha);
 
 		if (overlayLerpTime >= 1 && isOpened)
 		{

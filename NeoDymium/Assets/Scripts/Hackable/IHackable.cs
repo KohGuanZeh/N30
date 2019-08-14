@@ -86,13 +86,11 @@ public class IHackable : MonoBehaviour
 		if (player.GetPlayerCollider().IsVisibleFrom(camera)) 
 		{
 			player.IncreaseStealthGauge();
+			print("Seen by " + gameObject.name);
 			exclamationMark.SetActive (true);
 			exclamationMark.transform.LookAt (player.transform);
 		}
-		else
-		{
-			exclamationMark.SetActive (false);
-		}
+		else exclamationMark.SetActive (false);
 	}
 
 	public virtual Transform GetCameraRefPoint() //Meant for Head Bobbing

@@ -34,7 +34,8 @@ public class IHackable : MonoBehaviour
 	public List<Shield> enabledShields;
 	public List<Shield> disabledShields;
 
-	[Header ("Player Detection")]
+	[Header("Player Detection")]
+	[SerializeField] RectTransform pointer;
 	public GameObject exclamationMark;
 	
 	[Header ("Minimap Related")]
@@ -83,14 +84,37 @@ public class IHackable : MonoBehaviour
 		//May want a Threshold to activate this so this function does not keep calling
 		//Scared that this(IsVisibleFrom()) will lag the game
 		//Game Over for Stealth Gauge is implemented in Player Script
-		if (player.GetPlayerCollider().IsVisibleFrom(camera)) 
+		if (player.GetPlayerCollider().IsVisibleFrom(camera))
 		{
+			if (!pointer)
+			{
+				for (int i = 0; i < ui.detectedPointers.Count; i++)
+				{
+					if (ui.detectedPointers[i].gameObject.activeSelf) continue;
+					else
+					{
+						pointer = ui.detectedPointers[i];
+						pointer.gameObject.SetActive(true);
+						break;
+					}
+				}
+			}
+			else ui.LocateHackable(this, pointer);
+
 			player.IncreaseStealthGauge();
-			print("Seen by " + gameObject.name);
-			exclamationMark.SetActive (true);
-			exclamationMark.transform.LookAt (player.transform);
+			//print("Seen by " + gameObject.name);
+			exclamationMark.SetActive(true);
+			exclamationMark.transform.LookAt(player.transform);
 		}
-		else exclamationMark.SetActive (false);
+		else
+		{
+			exclamationMark.SetActive(false);
+			if (pointer)
+			{
+				pointer.gameObject.SetActive(false);
+				pointer = null;
+			}
+		}
 	}
 
 	public virtual Transform GetCameraRefPoint() //Meant for Head Bobbing

@@ -40,7 +40,7 @@ public static class Extensions
 		{
 			if (hit.collider.GetComponentInChildren<Renderer>() == collider)
 			{
-				Debug.Log("Hit by Center");
+				//Debug.Log("Hit by Center");
 				return true;
 			}
 		}
@@ -48,7 +48,7 @@ public static class Extensions
 		{
 			if (hit.collider == collider)
 			{
-				Debug.Log("Hit by Top");
+				//Debug.Log("Hit by Top");
 				return true;
 			}
 		}
@@ -56,7 +56,7 @@ public static class Extensions
 		{
 			if (hit.collider == collider)
 			{
-				Debug.Log("Hit by Bottom");
+				//Debug.Log("Hit by Bottom");
 				return true;
 			}
 		}
@@ -64,7 +64,7 @@ public static class Extensions
 		{
 			if (hit.collider == collider)
 			{
-				Debug.Log("Hit by Right");
+				//Debug.Log("Hit by Right");
 				return true;
 			}
 		}
@@ -72,7 +72,7 @@ public static class Extensions
 		{
 			if (hit.collider == collider)
 			{
-				Debug.Log("Hit by Left");
+				//Debug.Log("Hit by Left");
 				return true;
 			}
 		}

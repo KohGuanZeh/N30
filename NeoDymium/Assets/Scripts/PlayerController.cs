@@ -31,9 +31,10 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] float playerStandHeight, playerCrouchHeight;
 	float crouchStandLerpTime;
 
-	[Header("For Hacking and INteractions")]
+	[Header("For Hacking and Interactions")]
 	//[SerializeField] RenderTexture renderTexture; //May be used if current feedback fails
 	[SerializeField] Camera currentViewingCamera;
+	public Camera CurrentViewingCamera { get { return currentViewingCamera; } } //Public Property to Get Current Camera
 	[SerializeField] Camera prevViewingCamera;
 	[SerializeField] float hackingLerpTime;
 	[SerializeField] bool isHacking = false; //Returns true if Player is undergoing Hacking Animation
@@ -53,10 +54,13 @@ public class PlayerController : MonoBehaviour
 	public bool isDetected;
 	public float stealthGauge;
 	public float stealthThreshold;
-	[SerializeField] float prevStealthGauge; //Keeps track of Previous Frame Stealth Gauge Value. If there is no change, it means that Player is no longer Detected
-	public float increaseMultiplier;
-	public float decreaseMultiplier;
+	public float prevStealthGauge; //Keeps track of Previous Frame Stealth Gauge Value. If there is no change, it means that Player is no longer Detected
+	public float increaseMult;
+	public float decreaseMult;
 	public Outline detectedOutline; //Player Outline
+
+	[Header ("For Sound Detection")]
+	public float soundRadius; //Radius to be called for overlap sphere
 
 	[Header("Advanced Camera Movement")]
 	public bool headBob = true;
@@ -92,6 +96,11 @@ public class PlayerController : MonoBehaviour
 	void Awake ()
 	{
 		inst = this;
+
+		//For Complex Stealth Detection
+		increaseMult = 1;
+		decreaseMult = 1;
+		soundRadius = 10;
 	}
 
     void Start()
@@ -143,7 +152,10 @@ public class PlayerController : MonoBehaviour
 
 			if (prevStealthGauge == stealthGauge) DecreaseStealthGauge();
 			else prevStealthGauge = stealthGauge;
-			
+
+			if (Input.GetKeyDown(KeyCode.Y)) SavePlayer();
+			if (Input.GetKeyDown(KeyCode.U)) LoadPlayer();
+
 			if (action != null) action();
 		}
 	}
@@ -515,6 +527,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	#region Old Hacking
 	/*void Hack()
 	{
 		if (!detectedHackable || hackedObj == detectedHackable) return;
@@ -526,7 +539,6 @@ public class PlayerController : MonoBehaviour
 		detectedHackable = null;
 		hackedObj.OnHack();*/
 
-	#region Old Hacking
 	/*RaycastHit hit;
 	Debug.DrawLine(currentViewingCamera.transform.position, currentViewingCamera.transform.position + currentViewingCamera.transform.forward * 100, Color.green, 5);
 	if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity, hackingRaycastLayers, QueryTriggerInteraction.Ignore))
@@ -549,7 +561,6 @@ public class PlayerController : MonoBehaviour
 		}
 	}*/
 	#endregion
-	//}
 
 	/*public void Unhack()
 	{
@@ -571,11 +582,24 @@ public class PlayerController : MonoBehaviour
 	#endregion
 
 	#region Player Detection
+	public void SoundDetection()
+	{
+		//Sound Radius to be set in Player Movement Function
+		Collider[] detectedColliders = Physics.OverlapSphere(transform.position, soundRadius, hackableInteractableLayer);
+		if (detectedColliders.Length > 0)
+		{
+			//Similar to Increase Stealth Gauge
+			isDetected = true;
+			stealthGauge = Mathf.Min(stealthGauge + Time.deltaTime * increaseMult * detectedColliders.Length, stealthThreshold);
+			if (stealthGauge >= stealthThreshold) ui.GameOver();
+		} 
+	}
+
 	public void IncreaseStealthGauge()
 	{
 		isDetected = true;
 		detectedOutline.enabled = true;
-		stealthGauge = Mathf.Min(stealthGauge + Time.deltaTime * increaseMultiplier, stealthThreshold);
+		stealthGauge = Mathf.Min(stealthGauge + Time.deltaTime * increaseMult, stealthThreshold);
 		if (stealthGauge >= stealthThreshold) ui.GameOver();
 	}
 
@@ -584,7 +608,7 @@ public class PlayerController : MonoBehaviour
 		if (stealthGauge <= 0) return;
 		detectedOutline.enabled = false;
 		isDetected = false;
-		stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMultiplier, 0);
+		stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMult, 0);
 		prevStealthGauge = stealthGauge;
 	}
 	#endregion
@@ -620,6 +644,34 @@ public class PlayerController : MonoBehaviour
 	{
 		bobSpeed = speed;
 		maxHeadBobOffset = maxOffset;
+	}
+	#endregion
+
+	#region Save Load Functions
+	void SavePlayer()
+	{
+		//Need to save Yaw as well
+		PlayerData data = new PlayerData(this);
+		SaveSystem.Save<PlayerData>(data, "Player");
+
+		print("Saved");
+	}
+
+	void LoadPlayer()
+	{
+		PlayerData data = SaveSystem.Load<PlayerData>("Player");
+		transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
+		transform.eulerAngles = new Vector3(data.rotation[0], data.rotation[1], data.rotation[2]);
+
+		isHacking = data.inHackable;
+		isCrouching = data.isCrouching;
+
+		stealthGauge = data.stealthGauge;
+		prevStealthGauge = data.prevStealthGauge;
+		increaseMult = data.increaseMult;
+		decreaseMult = data.decreaseMult;
+
+		print("Loaded");
 	}
 	#endregion
 }

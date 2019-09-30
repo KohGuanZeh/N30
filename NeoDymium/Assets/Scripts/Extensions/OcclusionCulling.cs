@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class OcclusionCulling : MonoBehaviour
 {
-	private void OnBecameInvisible()
+	//Only Attach it to Renderers
+	Renderer r;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+		r = GetComponent<Renderer>();
+    }
+
+	void OnBecameInvisible()
 	{
-		gameObject.SetActive(false);	
+		if (r) r.enabled = false; 
 	}
 
-	private void OnBecameVisible()
+	void OnBecameVisible()
 	{
-		gameObject.SetActive(true);
+		if (r) r.enabled = true;
 	}
 }

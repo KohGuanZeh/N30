@@ -18,6 +18,10 @@ public class UIManager : MonoBehaviour
 	[SerializeField] RectTransform optionsScreen;
 	[SerializeField] RectTransform gameOverScreen;
 
+	[Header("UI Templates")]
+	public GameObject playerUI;
+	public GameObject cctvUI;
+
 	[Header("Crosshair")]
 	[SerializeField] bool isFocusing; //Check if a Hackable or Interactable Object has been focused on
 	[SerializeField] Image[] rings; //For Rotation of Rings. 0 is Inner, 1 is Middle, 2 is Outer
@@ -97,6 +101,7 @@ public class UIManager : MonoBehaviour
 
 	void Update () 
 	{
+		PointToObjective();
 		stealthGauge.fillAmount = (player.stealthGauge / player.stealthThreshold);
 
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver) PausePlay();

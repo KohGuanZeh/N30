@@ -413,6 +413,12 @@ public class PlayerController : MonoBehaviour
 		if (!detectedHackable || hackedObj == detectedHackable) return;
 		if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;
 
+		if (!ui.cctvUI.activeSelf)
+		{
+			ui.cctvUI.SetActive(true);
+			ui.playerUI.SetActive(false);
+		}
+
 		anim.SetFloat("Speed", 0);
 
 		isHacking = true;
@@ -444,6 +450,12 @@ public class PlayerController : MonoBehaviour
 	public void Unhack(bool forced = false) //Check if it is Forced Unhacking
 	{
 		if (!inHackable) return;
+
+		if (!ui.playerUI.activeSelf)
+		{
+			ui.playerUI.SetActive(true);
+			ui.cctvUI.SetActive(false);
+		}
 
 		isHacking = true;
 		inHackable = false;

@@ -59,8 +59,10 @@ public class PlayerController : MonoBehaviour
 	public float decreaseMult;
 	public Outline detectedOutline; //Player Outline
 
-	[Header ("For Sound Detection")]
-	public float soundRadius; //Radius to be called for overlap sphere
+	[Header("Checkpoint System")]
+	public int checkPointsPassed;
+	Checkpoint startPoint;
+	Checkpoint[] checkPoints;
 
 	[Header("Advanced Camera Movement")]
 	public bool headBob = true;
@@ -100,7 +102,6 @@ public class PlayerController : MonoBehaviour
 		//For Complex Stealth Detection
 		increaseMult = 1;
 		decreaseMult = 1;
-		soundRadius = 10;
 	}
 
     void Start()
@@ -108,7 +109,6 @@ public class PlayerController : MonoBehaviour
 		//Lock Cursor in Middle of Screen
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
-		yaw = transform.eulerAngles.y;
 
 		//Getting Components
 		ui = UIManager.inst;
@@ -118,13 +118,12 @@ public class PlayerController : MonoBehaviour
 		SetDetectionCollider();
 		currentViewingCamera = playerCam;
 		anim = GetComponentInChildren<Animator>();
-		//Set Ground Check. May need to change the y
-		//distFromGround = (controller.height/2) + groundOffset; //playerCollider.bounds.extents.y + 0.2f; This is via collider
 
 		detectedOutline = GetComponentInChildren<Outline>();
 		detectedOutline.enabled = false;
 
 		yaw = transform.eulerAngles.y;
+		pitch = playerCam.transform.eulerAngles.x;
 		headRefPoint = standCamPos;
 		action += LerpHeadBob;
 	}
@@ -152,9 +151,6 @@ public class PlayerController : MonoBehaviour
 
 			if (prevStealthGauge == stealthGauge) DecreaseStealthGauge();
 			else prevStealthGauge = stealthGauge;
-
-			if (Input.GetKeyDown(KeyCode.Y)) SavePlayer();
-			if (Input.GetKeyDown(KeyCode.U)) LoadPlayer();
 
 			if (action != null) action();
 		}
@@ -582,19 +578,6 @@ public class PlayerController : MonoBehaviour
 	#endregion
 
 	#region Player Detection
-	public void SoundDetection()
-	{
-		//Sound Radius to be set in Player Movement Function
-		Collider[] detectedColliders = Physics.OverlapSphere(transform.position, soundRadius, hackableInteractableLayer);
-		if (detectedColliders.Length > 0)
-		{
-			//Similar to Increase Stealth Gauge
-			isDetected = true;
-			stealthGauge = Mathf.Min(stealthGauge + Time.deltaTime * increaseMult * detectedColliders.Length, stealthThreshold);
-			if (stealthGauge >= stealthThreshold) ui.GameOver();
-		} 
-	}
-
 	public void IncreaseStealthGauge()
 	{
 		isDetected = true;
@@ -610,6 +593,28 @@ public class PlayerController : MonoBehaviour
 		isDetected = false;
 		stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMult, 0);
 		prevStealthGauge = stealthGauge;
+	}
+	#endregion
+
+	#region Player Respawn
+	void Death()
+	{
+		//Death Animation Etc.
+	}
+
+	void Respawn()
+	{
+		Unhack(); //May move the Unhack to Player Death Function instead
+
+		if (checkPointsPassed > 0)
+		{
+			for (int i = 0; i < checkPointsPassed; i++)
+			{
+				if (i == (checkPointsPassed - 1)) checkPoints[i].LoadCheckPoint();
+				else checkPoints[i].LoadCheckPoint(false);
+			}
+		}
+		else startPoint.LoadCheckPoint();
 	}
 	#endregion
 
@@ -644,34 +649,6 @@ public class PlayerController : MonoBehaviour
 	{
 		bobSpeed = speed;
 		maxHeadBobOffset = maxOffset;
-	}
-	#endregion
-
-	#region Save Load Functions
-	void SavePlayer()
-	{
-		//Need to save Yaw as well
-		PlayerData data = new PlayerData(this);
-		SaveSystem.Save<PlayerData>(data, "Player");
-
-		print("Saved");
-	}
-
-	void LoadPlayer()
-	{
-		PlayerData data = SaveSystem.Load<PlayerData>("Player");
-		transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
-		transform.eulerAngles = new Vector3(data.rotation[0], data.rotation[1], data.rotation[2]);
-
-		isHacking = data.inHackable;
-		isCrouching = data.isCrouching;
-
-		stealthGauge = data.stealthGauge;
-		prevStealthGauge = data.prevStealthGauge;
-		increaseMult = data.increaseMult;
-		decreaseMult = data.decreaseMult;
-
-		print("Loaded");
 	}
 	#endregion
 }

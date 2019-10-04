@@ -25,6 +25,12 @@ public class UIManager : MonoBehaviour
 	[SerializeField] float crosshairLerpTime;
 	[SerializeField] bool crosshairIsLerping; //Check if the Focus Animation is Ongoing
 
+	[Header("Objective Marker")]
+	[SerializeField] Image marker;
+	[SerializeField] Transform objective;
+	[SerializeField] float offset; //Offset for Min Max XY
+	[SerializeField] Vector2 minXY, maxXY;
+
 	[Header("Stealth Gauge")]
 	public RectTransform mainPointer; //Pointer to Instantiate
 	public List<RectTransform> detectedPointers; //To Point to where Player is detected from. Only problem that has not been fixed is instantiating when not enough pointers... (Can be Coded in Optimisation)
@@ -60,6 +66,10 @@ public class UIManager : MonoBehaviour
 
 			detectedPointers[i].gameObject.SetActive(false);
 		}
+
+		//Set Min Max XY for Waypoint Pos
+		minXY = new Vector2(marker.GetPixelAdjustedRect().width / 2 + offset, marker.GetPixelAdjustedRect().height / 2 + offset);
+		maxXY = new Vector2(Screen.width - minXY.x, Screen.height - minXY.y);
 	}
 
 	private void Start()
@@ -138,7 +148,67 @@ public class UIManager : MonoBehaviour
 		errorMsg.text = errorTxt;
 	}
 
-	//GUI Animations
+	public void LocateHackable(IHackable hackable, RectTransform pointer)
+	{
+		//Rotation is Correct
+		Vector3 toPosition = hackable.transform.position;
+		Vector3 fromPosition = player.transform.position;
+
+		Vector3 horDir = (new Vector3(toPosition.x, 0, toPosition.z) - new Vector3(fromPosition.x, 0, fromPosition.z)).normalized;
+		Vector3 forward = player.GetPlayerCamera().transform.forward;
+
+		float horAngle = Vector3.SignedAngle(new Vector3(forward.x, 0, forward.z).normalized, horDir, Vector3.up); //Not Sure why this Works
+		pointer.eulerAngles = new Vector3(0, 0, -horAngle); //Set Rotation of Player Pointer to Point at Player
+	}
+
+	#region Objective Marker Functions
+	void PointToObjective()
+	{
+		if (!objective) return;
+
+		Vector3 objPos = objective.position;
+		Vector2 objScreenPos = player.CurrentViewingCamera.WorldToScreenPoint(objPos);
+
+		//Check if Objective is in front or behind of Player (any body that the Player is in)
+		Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
+		//If Objective is behind of where Player (any body that the Player is in) is at
+		if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToObj) < 0)
+		{
+			//If Object is on the Right side of the Player, Clamp it to the LEFT (Since Player is facing behind) and vice versa
+			if (objScreenPos.x > Screen.width / 2) objScreenPos.x = minXY.x;
+			else objScreenPos.x = maxXY.x;
+		}
+
+		//Clamp to prevent Marker from going Offscreen
+		objScreenPos.x = Mathf.Clamp(objScreenPos.x, minXY.x, maxXY.x);
+		objScreenPos.y = Mathf.Clamp(objScreenPos.y, minXY.y, maxXY.y);
+
+		marker.transform.position = objScreenPos;
+	}
+
+	void ShowMarker()
+	{
+		marker.gameObject.SetActive(true);
+	}
+
+	void HideMarker()
+	{
+		marker.gameObject.SetActive(false);
+	}
+
+	void ClearObjective()
+	{
+		objective = null;
+	}
+
+	void SetNewObjective(Transform newObjective)
+	{
+		objective = newObjective;
+		ShowMarker();
+	}
+	#endregion
+
+	#region GUI Animations
 	void RotateRings()
 	{
 		rings[1].rectTransform.Rotate(0, 0, ringRotSpeeds[1] * Time.deltaTime);
@@ -227,21 +297,9 @@ public class UIManager : MonoBehaviour
 			errorMsg.color = infoColor;
 		}
 	}
+	#endregion 
 
-	public void LocateHackable(IHackable hackable, RectTransform pointer)
-	{
-		//Rotation is Correct
-		Vector3 toPosition = hackable.transform.position;
-		Vector3 fromPosition = player.transform.position;
-
-		Vector3 horDir = (new Vector3(toPosition.x, 0, toPosition.z) - new Vector3(fromPosition.x, 0, fromPosition.z)).normalized;
-		Vector3 forward = player.GetPlayerCamera().transform.forward;
-
-		float horAngle = Vector3.SignedAngle(new Vector3(forward.x, 0, forward.z).normalized, horDir, Vector3.up); //Not Sure why this Works
-		pointer.eulerAngles = new Vector3(0, 0, -horAngle); //Set Rotation of Player Pointer to Point at Player
-	}
-
-	//Animation Events
+	#region Animation Events
 	public void ShowStaticScreen()
 	{
 		guiAnim.SetTrigger("Static");
@@ -251,8 +309,9 @@ public class UIManager : MonoBehaviour
 	{
 		player.ForcedUnhackAnimEvent();
 	}
+	#endregion
 
-	//Button Functions
+	#region Button Functions
 	public void PausePlay () 
 	{
 		isPaused = !isPaused;
@@ -280,4 +339,5 @@ public class UIManager : MonoBehaviour
 		Time.timeScale = 1;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
 	}
+	#endregion
 }

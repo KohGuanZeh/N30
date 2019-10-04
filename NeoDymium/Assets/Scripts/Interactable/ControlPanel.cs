@@ -19,19 +19,24 @@ public class ControlPanel : IInteractable
 
 	public override void Interact ()
 	{
-		if (!activated)
-		{
-			activated = true;
-			controlPanelMat.DisableKeyword("_EMISSION");
-			controlPanelMat.color = Color.grey;
-			foreach (IHackable item in affectedItems)
-				item.EnableDisable (false, color);
-		}
+		if (!activated) Disable();
 	}
 
-	public void OnRestore() //If we adding Circuit Enablers
+	public void Disable()
 	{
+		activated = true;
+		controlPanelMat.DisableKeyword("_EMISSION");
+		controlPanelMat.color = Color.grey;
+		foreach (IHackable item in affectedItems)
+			item.EnableDisable(false, color);
+	}
+
+	public void Restore() //If we adding Circuit Enablers
+	{
+		activated = false;
 		controlPanelMat.EnableKeyword("_EMISSION");
 		controlPanelMat.color = defaultColor;
+		foreach (IHackable item in affectedItems)
+			item.EnableDisable(true, color);
 	}
 }

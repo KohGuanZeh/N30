@@ -93,7 +93,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 20279
+    m_Bits: 53047
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -260,6 +260,10 @@ MonoBehaviour:
   registered: 0
   alarmed: 0
   sentBack: 0
+  isInvincible: 0
+  minStealthPercent: 0.2
+  chaseCheckpoint: {fileID: 8848630351537148312, guid: 39323e5ceaff50f4fa475edf3a2a3713,
+    type: 3}
   agent: {fileID: 0}
 --- !u!114 &2805370165156913025
 MonoBehaviour:
@@ -278,6 +282,7 @@ MonoBehaviour:
   ppp: {fileID: 11400000, guid: 5b4820b1423df064aaf48c26a6b343af, type: 2}
   color: 0
   hacked: 0
+  hackable: 1
   isDisabled: 0
   disabledMaterial: {fileID: 2100000, guid: a90edaa677a33594fba75dee0aed0a66, type: 2}
   renderersToChangeMaterial:
@@ -286,22 +291,16 @@ MonoBehaviour:
   hasNoShields: 0
   enabledShields: []
   disabledShields: []
+  pointer: {fileID: 0}
   exclamationMark: {fileID: 7485034501391228819}
   minimapIcon: {fileID: 4471277750592954771}
-  controller: {fileID: 0}
-  camPos: {fileID: 2805370164209681601}
-  horLookSpeed: 1
-  vertLookSpeed: 1
-  yaw: 0
-  pitch: 0
-  velocity: {x: 0, y: 0, z: 0}
   walkSpeed: 10
   groundOffset: 0.02
   onSlope: 0
-  slopeForce: 10
   slopeLayer:
     serializedVersion: 2
     m_Bits: 2048
+  slopeForce: 10
   distFromGround: 0
   anim: {fileID: 0}
 --- !u!195 &2805370165156913030
@@ -653,6 +652,16 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 478bc40898a26774bbc4f00c5884c28c, type: 2}
+    - target: {fileID: 1127413562660826936, guid: c7fcbc31c2930224bb4bc35edb302558,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135624897131870642, guid: c7fcbc31c2930224bb4bc35edb302558,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2329505420794184642, guid: c7fcbc31c2930224bb4bc35edb302558,
         type: 3}
       propertyPath: m_Layer
@@ -982,16 +991,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1127413562660826936, guid: c7fcbc31c2930224bb4bc35edb302558,
-        type: 3}
-      propertyPath: m_ReceiveShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2135624897131870642, guid: c7fcbc31c2930224bb4bc35edb302558,
-        type: 3}
-      propertyPath: m_ReceiveShadows
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7fcbc31c2930224bb4bc35edb302558, type: 3}

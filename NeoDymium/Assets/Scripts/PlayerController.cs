@@ -406,6 +406,9 @@ public class PlayerController : MonoBehaviour
 
 	void Hack()
 	{
+		if (detectedHackable != null)
+			if (!detectedHackable.hackable) return;
+
 		//Note that Player Camera 
 		if (!detectedHackable || hackedObj == detectedHackable) return;
 		if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;

@@ -8,7 +8,6 @@ public class EmergencyAlarm : IInteractable
 
 	public override void Interact ()
 	{
-		print (gameObject.name);
 		StartAlarm ();
 	}
 

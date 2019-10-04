@@ -9,7 +9,7 @@ public class AI : IHackable
 	public float groundOffset = 0.02f;
 
 	CharacterController controller;
-	Transform camPos;
+	[SerializeField] Transform camPos;
 	float horLookSpeed = 1, vertLookSpeed = 1;
 	float yaw, pitch;
 	Vector3 velocity;

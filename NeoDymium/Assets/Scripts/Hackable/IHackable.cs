@@ -36,7 +36,7 @@ public class IHackable : MonoBehaviour
 	public List<Shield> disabledShields;
 
 	[Header("Player Detection")]
-	public RectTransform pointer;
+	public RectTransform pointer; //Stores the Pointer of the UI so that to specify which Pointer belongs to which AI.
 	public GameObject exclamationMark;
 	
 	[Header ("Minimap Related")]

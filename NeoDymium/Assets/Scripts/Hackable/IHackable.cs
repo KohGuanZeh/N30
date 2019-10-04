@@ -25,6 +25,7 @@ public class IHackable : MonoBehaviour
 	public PostProcessProfile ppp;
 	public ColorIdentifier color;
 	public bool hacked = false;
+	public bool hackable = true;
 	public bool isDisabled = false;
 	public Material disabledMaterial;
 	public Renderer[] renderersToChangeMaterial;
@@ -35,7 +36,7 @@ public class IHackable : MonoBehaviour
 	public List<Shield> disabledShields;
 
 	[Header("Player Detection")]
-	[SerializeField] RectTransform pointer;
+	public RectTransform pointer;
 	public GameObject exclamationMark;
 	
 	[Header ("Minimap Related")]

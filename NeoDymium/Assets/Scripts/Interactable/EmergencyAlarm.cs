@@ -17,7 +17,8 @@ public class EmergencyAlarm : IInteractable
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = true;
-			ai.agent.SetDestination (alarmPosition.position);
+			if (!ai.isInvincible)
+				ai.agent.SetDestination (alarmPosition.position);
 		}
 		Invoke ("EndAlarm", duration);
 	}

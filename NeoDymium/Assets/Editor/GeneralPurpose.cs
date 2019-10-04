@@ -15,7 +15,7 @@ public class GeneralPurpose : EditorWindow
 		if (GUILayout.Button ("Dewit"))
 		{
 			GameObject parent = Selection.gameObjects[0];
-			
+			//for (int)
 		}
 	}
 

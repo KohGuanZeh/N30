@@ -4,20 +4,24 @@ public class AI : IHackable
 {
 	PatrollingAI ai;
 
-	[SerializeField] CharacterController controller;
-	[SerializeField] Transform camPos;
-	[SerializeField] float horLookSpeed = 1, vertLookSpeed = 1;
-	[SerializeField] float yaw, pitch; //Determines Camera and Player Rotation
-	[SerializeField] Vector3 velocity; //Player Velocity
-	public float walkSpeed = 10; //Different Move Speed for Different Movement Action
+	//movement and rotation
+	public float walkSpeed = 10;
 	public float groundOffset = 0.02f;
 
-	public bool onSlope;
-	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
-	public LayerMask slopeLayer;
-	public float distFromGround;
+	CharacterController controller;
+	Transform camPos;
+	float horLookSpeed = 1, vertLookSpeed = 1;
+	float yaw, pitch;
+	Vector3 velocity;
 
-	public Animator anim;
+	//slope specifics
+	public bool onSlope;
+	public LayerMask slopeLayer;
+
+	public float slopeForce = 2f;
+	public float distFromGround = 0.02f;
+
+	[HideInInspector] public Animator anim;
 
 	protected override void Start ()
 	{

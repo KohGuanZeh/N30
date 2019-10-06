@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] float hackingLerpTime;
 	[SerializeField] bool isHacking = false; //Returns true if Player is undergoing Hacking Animation
 	public bool isFocusing = false; //Check if Player is focusing on any Interactable or Hackable. //Passed to UI Manager to check what Info it should Display
+	public bool inSpInteraction = false; //Checks if Player is in Special Interaction. Special Interaction prevents Players from Crouching, Moving and Rotating and Cursor will appear
 	public bool inHackable = false; //Checks if the Player is in a Hackable Object
 	public IHackable hackedObj;
 	public LayerMask aimingRaycastLayers;
@@ -80,6 +81,17 @@ public class PlayerController : MonoBehaviour
 	public PostProcessProfile ppp;
 
 	//For Getting Private Components. May want to use Properties instead
+	#region Additional Functions To Get Private Vars
+	public float GetYaw()
+	{
+		return yaw;
+	}
+
+	public float GetPitch()
+	{
+		return pitch;
+	}
+
 	public Camera GetPlayerCamera()
 	{
 		return playerCam;
@@ -94,6 +106,7 @@ public class PlayerController : MonoBehaviour
 	{
 		return isCrouching ? crouchCamPos : standCamPos;
 	}
+	#endregion
 
 	void Awake ()
 	{
@@ -133,21 +146,22 @@ public class PlayerController : MonoBehaviour
 		if (!ui.isPaused && !ui.isGameOver)
 		{
 			//mesh.mesh.RecalculateBounds();
-
-			if (!inHackable)
+			if (!inSpInteraction)
 			{
-				GroundAndSlopeCheck();
-				ToggleCrouch();
-				PlayerRotation();
-				PlayerMovement();
-			}
+				if (!inHackable)
+				{
+					GroundAndSlopeCheck();
+					ToggleCrouch();
+					PlayerRotation();
+					PlayerMovement();
+				}
 
-			//if (Input.GetKeyDown(KeyCode.P)) ResetHeadBob();
-			Aim();
-			UpdateDisplayMessages();
-			if (Input.GetKeyDown(KeyCode.E)) Interact();
-			if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
-			if (Input.GetMouseButtonDown(1)) Unhack();
+				Aim();
+				UpdateDisplayMessages();
+				if (Input.GetKeyDown(KeyCode.E)) Interact();
+				if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
+				if (Input.GetMouseButtonDown(1)) Unhack();
+			}
 
 			if (prevStealthGauge == stealthGauge) DecreaseStealthGauge();
 			else prevStealthGauge = stealthGauge;
@@ -620,6 +634,14 @@ public class PlayerController : MonoBehaviour
 	void Respawn()
 	{
 		Unhack(); //May move the Unhack to Player Death Function instead
+		inSpInteraction = false;
+
+		//Player Stand on Respawn
+		isCrouching = false;
+		anim.SetBool("Crouch", isCrouching);
+		headRefPoint = standCamPos;
+		crouchStandLerpTime = 0;
+		LerpCrouchStand();
 
 		if (checkPointsPassed > 0)
 		{

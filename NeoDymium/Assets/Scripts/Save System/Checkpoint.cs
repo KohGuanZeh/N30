@@ -12,6 +12,7 @@ public class Checkpoint : MonoBehaviour
 	[SerializeField] Collider coll;
 	[SerializeField] Transform checkPoint; //Position where the Player spawns
 	[SerializeField] ControlPanel[] controlPanels; //List of Disabled Control Panels up to Checkpoint
+	[SerializeField] ServerPanelDoor[] serverPanelDoors; //List of Server Panel Doors Disabled up to Checkpoint
 	[SerializeField] ServerPanel[] serverPanels; //List of Disabled Server Panels up to Checkpoint
 
     // Start is called before the first frame update
@@ -26,6 +27,7 @@ public class Checkpoint : MonoBehaviour
 		coll.enabled = false;
 		foreach (ControlPanel controlPanel in controlPanels) controlPanel.Disable();
 		foreach (ServerPanel serverPanel in serverPanels) serverPanel.Disable();
+		foreach (ServerPanelDoor door in serverPanelDoors) door.NumPadUnlock();
 
 		if (setPlayerPos)
 		{
@@ -38,6 +40,7 @@ public class Checkpoint : MonoBehaviour
 	{
 		foreach (ControlPanel controlPanel in controlPanels) controlPanel.Restore();
 		foreach (ServerPanel serverPanel in serverPanels) serverPanel.Restore();
+		foreach (ServerPanelDoor door in serverPanelDoors) door.NumPadLock();
 	}
 
 	private void OnTriggerEnter(Collider other)

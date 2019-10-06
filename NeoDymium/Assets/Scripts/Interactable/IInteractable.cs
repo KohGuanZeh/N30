@@ -26,7 +26,7 @@ public class IInteractable : MonoBehaviour
 
 	}
 
-	public virtual void OnUninteract()
+	public virtual void Uninteract()
 	{
 
 	}

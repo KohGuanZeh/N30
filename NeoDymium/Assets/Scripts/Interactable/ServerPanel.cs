@@ -34,7 +34,7 @@ public class ServerPanel : IInteractable
 	//If there is even a Restore for the Server Panel
 	public void Restore()
 	{
-		linkedDoor.locked = false;
+		linkedDoor.locked = true;
 		serverPanelMat.EnableKeyword("_EMISSION");
 		serverPanelMat.color = defaultColor;
 	}

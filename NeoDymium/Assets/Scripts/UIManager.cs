@@ -128,7 +128,7 @@ public class UIManager : MonoBehaviour
 		action += LerpError; //Errors will only Lerp based on Boolean
 	}
 
-	void Update () 
+	void Update ()
 	{
 		PointToObjective();
 		stealthGauge.fillAmount = (player.stealthGauge / player.stealthThreshold);
@@ -242,6 +242,7 @@ public class UIManager : MonoBehaviour
 		objective = null;
 	}
 
+	// I put this to public - Nigel
 	public void SetNewObjective(Transform newObjective)
 	{
 		objective = newObjective;
@@ -419,7 +420,7 @@ public class UIManager : MonoBehaviour
 			errorMsgBorder.fillAmount = 0;
 		}
 	}
-	#endregion 
+	#endregion
 
 	#region Animation Events
 	public void ShowStaticScreen()
@@ -434,7 +435,7 @@ public class UIManager : MonoBehaviour
 	#endregion
 
 	#region Button Functions
-	public void PausePlay () 
+	public void PausePlay ()
 	{
 		isPaused = !isPaused;
 		optionsScreen.gameObject.SetActive(false); //If Players Press the Esc Key when in the Options Menu. Unless you want to disable use of Shortcut Keys when in Pause
@@ -449,7 +450,7 @@ public class UIManager : MonoBehaviour
 		optionsScreen.gameObject.SetActive(!optionsScreen.gameObject.activeSelf);
 	}
 
-	public void MainMenu () 
+	public void MainMenu ()
 	{
 		Time.timeScale = 1;
 		SceneManager.LoadScene ("Main Menu", LoadSceneMode.Single);

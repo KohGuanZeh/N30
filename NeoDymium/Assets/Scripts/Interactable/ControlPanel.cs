@@ -20,6 +20,7 @@ public class ControlPanel : IInteractable
 	public override void Interact ()
 	{
 		if (!activated) Disable();
+		gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
 	}
 
 	public void Disable()

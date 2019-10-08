@@ -242,7 +242,7 @@ public class UIManager : MonoBehaviour
 		objective = null;
 	}
 
-	void SetNewObjective(Transform newObjective)
+	public void SetNewObjective(Transform newObjective)
 	{
 		objective = newObjective;
 		ShowMarker();

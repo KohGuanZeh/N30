@@ -22,6 +22,15 @@ public class UIManager : MonoBehaviour
 	public GameObject playerUI;
 	public GameObject cctvUI;
 
+	[Header("CCTV UI Items")]
+	public bool uiFadeIn;
+	[SerializeField] float uiLerpTime;
+	[SerializeField] Image[] cctvCrosshair;
+	[SerializeField] Image cctvUIBorder;
+	[SerializeField] Image[] otherIcons;
+	[SerializeField] TextMeshProUGUI date;
+	[SerializeField] TextMeshProUGUI hackableName;
+
 	[Header("Crosshair")]
 	[SerializeField] bool isFocusing; //Check if a Hackable or Interactable Object has been focused on
 	[SerializeField] Image[] rings; //For Rotation of Rings. 0 is Inner, 1 is Middle, 2 is Outer
@@ -45,10 +54,12 @@ public class UIManager : MonoBehaviour
 	[Header("Instructions and Error Msgs")]
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
 	[SerializeField] TextMeshProUGUI controlsInfo;
-	[SerializeField] Image controlsIcon;
-	[SerializeField] RectTransform controlsBackDrop;
-	[SerializeField] TextMeshProUGUI errorMsg;
+	[SerializeField] Image controlsIcon, controlsBorder;
 	[SerializeField] float instructionsLerpTime;
+	[SerializeField] bool displayError; //Checks if Error should be displayed
+	[SerializeField] TextMeshProUGUI errorMsg;
+	[SerializeField] Image errorMsgBorder;
+	[SerializeField] float errorLerpTime;
 
 	[Header("Game States")]
 	//May want to use Enum for Game States
@@ -90,13 +101,31 @@ public class UIManager : MonoBehaviour
 		action += FlashDetectedWarning;
 		detectedWarning.color = new Color(detectedWarning.color.r, detectedWarning.color.g, detectedWarning.color.b, 0);
 
+		controlsBorder.fillAmount = 0;
+		errorMsgBorder.fillAmount = 0;
+
 		Color startColor = Color.clear;
-		controlsBackDrop.anchoredPosition = new Vector2(125, 0);
 		controlsInfo.color = startColor;
 		controlsIcon.color = startColor;
 		errorMsg.color = startColor;
 
+		//CCTV UI Start Color and Anchored Positions
+		cctvUIBorder.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+		cctvUIBorder.color = Color.clear;
+		foreach (Image icon in otherIcons)
+		{
+			icon.rectTransform.anchoredPosition = new Vector2(icon.rectTransform.anchoredPosition.x, -260);
+			icon.color = Color.clear;
+		}
+		foreach (Image crosshair in cctvCrosshair) crosshair.color = Color.clear;
+		date.rectTransform.anchoredPosition = new Vector2(date.rectTransform.anchoredPosition.x, -260);
+		date.color = Color.clear;
+
+		hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 260);
+		hackableName.color = Color.clear;
+
 		action += LerpInstructions; //Instructions will only Lerp based on Boolean
+		action += LerpError; //Errors will only Lerp based on Boolean
 	}
 
 	void Update () 
@@ -150,6 +179,7 @@ public class UIManager : MonoBehaviour
 			controlsInfo.text = "Interact";
 		}
 
+		displayError = errorTxt != string.Empty; //If string is empty, do no display error
 		errorMsg.text = errorTxt;
 	}
 
@@ -164,6 +194,12 @@ public class UIManager : MonoBehaviour
 
 		float horAngle = Vector3.SignedAngle(new Vector3(forward.x, 0, forward.z).normalized, horDir, Vector3.up); //Not Sure why this Works
 		pointer.eulerAngles = new Vector3(0, 0, -horAngle); //Set Rotation of Player Pointer to Point at Player
+	}
+
+	public void StartUILerp(bool fadeIn)
+	{
+		uiFadeIn = fadeIn;
+		action += LerpUITemplate;
 	}
 
 	#region Objective Marker Functions
@@ -271,35 +307,116 @@ public class UIManager : MonoBehaviour
 		detectedWarning.color = newColor;
 	}
 
+	void LerpUITemplate()
+	{
+		uiLerpTime = uiFadeIn ? Mathf.Min(uiLerpTime + Time.deltaTime * 3f, 1) : Mathf.Max(uiLerpTime - Time.deltaTime * 3f, 0);
+
+		cctvUIBorder.rectTransform.localScale = Vector3.Lerp(new Vector3(1.5f, 1.5f, 1.5f), Vector3.one, Mathf.Clamp(uiLerpTime/0.5f, 0, 1));
+		cctvUIBorder.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
+
+		foreach (Image icon in otherIcons)
+		{
+			icon.rectTransform.anchoredPosition = new Vector2(icon.rectTransform.anchoredPosition.x, Mathf.Lerp(-260, -238, Mathf.Clamp((uiLerpTime - 0.25f)/0.75f, 0, 1)));
+			icon.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
+		}
+
+		foreach (Image crosshair in cctvCrosshair) crosshair.color = Color.Lerp(Color.clear, Color.white, Mathf.Clamp((uiLerpTime - 0.25f) / 0.75f, 0, 1));
+
+		date.rectTransform.anchoredPosition = new Vector2(date.rectTransform.anchoredPosition.x, Mathf.Lerp(-260, -237, Mathf.Clamp((uiLerpTime - 0.25f)/0.75f, 0, 1)));
+		date.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
+
+		hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, Mathf.Lerp(260, 237, Mathf.Clamp((uiLerpTime - 0.25f)/0.75f, 0, 1)));
+		hackableName.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
+
+		if (uiLerpTime >= 1 && uiFadeIn)
+		{
+			cctvUIBorder.rectTransform.localScale = Vector3.one;
+			cctvUIBorder.color = Color.white;
+
+			foreach (Image icon in otherIcons)
+			{
+				icon.rectTransform.anchoredPosition = new Vector2(icon.rectTransform.anchoredPosition.x, -238);
+				icon.color = Color.white;
+			}
+			foreach (Image crosshair in cctvCrosshair) crosshair.color = Color.white;
+
+			date.rectTransform.anchoredPosition = new Vector2(date.rectTransform.anchoredPosition.x, -237);
+			date.color = Color.white;
+
+			hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 237);
+			hackableName.color = Color.white;
+			action -= LerpUITemplate;
+		}
+		else if (uiLerpTime <= 0 && !uiFadeIn)
+		{
+			cctvUIBorder.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+			cctvUIBorder.color = Color.clear;
+
+			foreach (Image icon in otherIcons)
+			{
+				icon.rectTransform.anchoredPosition = new Vector2(icon.rectTransform.anchoredPosition.x, -260);
+				icon.color = Color.clear;
+			}
+
+			foreach (Image crosshair in cctvCrosshair) crosshair.color = Color.clear;
+
+			date.rectTransform.anchoredPosition = new Vector2(date.rectTransform.anchoredPosition.x, -260);
+			date.color = Color.clear;
+
+			hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 260);
+			hackableName.color = Color.clear;
+			action -= LerpUITemplate;
+		}
+	}
+
 	void LerpInstructions()
 	{
 		//Do not Lerp at all if it has reached desired Position/Color
 		if ((instructionsLerpTime >= 1 && player.isFocusing) || (instructionsLerpTime <= 0 && !player.isFocusing)) return;
 
-		instructionsLerpTime = player.isFocusing ? Mathf.Min(instructionsLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(instructionsLerpTime - Time.deltaTime * 5, 0);
-		controlsBackDrop.anchoredPosition = Vector2.Lerp(new Vector2(125, 0), Vector2.zero, instructionsLerpTime);
+		instructionsLerpTime = player.isFocusing ? Mathf.Min(instructionsLerpTime + Time.deltaTime * 3, 1) : Mathf.Max(instructionsLerpTime - Time.deltaTime * 3, 0);
 
-		Color infoColor = Color.Lerp(Color.clear, Color.white, instructionsLerpTime);
+		controlsBorder.fillAmount = Mathf.Clamp(instructionsLerpTime / 0.5f, 0, 1);
+
+		Color infoColor = Color.Lerp(Color.clear, Color.white, Mathf.Clamp((instructionsLerpTime - 0.25f)/0.75f, 0, 1));
 		controlsInfo.color = infoColor;
 		controlsIcon.color = infoColor;
-
-		errorMsg.color = Color.Lerp(Color.clear, Color.red, instructionsLerpTime);
 
 		if (instructionsLerpTime >= 1 && player.isFocusing)
 		{
 			infoColor = Color.white;
-			controlsBackDrop.anchoredPosition = Vector2.zero;
 			controlsInfo.color = infoColor;
 			controlsIcon.color = infoColor;
-			errorMsg.color = Color.red;
+			controlsBorder.fillAmount = 1;
 		}
 		else if (instructionsLerpTime <= 0 && !player.isFocusing)
 		{
 			infoColor = Color.clear;
-			controlsBackDrop.anchoredPosition = new Vector2(125, 0);
 			controlsInfo.color = infoColor;
 			controlsIcon.color = infoColor;
-			errorMsg.color = infoColor;
+			controlsBorder.fillAmount = 0;
+		}
+	}
+
+	void LerpError()
+	{
+		if ((errorLerpTime >= 1 && displayError && player.isFocusing) || (errorLerpTime <= 0 && !displayError)) return;
+
+		if (!player.isFocusing && displayError) displayError = false;
+		errorLerpTime = displayError ? Mathf.Min(errorLerpTime + Time.deltaTime * 3, 1) : Mathf.Max(errorLerpTime - Time.deltaTime * 3, 0);
+
+		errorMsgBorder.fillAmount = Mathf.Clamp(errorLerpTime / 0.5f, 0, 1);
+		errorMsg.color = Color.Lerp(Color.clear, Color.red, Mathf.Clamp((errorLerpTime - 0.25f) / 0.75f, 0, 1));
+
+		if (errorLerpTime >= 1 && displayError)
+		{
+			errorMsg.color = Color.red;
+			errorMsgBorder.fillAmount = 1;
+		}
+		else if (errorLerpTime <= 0 && !displayError)
+		{
+			errorMsg.color = Color.clear;
+			errorMsgBorder.fillAmount = 0;
 		}
 	}
 	#endregion 

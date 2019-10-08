@@ -455,6 +455,7 @@ public class PlayerController : MonoBehaviour
 			currentViewingCamera.enabled = true;
 
 			hackingLerpTime = 0;
+			ui.StartUILerp(false);
 			action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera
 		}
 
@@ -487,6 +488,7 @@ public class PlayerController : MonoBehaviour
 		currentViewingCamera.enabled = true;
 
 		//hackingLerpTime = 1;
+		ui.StartUILerp(false);
 		action -= HackUnhackAnimation;
 		action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera
 	}
@@ -528,6 +530,7 @@ public class PlayerController : MonoBehaviour
 				prevViewingCamera.enabled = false;
 				prevViewingCamera = null;
 
+				ui.StartUILerp(true);
 				action -= HackUnhackAnimation;
 			}
 		}

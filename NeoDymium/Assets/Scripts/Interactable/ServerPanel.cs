@@ -22,6 +22,7 @@ public class ServerPanel : IInteractable
 	public override void Interact ()
 	{
 		Disable();
+		gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
 	}
 
 	public void Disable()

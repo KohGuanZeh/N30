@@ -158,6 +158,7 @@ public class PlayerController : MonoBehaviour
 
 				Aim();
 				UpdateDisplayMessages();
+				if (Input.GetKeyDown(KeyCode.F)) WipeMemory();
 				if (Input.GetKeyDown(KeyCode.E)) Interact();
 				if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
 				if (Input.GetMouseButtonDown(1)) Unhack();
@@ -416,6 +417,14 @@ public class PlayerController : MonoBehaviour
 			}
 		}*/
 		#endregion
+	}
+
+	void WipeMemory()
+	{
+		if (detectedHackable != null)
+			if (!detectedHackable.hasPlayerMemory) return;
+
+		detectedHackable.hasPlayerMemory = false;
 	}
 
 	void Hack()

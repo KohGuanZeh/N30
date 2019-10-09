@@ -3,8 +3,9 @@ public class ExitDoor : IInteractable
 {
 	public bool locked = true;
 
-	void Start ()
+	public override void Start ()
 	{
+		base.Start ();
 		locked = true;
 	}
 

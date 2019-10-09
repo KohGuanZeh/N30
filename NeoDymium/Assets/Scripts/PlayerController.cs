@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
 				{
 					if (detectedHackable) WipeMemory();
 					if (detectedInteractable) Interact();
-				} 
+				}
 				if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
 				if (Input.GetMouseButtonDown(1)) Unhack();
 			}
@@ -432,7 +432,7 @@ public class PlayerController : MonoBehaviour
 	void WipeMemory()
 	{
 		if (!detectedHackable || !WithinWipeDistance()) return;
-		if (!detectedHackable.hasPlayerMemory) return;
+		if (!detectedHackable.hasPlayerMemory || !detectedHackable.canWipeMemory) return;
 
 		detectedHackable.hasPlayerMemory = false;
 	}
@@ -442,7 +442,7 @@ public class PlayerController : MonoBehaviour
 		if (detectedHackable != null)
 			if (!detectedHackable.hackable) return;
 
-		//Note that Player Camera 
+		//Note that Player Camera
 		if (!detectedHackable || hackedObj == detectedHackable) return;
 		if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;
 

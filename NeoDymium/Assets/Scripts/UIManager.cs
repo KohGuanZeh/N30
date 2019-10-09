@@ -71,6 +71,10 @@ public class UIManager : MonoBehaviour
 	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
 	public Action action;
 
+	[Header ("White Dots")]
+	public GameObject whiteDot;
+	public RectTransform whiteDotHolder;
+
 	private void Awake()
 	{
 		inst = this;

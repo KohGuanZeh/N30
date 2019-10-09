@@ -158,8 +158,11 @@ public class PlayerController : MonoBehaviour
 
 				Aim();
 				UpdateDisplayMessages();
-				if (Input.GetKeyDown(KeyCode.F)) WipeMemory();
-				if (Input.GetKeyDown(KeyCode.E)) Interact();
+				if (Input.GetKeyDown(KeyCode.E))
+				{
+					if (detectedHackable) WipeMemory();
+					if (detectedInteractable) Interact();
+				} 
 				if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
 				if (Input.GetMouseButtonDown(1)) Unhack();
 			}
@@ -419,10 +422,17 @@ public class PlayerController : MonoBehaviour
 		#endregion
 	}
 
+	bool WithinWipeDistance()
+	{
+		//Does not Check if Hackable is Null
+		if ((aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) return false;
+		else return true;
+	}
+
 	void WipeMemory()
 	{
-		if (detectedHackable != null)
-			if (!detectedHackable.hasPlayerMemory) return;
+		if (!detectedHackable || !WithinWipeDistance()) return;
+		if (!detectedHackable.hasPlayerMemory) return;
 
 		detectedHackable.hasPlayerMemory = false;
 	}

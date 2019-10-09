@@ -52,9 +52,11 @@ public class UIManager : MonoBehaviour
 	[SerializeField] float warningTime;
 
 	[Header("Instructions and Error Msgs")]
+	[SerializeField] bool lerpingInstructions;
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
 	[SerializeField] TextMeshProUGUI controlsInfo;
 	[SerializeField] Image controlsIcon, controlsBorder;
+	[SerializeField] Image[] controlsDisabledOverlay;
 	[SerializeField] float instructionsLerpTime;
 	[SerializeField] bool displayError; //Checks if Error should be displayed
 	[SerializeField] TextMeshProUGUI errorMsg;
@@ -66,6 +68,7 @@ public class UIManager : MonoBehaviour
 	public bool isGameOver;
 	public bool isPaused;
 
+	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
 	public Action action;
 
 	private void Awake()
@@ -312,6 +315,15 @@ public class UIManager : MonoBehaviour
 	{
 		uiLerpTime = uiFadeIn ? Mathf.Min(uiLerpTime + Time.deltaTime * 3f, 1) : Mathf.Max(uiLerpTime - Time.deltaTime * 3f, 0);
 
+		if (!uiFadeIn && player.isFocusing)
+		{
+			controlsBorder.fillAmount = Mathf.Clamp(uiLerpTime / 0.5f, 1, 0);
+
+			Color infoColor = Color.Lerp(Color.white, Color.clear, Mathf.Clamp(uiLerpTime / 0.5f, 1, 0));
+			controlsInfo.color = infoColor;
+			controlsIcon.color = infoColor;
+		}
+
 		cctvUIBorder.rectTransform.localScale = Vector3.Lerp(new Vector3(1.5f, 1.5f, 1.5f), Vector3.one, Mathf.Clamp(uiLerpTime/0.5f, 0, 1));
 		cctvUIBorder.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
 
@@ -375,20 +387,22 @@ public class UIManager : MonoBehaviour
 		//Do not Lerp at all if it has reached desired Position/Color
 		if ((instructionsLerpTime >= 1 && player.isFocusing) || (instructionsLerpTime <= 0 && !player.isFocusing)) return;
 
-		instructionsLerpTime = player.isFocusing ? Mathf.Min(instructionsLerpTime + Time.deltaTime * 3, 1) : Mathf.Max(instructionsLerpTime - Time.deltaTime * 3, 0);
+		lerpingInstructions = true;
+		instructionsLerpTime = player.isFocusing ? Mathf.Min(instructionsLerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(instructionsLerpTime - Time.deltaTime * 4.5f, 0);
 
 		controlsBorder.fillAmount = Mathf.Clamp(instructionsLerpTime / 0.5f, 0, 1);
 
-		Color infoColor = Color.Lerp(Color.clear, Color.white, Mathf.Clamp((instructionsLerpTime - 0.25f)/0.75f, 0, 1));
+		Color infoColor = Color.Lerp(Color.clear, displayError ? disabledUIColor : Color.white, Mathf.Clamp((instructionsLerpTime - 0.25f)/0.75f, 0, 1));
 		controlsInfo.color = infoColor;
 		controlsIcon.color = infoColor;
 
 		if (instructionsLerpTime >= 1 && player.isFocusing)
 		{
-			infoColor = Color.white;
+			infoColor = displayError ? disabledUIColor : Color.white;
 			controlsInfo.color = infoColor;
 			controlsIcon.color = infoColor;
 			controlsBorder.fillAmount = 1;
+			lerpingInstructions = false;
 		}
 		else if (instructionsLerpTime <= 0 && !player.isFocusing)
 		{
@@ -396,6 +410,7 @@ public class UIManager : MonoBehaviour
 			controlsInfo.color = infoColor;
 			controlsIcon.color = infoColor;
 			controlsBorder.fillAmount = 0;
+			lerpingInstructions = false;
 		}
 	}
 
@@ -404,20 +419,38 @@ public class UIManager : MonoBehaviour
 		if ((errorLerpTime >= 1 && displayError && player.isFocusing) || (errorLerpTime <= 0 && !displayError)) return;
 
 		if (!player.isFocusing && displayError) displayError = false;
-		errorLerpTime = displayError ? Mathf.Min(errorLerpTime + Time.deltaTime * 3, 1) : Mathf.Max(errorLerpTime - Time.deltaTime * 3, 0);
+		errorLerpTime = displayError ? Mathf.Min(errorLerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(errorLerpTime - Time.deltaTime * 4.5f, 0);
 
 		errorMsgBorder.fillAmount = Mathf.Clamp(errorLerpTime / 0.5f, 0, 1);
 		errorMsg.color = Color.Lerp(Color.clear, Color.red, Mathf.Clamp((errorLerpTime - 0.25f) / 0.75f, 0, 1));
+
+		if (!lerpingInstructions && player.isFocusing)
+		{
+			Color infoColor = Color.Lerp(Color.white, disabledUIColor, errorLerpTime);
+			controlsInfo.color = infoColor;
+			controlsIcon.color = infoColor;
+		}
 
 		if (errorLerpTime >= 1 && displayError)
 		{
 			errorMsg.color = Color.red;
 			errorMsgBorder.fillAmount = 1;
+			if (!lerpingInstructions)
+			{
+				controlsInfo.color = disabledUIColor;
+				controlsIcon.color = disabledUIColor;
+			}
+			
 		}
 		else if (errorLerpTime <= 0 && !displayError)
 		{
 			errorMsg.color = Color.clear;
 			errorMsgBorder.fillAmount = 0;
+			if (!lerpingInstructions && player.isFocusing)
+			{
+				controlsInfo.color = Color.white;
+				controlsIcon.color = Color.white;
+			}
 		}
 	}
 	#endregion

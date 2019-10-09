@@ -7,10 +7,36 @@ public class IInteractable : MonoBehaviour
 	public bool allowPlayerInteraction = false;
 	[SerializeField] bool requireColor;
 
-	protected virtual void Start()
-	{
+	public PlayerController player;
+	public Collider col;
+	GameObject whiteDot;
 
+	public virtual void Start()
+	{
+		player = PlayerController.inst;
+		whiteDot = Instantiate (UIManager.inst.whiteDot, Vector3.zero, Quaternion.identity, UIManager.inst.whiteDotHolder);
 	}
+
+	void FixedUpdate ()
+	{
+		WhiteDot ();
+	}
+
+	void WhiteDot ()
+	{
+		/*
+		if (col.IsVisibleFrom (player.CurrentViewingCamera))
+		{
+			whiteDot.SetActive (true);
+			whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+		}
+		else
+			whiteDot.SetActive (false);
+		*/
+
+		whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+	}
+
 
 	//For Componenets that Require Color for Interaction
 	//Called in Player Script when in Hackable

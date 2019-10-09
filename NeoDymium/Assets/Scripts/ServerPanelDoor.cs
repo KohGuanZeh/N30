@@ -5,7 +5,6 @@ using TMPro;
 public class ServerPanelDoor : IInteractable
 {
 	[Header("General Variables")]
-	[SerializeField] PlayerController player;
 	[SerializeField] Camera playerCam; //Store the Player Camera so as to Lerp it
 	[SerializeField] Collider coll; //Store the Collider of the Numpad to prevent Raycast Error
 	[SerializeField] NumpadButton[] buttons; //Store all the Numpad Buttons to activate and deactivate colliders to prevent problems
@@ -33,10 +32,9 @@ public class ServerPanelDoor : IInteractable
 	[SerializeField] float lerpSpeed = 1.5f;
 	[SerializeField] Action action;
 
-	protected override void Start()
+	public override void Start()
 	{
 		base.Start();
-		player = PlayerController.inst;
 		playerCam = player.GetPlayerCamera();
 		GeneratePassword();
 
@@ -47,7 +45,7 @@ public class ServerPanelDoor : IInteractable
 		foreach (NumpadButton button in buttons) button.EnableDisableCollider(false);
 	}
 
-	private void Update()
+	void Update()
 	{
 		if (action != null) action();
 		if (!isInteracting) return;

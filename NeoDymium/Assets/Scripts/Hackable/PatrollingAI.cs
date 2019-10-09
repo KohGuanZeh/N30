@@ -72,10 +72,11 @@ public class PatrollingAI : MonoBehaviour
 		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
 			(player.stealthGauge / player.stealthThreshold) >= minStealthPercent)
 			StartPlayerChase ();
-
+		
 		DuringPlayerChase ();
 
 		ai.hackable = !isInvincible;
+		ai.canWipeMemory = !isInvincible;
 	}
 
 	void StartPlayerChase ()

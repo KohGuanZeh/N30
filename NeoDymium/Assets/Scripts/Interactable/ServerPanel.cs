@@ -6,7 +6,7 @@ public class ServerPanel : IInteractable
 	public Material serverPanelMat;
 	public Color defaultColor;
 
-	protected override void Start()
+	public override void Start()
 	{
 		base.Start();
 		serverPanelMat = transform.GetChild(0).GetComponent<Renderer>().material;

@@ -8,6 +8,7 @@ public class EmergencyAlarm : IInteractable
 
 	public override void Interact ()
 	{
+		base.Start ();
 		StartAlarm ();
 	}
 

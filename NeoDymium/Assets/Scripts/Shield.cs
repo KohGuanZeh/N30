@@ -8,7 +8,7 @@ public class Shield : MonoBehaviour
 	public ColorIdentifier color;
 	public bool isDisabled;
 	Renderer rend; 
-	SpriteRenderer minimapIcon;
+	//SpriteRenderer minimapIcon;
 	//[SerializeField] Collider collider; //If the Shield has a Collider
 
 	//If Shield is to have a Collider, need to make it a Different Layer
@@ -16,7 +16,7 @@ public class Shield : MonoBehaviour
 	void Start ()
 	{
 		rend = GetComponentInChildren<Renderer> ();
-		minimapIcon = GetComponentInChildren <SpriteRenderer> ();
+		//minimapIcon = GetComponentInChildren <SpriteRenderer> ();
 	}
 
 	public void EnableDisableShield(bool enable)
@@ -31,12 +31,12 @@ public class Shield : MonoBehaviour
 	{
 		//For Any Lerp Functions
 		rend.enabled = true;
-		minimapIcon.enabled = true;
+		//minimapIcon.enabled = true;
 	}
 
 	void OnShieldDisable()
 	{
 		rend.enabled = false;
-		minimapIcon.enabled = false;
+		//minimapIcon.enabled = false;
 	}
 }

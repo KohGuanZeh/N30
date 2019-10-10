@@ -8547,6 +8547,7 @@ MonoBehaviour:
   requireColor: 0
   player: {fileID: 0}
   col: {fileID: 0}
+  whiteDotRaycastHeightOffset: 0.5
   locked: 1
 --- !u!65 &247819751
 BoxCollider:
@@ -15237,6 +15238,11 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 8115951961090751912, guid: f5e6d32037fbf69419e7e4aa8b273551,
+        type: 3}
+      propertyPath: color
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2825778578554607314, guid: f5e6d32037fbf69419e7e4aa8b273551,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -15311,11 +15317,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 8115951961090751912, guid: f5e6d32037fbf69419e7e4aa8b273551,
-        type: 3}
-      propertyPath: color
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5e6d32037fbf69419e7e4aa8b273551, type: 3}
@@ -28804,6 +28805,7 @@ MonoBehaviour:
   requireColor: 0
   player: {fileID: 0}
   col: {fileID: 0}
+  whiteDotRaycastHeightOffset: 0.5
   duration: 15
   alarmPosition: {fileID: 650241755}
   affectedAis:
@@ -33339,6 +33341,7 @@ MonoBehaviour:
   requireColor: 0
   player: {fileID: 0}
   col: {fileID: 0}
+  whiteDotRaycastHeightOffset: 0.5
   duration: 15
   alarmPosition: {fileID: 954732576}
   affectedAis:
@@ -48279,14 +48282,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 247448336, guid: f8521e8bae9ea954d86cfd39ea5a65fc, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 247448336, guid: f8521e8bae9ea954d86cfd39ea5a65fc, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 24
-      objectReference: {fileID: 0}
     - target: {fileID: 4352029008813678050, guid: f8521e8bae9ea954d86cfd39ea5a65fc,
         type: 3}
       propertyPath: affectedItems.Array.size
@@ -48341,6 +48336,14 @@ PrefabInstance:
         type: 3}
       propertyPath: controlPanelMat
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 247448336, guid: f8521e8bae9ea954d86cfd39ea5a65fc, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 247448336, guid: f8521e8bae9ea954d86cfd39ea5a65fc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 5256528711945069440, guid: f8521e8bae9ea954d86cfd39ea5a65fc,
         type: 3}
@@ -50900,6 +50903,7 @@ MonoBehaviour:
   requireColor: 0
   player: {fileID: 0}
   col: {fileID: 0}
+  whiteDotRaycastHeightOffset: 0.5
   playerCam: {fileID: 0}
   coll: {fileID: 0}
   buttons: []
@@ -53734,6 +53738,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8115951961090751912, guid: f5e6d32037fbf69419e7e4aa8b273551,
+        type: 3}
+      propertyPath: color
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2825778578554607314, guid: f5e6d32037fbf69419e7e4aa8b273551,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -53808,11 +53817,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 8115951961090751912, guid: f5e6d32037fbf69419e7e4aa8b273551,
-        type: 3}
-      propertyPath: color
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5e6d32037fbf69419e7e4aa8b273551, type: 3}
@@ -74228,6 +74232,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7608688163105277084, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7608688163105277084, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.69348145
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2397738c107c17c4bb6abe0d863af3f8, type: 3}

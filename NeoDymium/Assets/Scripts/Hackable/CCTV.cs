@@ -29,6 +29,11 @@ public class CCTV : IHackable
 	protected override void Update()
 	{
 		base.Update();
+		
+		if (player.GetPlayerCollider().IsVisibleFrom(camera))
+			canWipeMemory = false;
+		else
+			canWipeMemory = true;
 	}
 
 	protected override void ExecuteHackingFunctionaliy()

@@ -68,6 +68,10 @@ public class UIManager : MonoBehaviour
 
 	public Action action;
 
+	[Header ("White Dots")]
+	public GameObject whiteDot;
+	public RectTransform whiteDotHolder;
+
 	private void Awake()
 	{
 		inst = this;

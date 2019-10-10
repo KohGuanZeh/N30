@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
 public enum ColorIdentifier { none, red, blue };
@@ -18,7 +18,8 @@ public class IHackable : MonoBehaviour
 	[Header ("General Hackable Properties")]
 	protected PlayerController player;
 	protected UIManager ui;
-
+	public Collider col;
+	
 	[Header ("Hacking Related Variables")]
 	public new Camera camera;
 	public PostProcessVolume postProcessVolume;
@@ -36,20 +37,20 @@ public class IHackable : MonoBehaviour
 	public List<Shield> disabledShields;
 
 	[Header("Player Detection")]
-	public bool hasPlayerMemory;
+	public bool hasPlayerMemory = false;
+	public bool canWipeMemory = true;
 	public RectTransform pointer; //Stores the Pointer of the UI so that to specify which Pointer belongs to which AI.
-	public GameObject exclamationMark;
 	
-	[Header ("Minimap Related")]
-	public SpriteRenderer minimapIcon;
-	MinimapCamera minimap;
+	[Header ("UI")]
+	public GameObject exclamationMark;
+	public GameObject questionMark;
+	GameObject whiteDot;
 
 	protected virtual void Start()
 	{
 		//General
 		player = PlayerController.inst;
 		ui = UIManager.inst;
-		minimap = MinimapCamera.inst;
 
 		//Camera
 		camera = GetComponentInChildren<Camera>();
@@ -58,6 +59,9 @@ public class IHackable : MonoBehaviour
 		//Shields
 		if (enabledShields.Count == 0 && disabledShields.Count == 0) hasNoShields = true;
 		else hasNoShields = false;
+
+		whiteDot = Instantiate (UIManager.inst.whiteDot, Vector3.zero, Quaternion.identity, UIManager.inst.whiteDotHolder);
+		col = GetComponent<Collider> ();
 	}
 
 	protected virtual void Update()
@@ -65,12 +69,33 @@ public class IHackable : MonoBehaviour
 		if (ui.isPaused || ui.isGameOver) return;
 
 		if (camera && !isDisabled) CatchPlayer(); //If Hackable Object has a Camera, and is not disabled, it should actively look out for Player
-
 		if (hacked)
 		{
 			if (isDisabled || enabledShields.Count > 0) ForcedUnhack(); //Force Player to Unhack when 
 			else ExecuteHackingFunctionaliy();
 		}
+	}
+
+	void FixedUpdate ()
+	{
+		if (!isDisabled) WhiteDot ();
+	}
+
+	void WhiteDot ()
+	{
+		/*
+		if (col.IsVisibleFrom (player.CurrentViewingCamera))
+		{
+			whiteDot.SetActive (true);
+			whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+		}			
+		else if (hacked)
+			whiteDot.SetActive (false);
+		else
+			whiteDot.SetActive (false);
+		*/
+
+		whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
 	}
 
 	/// <summary>
@@ -105,11 +130,16 @@ public class IHackable : MonoBehaviour
 
 			player.IncreaseStealthGauge();
 			//print("Seen by " + gameObject.name);
+			
+			hasPlayerMemory = true;
 			exclamationMark.SetActive(true);
-			exclamationMark.transform.LookAt(player.transform);
+			questionMark.SetActive (false);
+			exclamationMark.transform.LookAt(player.CurrentViewingCamera.transform);
 		}
 		else
 		{
+			questionMark.SetActive (hasPlayerMemory);
+			questionMark.transform.LookAt (player.CurrentViewingCamera.transform);
 			exclamationMark.SetActive(false);
 			if (pointer)
 			{
@@ -143,7 +173,6 @@ public class IHackable : MonoBehaviour
 
 		hacked = true;
 		postProcessVolume.profile = ppp;
-		minimap.ChangeTarget (transform);
 	}
 
 	public virtual void OnUnhack()
@@ -157,7 +186,6 @@ public class IHackable : MonoBehaviour
 		#endregion
 
 		postProcessVolume.profile = player.ppp;
-		minimap.ChangeTarget (player.transform);
 		hacked = false;
 	}
 
@@ -173,7 +201,8 @@ public class IHackable : MonoBehaviour
 		if (color != controlPanelColor) return;
 		isDisabled = !isEnable;
 		exclamationMark.SetActive (false);
-		minimapIcon.color = new Color32 (123, 123, 123, 255);
+		questionMark.SetActive (false);
+		whiteDot.SetActive (false);
 
 		for (int i = 0; i < renderersToChangeMaterial.Length; i++)
 			renderersToChangeMaterial[i].material = disabledMaterial;

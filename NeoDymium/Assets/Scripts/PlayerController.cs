@@ -422,7 +422,7 @@ public class PlayerController : MonoBehaviour
 	void WipeMemory()
 	{
 		if (detectedHackable != null)
-			if (!detectedHackable.hasPlayerMemory) return;
+			if (!detectedHackable.hasPlayerMemory || !detectedHackable.canWipeMemory) return;
 
 		detectedHackable.hasPlayerMemory = false;
 	}

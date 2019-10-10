@@ -10,8 +10,9 @@ public class ControlPanel : IInteractable
 
 	public bool activated = false;
 
-	void Start ()
+	public override void Start ()
 	{
+		base.Start ();
 		activated = false;
 		controlPanelMat = transform.GetChild(0).GetComponent<Renderer>().material; //To Access the Material and Deactivate the Colors
 		defaultColor = controlPanelMat.color;
@@ -19,7 +20,8 @@ public class ControlPanel : IInteractable
 
 	public override void Interact ()
 	{
-		if (!activated) Disable();
+		if (!activated) 
+			Disable();
 		gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
 	}
 

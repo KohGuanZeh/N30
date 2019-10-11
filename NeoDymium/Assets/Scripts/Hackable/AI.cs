@@ -143,9 +143,20 @@ public class AI : IHackable
 		if (Physics.Raycast(transform.position, -Vector3.up, out hit, distFromGround, slopeLayer)) onSlope = true;
 	}
 
-	public override void EnableDisableHackable(bool isEnable, ColorIdentifier controlPanelColor)
+	public override void EnableDisableHackable (bool isEnable, ColorIdentifier controlPanelColor)
 	{
 		base.EnableDisableHackable(isEnable, controlPanelColor);
 		anim.SetBool("Disabled", isDisabled);
+
+		if (isDisabled)
+		{
+			if (hacked)
+				ForcedUnhack ();
+
+			ai.agent.enabled = false;
+			ai.enabled = false;
+			controller.enabled = false;
+			ai.sentBack = true;
+		}
 	}
 }

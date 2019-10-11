@@ -102,6 +102,11 @@ public class IHackable : MonoBehaviour
 		RaycastHit hit;
 		Vector3 currentPos = transform.position + Vector3.up * whiteDotRaycastHeightOffset;
 		Physics.Raycast (currentPos, player.CurrentViewingCamera.transform.position - currentPos, out hit, Mathf.Infinity);
+		if (hit.collider == null)
+		{
+			whiteDot.SetActive (false);
+			return;
+		}
 
 		if (!(hit.collider.tag == "Hackable" || 
 			hit.collider.tag == "Interactable" ||

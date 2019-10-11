@@ -5,6 +5,7 @@ public class IInteractable : MonoBehaviour
 	[Header ("Common Interactable Properties")]
 	public ColorIdentifier color;
 	public bool allowPlayerInteraction = false;
+	//May want to have a Bool to check if AI interaction is allowed
 	[SerializeField] bool requireColor;
 
 	public PlayerController player;

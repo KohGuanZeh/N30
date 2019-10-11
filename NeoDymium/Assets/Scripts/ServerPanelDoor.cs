@@ -95,6 +95,9 @@ public class ServerPanelDoor : IInteractable
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.None;
 
+		//Hide Player UI
+		UIManager.inst.ShowHideUI(false);
+
 		//Set Active True and False for Colliders to prevent Raycast Errors
 		coll.enabled = false;
 		foreach (NumpadButton button in buttons) button.EnableDisableCollider(true);
@@ -120,6 +123,9 @@ public class ServerPanelDoor : IInteractable
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Locked;
 
+		//Show Player UI
+		UIManager.inst.ShowHideUI(true);
+
 		//Set Active True and False for Colliders to prevent Raycast Errors
 		coll.enabled = true;
 		foreach (NumpadButton button in buttons) button.EnableDisableCollider(false);
@@ -136,6 +142,13 @@ public class ServerPanelDoor : IInteractable
 	{
 		player.headBob = true;
 		player.inSpInteraction = false;
+	}
+
+	public override string GetError(int key = 0)
+	{
+		if (player.inHackable) return "AI cannot interact with this Object";
+		else if (unlocked) return "Door is already Unlocked";
+		else return string.Empty;
 	}
 
 	void LerpCameraToNumPad()

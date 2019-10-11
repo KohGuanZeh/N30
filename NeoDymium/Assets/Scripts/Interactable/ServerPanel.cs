@@ -25,6 +25,13 @@ public class ServerPanel : IInteractable
 		gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
 	}
 
+	public override string GetError(int key = 0)
+	{
+		if (player.inHackable) return "AI cannot interact with this Object";
+		else if (!linkedDoor.locked) return "Server Panel has already been Disabled";
+		else return string.Empty;
+	}
+
 	public void Disable()
 	{
 		linkedDoor.locked = false;

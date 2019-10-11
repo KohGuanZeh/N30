@@ -25,6 +25,12 @@ public class ControlPanel : IInteractable
 		gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
 	}
 
+	public override string GetError(int key = 0)
+	{
+		if (activated) return "Control Panel has already been Disabled";
+		else return string.Empty;
+	}
+
 	public void Disable()
 	{
 		activated = true;

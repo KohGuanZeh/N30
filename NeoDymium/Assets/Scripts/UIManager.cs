@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
 	[Header("UI Templates")]
 	public GameObject playerUI;
 	public GameObject cctvUI;
+	public GameObject controlsGrp; //Stores the Graphics for Controls and Errors
 
 	[Header("CCTV UI Items")]
 	public bool uiFadeIn;
@@ -133,6 +134,7 @@ public class UIManager : MonoBehaviour
 		hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 260);
 		hackableName.color = Color.clear;
 
+		//Set Color and Border of Control Infos
 		Color startColor = Color.clear;
 		for (int i = 0; i < controls.Length; i++)
 		{
@@ -252,6 +254,15 @@ public class UIManager : MonoBehaviour
 		errorFadeIn = true;
 		errorLerpTime = 0;
 		action += ErrorFadeInFadeOut;
+	}
+
+	public void ShowHideUI(bool show)
+	{
+		playerUI.gameObject.SetActive(show);
+		cctvUI.gameObject.SetActive(show);
+		marker.gameObject.SetActive(show); //Show Hide Obj Marker
+		controlsGrp.SetActive(show); //Show Hide Controls
+		whiteDotHolder.gameObject.SetActive(show); //Show Hide White Dots
 	}
 
 	#region Objective Marker Functions

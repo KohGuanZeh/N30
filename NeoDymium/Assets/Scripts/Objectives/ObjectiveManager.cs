@@ -23,9 +23,10 @@ public class ObjectiveManager : MonoBehaviour
     }
 
     void Update() {
-        if (goals[currentGoalNumber].GetComponent<RespectiveGoals>().isCompleted) {
+        if (goals[currentGoalNumber].GetComponent<RespectiveGoals>().isCompleted)
+		{
             scoreSystem.totalScore += goals[currentGoalNumber].GetComponent<RespectiveGoals>().pointsGained;
-            currentGoalNumber++;
+			currentGoalNumber = Mathf.Min(currentGoalNumber, goals.Length - 1); //To prevent errors!
             uiManager.SetNewObjective (goals[currentGoalNumber].transform);
         }
 

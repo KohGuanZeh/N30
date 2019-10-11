@@ -44,6 +44,7 @@ public class IHackable : MonoBehaviour
 	[Header ("UI")]
 	public GameObject exclamationMark;
 	public GameObject questionMark;
+	public float whiteDotRaycastHeightOffset = 0.5f;
 	GameObject whiteDot;
 
 	protected virtual void Start()
@@ -95,7 +96,25 @@ public class IHackable : MonoBehaviour
 			whiteDot.SetActive (false);
 		*/
 
-		whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+		//whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+	
+		
+		RaycastHit hit;
+		Vector3 currentPos = transform.position + Vector3.up * whiteDotRaycastHeightOffset;
+		Physics.Raycast (currentPos, player.CurrentViewingCamera.transform.position - currentPos, out hit, Mathf.Infinity);
+
+		if (!(hit.collider.tag == "Hackable" || 
+			hit.collider.tag == "Interactable" ||
+			hit.collider.tag == "Player") && 
+			hit.collider.name != gameObject.name)
+		{
+			whiteDot.SetActive (false);
+		}
+		else
+		{
+			whiteDot.SetActive (true);
+			whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+		}
 	}
 
 	/// <summary>

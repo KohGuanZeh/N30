@@ -309,7 +309,8 @@ public class PlayerController : MonoBehaviour
 			if (hackableInteractableLayer == (hackableInteractableLayer | 1 << aimRayHit.transform.gameObject.layer))
 			{
 				isFocusing = true;
-				string msg = "";
+				string[] msgs = new string[] { "", "" };
+				//string msg = "";
 
 				switch (aimRayHit.collider.tag)
 				{
@@ -317,18 +318,32 @@ public class PlayerController : MonoBehaviour
 						detectedHackable = aimRayHit.collider.GetComponent<IHackable>();
 						detectedInteractable = null;
 
-						if (detectedHackable.isDisabled) msg = "Error. System is Disabled";
-						else if (detectedHackable.enabledShields.Count > 0) msg = "Error. System Protection Level Too High";
+						string hackError = detectedHackable.GetError(0);
+						if (hackError != string.Empty) ui.DisplayInstructionsAndErrors(true, new bool[] {true, true}, detectedHackable.hasPlayerMemory && !inHackable);
+						else
+						{
+							if (detectedHackable.hasPlayerMemory && !inHackable)
+							{
+								string wipeError = detectedHackable.GetError(1);
+								if (wipeError != string.Empty) ui.DisplayInstructionsAndErrors(true, new bool[] { false, true }, true);
+								else
+								{
+									if (WithinWipeDistance()) ui.DisplayInstructionsAndErrors(true, new bool[] { false, false }, true);
+									else ui.DisplayInstructionsAndErrors(true, new bool[] { false, true }, true);
+								}
+							}
+							else ui.DisplayInstructionsAndErrors(true, new bool[] { false, false }, false);
+						}
 
-						ui.DisplayInstructionsAndErrors(true, msg);
 						break;
 
 					case ("Interactable"):
 						detectedInteractable = aimRayHit.collider.GetComponent<IInteractable>();
 						detectedHackable = null;
 
-						if (!WithinInteractDistance()) msg = "Error. Object is too far for Interaction";
-						ui.DisplayInstructionsAndErrors(false, msg);
+						string interactError = detectedInteractable.GetError();
+						if (interactError != string.Empty) ui.DisplayInstructionsAndErrors(false, new bool[] { true, false }, false);
+						else ui.DisplayInstructionsAndErrors(false, new bool[] { !WithinInteractDistance(), false }, false);
 
 						break;
 				}
@@ -357,16 +372,32 @@ public class PlayerController : MonoBehaviour
 
 	void UpdateDisplayMessages()
 	{
+		string[] msgs = new string[] { "", "" };
+
 		if (detectedInteractable)
 		{
-			if (WithinInteractDistance()) ui.DisplayInstructionsAndErrors(false);
-			else ui.DisplayInstructionsAndErrors(false, "Error. Object is too far for Interaction");
+			string interactError = detectedInteractable.GetError();
+			if (interactError != string.Empty) ui.DisplayInstructionsAndErrors(false, new bool[] { true, false }, false);
+			else ui.DisplayInstructionsAndErrors(false, new bool[] { !WithinInteractDistance(), false }, false);
 		}
 		else if (detectedHackable)
 		{
-			if (detectedHackable.isDisabled) ui.DisplayInstructionsAndErrors(true, "Error. System is Disabled");
-			else if (detectedHackable.enabledShields.Count > 0) ui.DisplayInstructionsAndErrors(true, "Error. System Protection Level Too High");
-			else ui.DisplayInstructionsAndErrors(true);
+			string hackError = detectedHackable.GetError(0);
+			if (hackError != string.Empty) ui.DisplayInstructionsAndErrors(true, new bool[] { true, true }, detectedHackable.hasPlayerMemory && !inHackable);
+			else
+			{
+				if (detectedHackable.hasPlayerMemory && !inHackable)
+				{
+					string wipeError = detectedHackable.GetError(1);
+					if (wipeError != string.Empty) ui.DisplayInstructionsAndErrors(true, new bool[] { false, true }, true);
+					else
+					{
+						if (WithinWipeDistance()) ui.DisplayInstructionsAndErrors(true, new bool[] { false, false }, true);
+						else ui.DisplayInstructionsAndErrors(true, new bool[] { false, true }, true);
+					}
+				}
+				else ui.DisplayInstructionsAndErrors(true, new bool[] { false, false }, false);
+			}
 		}
 		else return;
 	}
@@ -380,8 +411,13 @@ public class PlayerController : MonoBehaviour
 
 	void Interact()
 	{
-		if (!detectedInteractable || !WithinInteractDistance()) return;
+		if (!detectedInteractable) return;
 
+		string interactError = detectedInteractable.GetError();
+		if (interactError == string.Empty) interactError = WithinWipeDistance() ? interactError : "Target is out of reach";
+		ui.DisplayError(interactError); //May want to use Display Error to Return a Bool. If the Bool is true, return so you dont have to do additional Checks
+
+		if (!WithinInteractDistance()) return;
 		if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
 		else if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();
 
@@ -431,7 +467,13 @@ public class PlayerController : MonoBehaviour
 
 	void WipeMemory()
 	{
-		if (!detectedHackable || !WithinWipeDistance()) return;
+		if (!detectedHackable) return;
+
+		string wipeError = detectedHackable.GetError(1);
+		if (wipeError == string.Empty) wipeError = WithinWipeDistance() ? wipeError : "Target is out of reach";
+		ui.DisplayError(wipeError); //May want to use Display Error to Return a Bool. If the Bool is true, return so you dont have to do additional Checks
+
+		if (!WithinWipeDistance()) return;
 		if (!detectedHackable.hasPlayerMemory || !detectedHackable.canWipeMemory) return;
 
 		detectedHackable.hasPlayerMemory = false;
@@ -439,8 +481,11 @@ public class PlayerController : MonoBehaviour
 
 	void Hack()
 	{
-		if (detectedHackable != null)
-			if (!detectedHackable.hackable) return;
+		if (!detectedHackable) return;
+
+		ui.DisplayError(detectedHackable.GetError());
+
+		if (!detectedHackable.hackable) return;
 
 		//Note that Player Camera
 		if (!detectedHackable || hackedObj == detectedHackable) return;

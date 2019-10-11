@@ -245,4 +245,24 @@ public class IHackable : MonoBehaviour
 			}
 		}
 	}
+
+	/// <summary>
+	/// Get the Error Message Corresponding to the Action
+	/// </summary>
+	/// <param name="key"> 0 is Hacking, 1 is Wipe Memory</param>
+	/// <returns></returns>
+	public virtual string GetError(int key = 0)
+	{
+		if (isDisabled) return "Error. System is Disabled";
+		else if (enabledShields.Count > 0) return "Error.System Protection Level Too High";
+		else if (!hackable) return "Error. Entity is preventing further Action";
+		else if (key > 0)
+		{
+			//Only thing I did not Check is the Distance
+			if (player.inHackable) return "Error. Can only Wipe in Player Body";
+			else if (!canWipeMemory) return "Error. Entity is preventing further Action";
+			else return string.Empty;
+		}
+		else return string.Empty;
+	}
 }

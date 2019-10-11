@@ -56,4 +56,14 @@ public class IInteractable : MonoBehaviour
 	{
 
 	}
+
+	/// <summary>
+	/// Get the Error Message Corresponding to the Action
+	/// </summary>
+	/// <param name="key"> 0 is Main Interaction Button. 1 is Secondary Interaction Button </param>
+	/// <returns></returns>
+	public virtual string GetError(int key = 0)
+	{
+		return "";
+	}
 }

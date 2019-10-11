@@ -5,15 +5,28 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+[Serializable]
+public struct ControlsInfo
+{
+	public bool show;
+	public bool hasError;
+	public bool isLerping;
+	public float lerpTime;
+	public float errorLerpTime;
+	public Image icon;
+	public TextMeshProUGUI text;
+	public Image border;
+}
+
 public class UIManager : MonoBehaviour
 {
-	[Header ("General Properties")]
+	[Header("General Properties")]
 	public static UIManager inst;
 	[SerializeField] PlayerController player;
 	[SerializeField] Animator guiAnim; //Stand in for now... Will think about how to better integrate Animations
 	[SerializeField] Vector2 baseResolution, currentResolution;
 
-	[Header ("Menus")]
+	[Header("Menus")]
 	[SerializeField] RectTransform pauseScreen;
 	[SerializeField] RectTransform optionsScreen;
 	[SerializeField] RectTransform gameOverScreen;
@@ -24,6 +37,7 @@ public class UIManager : MonoBehaviour
 
 	[Header("CCTV UI Items")]
 	public bool uiFadeIn;
+	[SerializeField] bool uiFadeInProgress;
 	[SerializeField] float uiLerpTime;
 	[SerializeField] Image[] cctvCrosshair;
 	[SerializeField] Image cctvUIBorder;
@@ -52,15 +66,11 @@ public class UIManager : MonoBehaviour
 	[SerializeField] float warningTime;
 
 	[Header("Instructions and Error Msgs")]
-	[SerializeField] bool lerpingInstructions;
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
-	[SerializeField] TextMeshProUGUI controlsInfo;
-	[SerializeField] Image controlsIcon, controlsBorder;
-	[SerializeField] Image[] controlsDisabledOverlay;
-	[SerializeField] float instructionsLerpTime;
-	[SerializeField] bool displayError; //Checks if Error should be displayed
+	[SerializeField] ControlsInfo[] controls;
+
+	[SerializeField] bool errorFadeIn; //Checks if Error is Fading in
 	[SerializeField] TextMeshProUGUI errorMsg;
-	[SerializeField] Image errorMsgBorder;
 	[SerializeField] float errorLerpTime;
 
 	[Header("Game States")]
@@ -71,14 +81,14 @@ public class UIManager : MonoBehaviour
 	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
 	public Action action;
 
-	[Header ("White Dots")]
+	[Header("White Dots")]
 	public GameObject whiteDot;
 	public RectTransform whiteDotHolder;
 
 	private void Awake()
 	{
 		inst = this;
-		baseResolution = new Vector2 (1920, 1080);
+		baseResolution = new Vector2(1920, 1080);
 		currentResolution = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
 
 		for (int i = 0; i < 10; i++)
@@ -108,14 +118,6 @@ public class UIManager : MonoBehaviour
 		action += FlashDetectedWarning;
 		detectedWarning.color = new Color(detectedWarning.color.r, detectedWarning.color.g, detectedWarning.color.b, 0);
 
-		controlsBorder.fillAmount = 0;
-		errorMsgBorder.fillAmount = 0;
-
-		Color startColor = Color.clear;
-		controlsInfo.color = startColor;
-		controlsIcon.color = startColor;
-		errorMsg.color = startColor;
-
 		//CCTV UI Start Color and Anchored Positions
 		cctvUIBorder.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 		cctvUIBorder.color = Color.clear;
@@ -131,11 +133,21 @@ public class UIManager : MonoBehaviour
 		hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 260);
 		hackableName.color = Color.clear;
 
-		action += LerpInstructions; //Instructions will only Lerp based on Boolean
-		action += LerpError; //Errors will only Lerp based on Boolean
+		Color startColor = Color.clear;
+		for (int i = 0; i < controls.Length; i++)
+		{
+			controls[i].border.fillAmount = 0;
+			controls[i].text.color = startColor;
+			controls[i].icon.color = startColor;
+		}
+
+		errorMsg.color = Color.clear;
+
+		action += LerpInstructions;
+		//action += LerpActionAvailability;
 	}
 
-	void Update ()
+	void Update()
 	{
 		PointToObjective();
 		stealthGauge.fillAmount = (player.stealthGauge / player.stealthThreshold);
@@ -162,7 +174,11 @@ public class UIManager : MonoBehaviour
 	public void Focus(bool playerIsFocusing)
 	{
 		if (playerIsFocusing && !isFocusing) isFocusing = true;
-		else if (!playerIsFocusing && isFocusing) isFocusing = false;
+		else if (!playerIsFocusing && isFocusing)
+		{
+			isFocusing = false;
+			for (int i = 0; i < controls.Length; i++) controls[i].show = false;
+		}
 		else return;
 
 		if (crosshairIsLerping) return;
@@ -173,21 +189,34 @@ public class UIManager : MonoBehaviour
 		action += LerpFocusFeedback;
 	}
 
-	public void DisplayInstructionsAndErrors(bool isHackableObj, string errorTxt = "")
+	public void DisplayInstructionsAndErrors(bool isHackableObj, bool[] hasErrors, bool haveSecondary = false)
 	{
 		if (isHackableObj)
 		{
-			controlsIcon.sprite = controlsSprites[0];
-			controlsInfo.text = "Hack";
+			print(string.Format("Show Secondary: {0}", haveSecondary));
+
+			controls[0].show = true;
+			controls[0].hasError = hasErrors[0];
+			controls[0].icon.sprite = controlsSprites[0];
+			controls[0].text.text = "Hack";
+
+			controls[1].show = haveSecondary;
+			if (haveSecondary)
+			{
+				controls[1].hasError = hasErrors[1];
+				controls[1].icon.sprite = controlsSprites[1];
+				controls[1].text.text = "Wipe Memory";
+			}
 		}
 		else
 		{
-			controlsIcon.sprite = controlsSprites[1];
-			controlsInfo.text = "Interact";
-		}
+			controls[0].show = true;
+			controls[0].hasError = hasErrors[0];
+			controls[0].icon.sprite = controlsSprites[1];
+			controls[0].text.text = "Interact";
 
-		displayError = errorTxt != string.Empty; //If string is empty, do no display error
-		errorMsg.text = errorTxt;
+			controls[1].show = false;
+		}
 	}
 
 	public void LocateHackable(IHackable hackable, RectTransform pointer)
@@ -205,8 +234,24 @@ public class UIManager : MonoBehaviour
 
 	public void StartUILerp(bool fadeIn)
 	{
+		action -= LerpUITemplate; //Remove to prevent Errors
+
 		uiFadeIn = fadeIn;
+		uiFadeInProgress = true;
 		action += LerpUITemplate;
+	}
+
+	//Display Error Upon Button Press
+	public void DisplayError(string error = "")
+	{
+		if (error == string.Empty) return;
+
+		action -= ErrorFadeInFadeOut;
+		errorMsg.color = Color.clear;
+		errorMsg.text = error;
+		errorFadeIn = true;
+		errorLerpTime = 0;
+		action += ErrorFadeInFadeOut;
 	}
 
 	#region Objective Marker Functions
@@ -315,18 +360,28 @@ public class UIManager : MonoBehaviour
 		detectedWarning.color = newColor;
 	}
 
+	void ErrorFadeInFadeOut()
+	{
+		errorLerpTime = errorFadeIn ? Mathf.Min(errorLerpTime + Time.deltaTime * 1.5f, 1) : Mathf.Max(errorLerpTime - Time.deltaTime * 1.5f, 0);
+
+		//Appear within the first quarter and start to disappear on the last quarter of the lerp
+		errorMsg.color = Color.Lerp(Color.clear, Color.red, Mathf.Clamp(errorLerpTime/0.25f, 0, 1));
+
+		if (errorLerpTime >= 1 && errorFadeIn)
+		{
+			errorMsg.color = Color.red;
+			errorFadeIn = false;
+		}
+		else if (errorLerpTime <= 0 && !errorFadeIn)
+		{
+			errorMsg.color = Color.clear;
+			action -= ErrorFadeInFadeOut;
+		}
+	}
+
 	void LerpUITemplate()
 	{
 		uiLerpTime = uiFadeIn ? Mathf.Min(uiLerpTime + Time.deltaTime * 3f, 1) : Mathf.Max(uiLerpTime - Time.deltaTime * 3f, 0);
-
-		if (!uiFadeIn && player.isFocusing)
-		{
-			controlsBorder.fillAmount = Mathf.Clamp(uiLerpTime / 0.5f, 1, 0);
-
-			Color infoColor = Color.Lerp(Color.white, Color.clear, Mathf.Clamp(uiLerpTime / 0.5f, 1, 0));
-			controlsInfo.color = infoColor;
-			controlsIcon.color = infoColor;
-		}
 
 		cctvUIBorder.rectTransform.localScale = Vector3.Lerp(new Vector3(1.5f, 1.5f, 1.5f), Vector3.one, Mathf.Clamp(uiLerpTime/0.5f, 0, 1));
 		cctvUIBorder.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
@@ -362,6 +417,8 @@ public class UIManager : MonoBehaviour
 
 			hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 237);
 			hackableName.color = Color.white;
+
+			uiFadeInProgress = false;
 			action -= LerpUITemplate;
 		}
 		else if (uiLerpTime <= 0 && !uiFadeIn)
@@ -382,78 +439,125 @@ public class UIManager : MonoBehaviour
 
 			hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 260);
 			hackableName.color = Color.clear;
+
+			uiFadeInProgress = false;
 			action -= LerpUITemplate;
 		}
 	}
 
 	void LerpInstructions()
 	{
-		//Do not Lerp at all if it has reached desired Position/Color
-		if ((instructionsLerpTime >= 1 && player.isFocusing) || (instructionsLerpTime <= 0 && !player.isFocusing)) return;
-
-		lerpingInstructions = true;
-		instructionsLerpTime = player.isFocusing ? Mathf.Min(instructionsLerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(instructionsLerpTime - Time.deltaTime * 4.5f, 0);
-
-		controlsBorder.fillAmount = Mathf.Clamp(instructionsLerpTime / 0.5f, 0, 1);
-
-		Color infoColor = Color.Lerp(Color.clear, displayError ? disabledUIColor : Color.white, Mathf.Clamp((instructionsLerpTime - 0.25f)/0.75f, 0, 1));
-		controlsInfo.color = infoColor;
-		controlsIcon.color = infoColor;
-
-		if (instructionsLerpTime >= 1 && player.isFocusing)
+		for (int i = 0; i < controls.Length; i++)
 		{
-			infoColor = displayError ? disabledUIColor : Color.white;
-			controlsInfo.color = infoColor;
-			controlsIcon.color = infoColor;
-			controlsBorder.fillAmount = 1;
-			lerpingInstructions = false;
-		}
-		else if (instructionsLerpTime <= 0 && !player.isFocusing)
-		{
-			infoColor = Color.clear;
-			controlsInfo.color = infoColor;
-			controlsIcon.color = infoColor;
-			controlsBorder.fillAmount = 0;
-			lerpingInstructions = false;
+			//Hence UI must be fading OR controls are still lerping
+			//Conditions. UI is not fading AND [Controls lerp time is >=1 when show is true OR Controls Lerp time is <= 0 when show is false]
+			//Condition. UI is not fading AND (Error lerp time is >= 1 when error is true and when show is true OR error lerp time <= 0 when error is false)
+			bool ignoreLerp = false;
+			bool ignoreErrorLerp = false;
+
+			if (!uiFadeInProgress)
+			{
+				if ((controls[i].lerpTime >= 1 && controls[i].show) || (controls[i].lerpTime <= 0 && !controls[i].show)) ignoreLerp = true;
+				if ((controls[i].errorLerpTime >= 1 && controls[i].hasError && controls[i].show) || (controls[i].errorLerpTime <= 0 && !controls[i].hasError)) ignoreErrorLerp = true;
+			}	
+
+			if (!ignoreLerp)
+			{
+				controls[i].isLerping = true;
+				if (uiFadeInProgress) controls[i].show = false;
+				controls[i].lerpTime = controls[i].show ? Mathf.Min(controls[i].lerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(controls[i].lerpTime - Time.deltaTime * 4.5f, 0);
+
+				controls[i].border.fillAmount = Mathf.Clamp(controls[i].lerpTime / 0.5f, 0, 1);
+
+				Color controlsColor = Color.Lerp(Color.clear, controls[i].hasError ? disabledUIColor : Color.white, Mathf.Clamp((controls[i].lerpTime - 0.25f) / 0.75f, 0, 1));
+				controls[i].text.color = controlsColor;
+				controls[i].icon.color = controlsColor;
+
+				if (controls[i].lerpTime >= 1 && controls[i].show)
+				{
+					controlsColor = controls[i].hasError ? disabledUIColor : Color.white;
+					controls[i].text.color = controlsColor;
+					controls[i].icon.color = controlsColor;
+					controls[i].border.fillAmount = 1;
+					controls[i].isLerping = false;
+				}
+				else if (controls[i].lerpTime <= 0 && !controls[i].show)
+				{
+					controlsColor = Color.clear;
+					controls[i].text.color = controlsColor;
+					controls[i].icon.color = controlsColor;
+					controls[i].border.fillAmount = 0;
+					controls[i].isLerping = false;
+				}
+			}
+
+			if (!ignoreErrorLerp)
+			{
+				if ((!controls[i].show && controls[i].hasError)) controls[i].hasError = false; //Turn Error back into false if Focus is lost
+				controls[i].errorLerpTime = controls[i].hasError ? Mathf.Min(controls[i].errorLerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(controls[i].errorLerpTime - Time.deltaTime * 4.5f, 0);
+
+				if (!controls[i].isLerping && controls[i].show) //Only change Color when Controls are not Lerping and when they are being shown
+				{
+					Color controlsColor = Color.Lerp(Color.white, disabledUIColor, controls[i].errorLerpTime);
+					controls[i].text.color = controlsColor;
+					controls[i].icon.color = controlsColor;
+				}
+
+				if (controls[i].errorLerpTime >= 1 && controls[i].hasError)
+				{
+					if (!controls[i].isLerping)
+					{
+						controls[i].text.color = disabledUIColor;
+						controls[i].icon.color = disabledUIColor;
+					}
+
+				}
+				else if (controls[i].errorLerpTime <= 0 && !controls[i].hasError)
+				{
+					if (!controls[i].isLerping && controls[i].show)
+					{
+						controls[i].text.color = Color.white;
+						controls[i].icon.color = Color.white;
+					}
+				}
+			}
 		}
 	}
 
-	void LerpError()
+	//Separate from Lerp Instructions. Old Error Lerp. May be used instead of combining them for clarity sake
+	void LerpActionAvailability()
 	{
-		if ((errorLerpTime >= 1 && displayError && player.isFocusing) || (errorLerpTime <= 0 && !displayError)) return;
-
-		if (!player.isFocusing && displayError) displayError = false;
-		errorLerpTime = displayError ? Mathf.Min(errorLerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(errorLerpTime - Time.deltaTime * 4.5f, 0);
-
-		errorMsgBorder.fillAmount = Mathf.Clamp(errorLerpTime / 0.5f, 0, 1);
-		errorMsg.color = Color.Lerp(Color.clear, Color.red, Mathf.Clamp((errorLerpTime - 0.25f) / 0.75f, 0, 1));
-
-		if (!lerpingInstructions && player.isFocusing)
+		for (int i = 0; i < controls.Length; i++)
 		{
-			Color infoColor = Color.Lerp(Color.white, disabledUIColor, errorLerpTime);
-			controlsInfo.color = infoColor;
-			controlsIcon.color = infoColor;
-		}
+			if (!uiFadeInProgress)
+				if ((controls[i].errorLerpTime >= 1 && controls[i].hasError && controls[i].show) || (controls[i].errorLerpTime <= 0 && !controls[i].hasError)) continue;
 
-		if (errorLerpTime >= 1 && displayError)
-		{
-			errorMsg.color = Color.red;
-			errorMsgBorder.fillAmount = 1;
-			if (!lerpingInstructions)
+			if ((!controls[i].show && controls[i].hasError)) controls[i].hasError = false;
+			controls[i].errorLerpTime = controls[i].hasError ? Mathf.Min(controls[i].errorLerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(controls[i].errorLerpTime - Time.deltaTime * 4.5f, 0);
+
+			if (!controls[i].isLerping && controls[i].show)
 			{
-				controlsInfo.color = disabledUIColor;
-				controlsIcon.color = disabledUIColor;
+				Color controlsColor = Color.Lerp(Color.white, disabledUIColor, controls[i].errorLerpTime);
+				controls[i].text.color = controlsColor;
+				controls[i].icon.color = controlsColor;
 			}
-			
-		}
-		else if (errorLerpTime <= 0 && !displayError)
-		{
-			errorMsg.color = Color.clear;
-			errorMsgBorder.fillAmount = 0;
-			if (!lerpingInstructions && player.isFocusing)
+
+			if (controls[i].errorLerpTime >= 1 && controls[i].hasError)
 			{
-				controlsInfo.color = Color.white;
-				controlsIcon.color = Color.white;
+				if (!controls[i].isLerping)
+				{
+					controls[i].text.color = disabledUIColor;
+					controls[i].icon.color = disabledUIColor;
+				}
+
+			}
+			else if (controls[i].errorLerpTime <= 0 && !controls[i].hasError)
+			{
+				if (!controls[i].isLerping && controls[i].show)
+				{
+					controls[i].text.color = Color.white;
+					controls[i].icon.color = Color.white;
+				}
 			}
 		}
 	}

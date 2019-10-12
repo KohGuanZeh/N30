@@ -23,7 +23,6 @@ public class PatrollingAI : MonoBehaviour
 	
 	public PatrolPoint[] patrolPoints;
 	public Vector3 alarmPos;
-	public bool alarmCorrected = false;
 
 	public int currentIndex;
 	public bool registered = false;
@@ -64,21 +63,16 @@ public class PatrollingAI : MonoBehaviour
 
 	void Update () 
 	{
-		if (!isInvincible)
-		{
-			if (alarmed && !alarmCorrected)
-				ChaseAlarm ();
-
-			if (!alarmed && !sentBack && !ai.isDisabled)
+		if (!sentBack)
+			if (!alarmed && !ai.isDisabled && !isInvincible)
 				ReRoute ();
-		}
 		
 		PlayerChase ();
 	}
 
 	void ChaseAlarm ()
 	{
-		alarmCorrected = true;
+		isInvincible = false;
 		agent.SetDestination (alarmPos);
 	}
 
@@ -145,7 +139,10 @@ public class PatrollingAI : MonoBehaviour
 
 		yield return new WaitForSeconds (3);
 
-		ReRoute ();
+		if (alarmed)
+			ChaseAlarm ();
+		else
+			ReRoute ();
 	}
 	
 	public void ReRoute () 

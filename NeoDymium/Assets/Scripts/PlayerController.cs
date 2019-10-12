@@ -62,8 +62,7 @@ public class PlayerController : MonoBehaviour
 
 	[Header("Checkpoint System")]
 	public int checkPointsPassed;
-	Checkpoint startPoint;
-	Checkpoint[] checkPoints;
+	[SerializeField] Checkpoint[] checkPoints;
 
 	[Header("Advanced Camera Movement")]
 	public bool headBob = true;
@@ -119,6 +118,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+		checkPointsPassed = PlayerPrefs.GetInt("Checkpoint");
+		for (int i = 0; i < checkPointsPassed + 1; i++) checkPoints[i].GetHackableMemory(i);
+		checkPoints[checkPointsPassed].LoadCheckPoint();
+
 		//Lock Cursor in Middle of Screen
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
@@ -689,36 +692,6 @@ public class PlayerController : MonoBehaviour
 		isDetected = false;
 		stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMult, 0);
 		prevStealthGauge = stealthGauge;
-	}
-	#endregion
-
-	#region Player Respawn
-	void Death()
-	{
-		//Death Animation Etc.
-	}
-
-	void Respawn()
-	{
-		Unhack(); //May move the Unhack to Player Death Function instead
-		inSpInteraction = false;
-
-		//Player Stand on Respawn
-		isCrouching = false;
-		anim.SetBool("Crouch", isCrouching);
-		headRefPoint = standCamPos;
-		crouchStandLerpTime = 0;
-		LerpCrouchStand();
-
-		if (checkPointsPassed > 0)
-		{
-			for (int i = 0; i < checkPointsPassed; i++)
-			{
-				if (i == (checkPointsPassed - 1)) checkPoints[i].LoadCheckPoint();
-				else checkPoints[i].LoadCheckPoint(false);
-			}
-		}
-		else startPoint.LoadCheckPoint();
 	}
 	#endregion
 

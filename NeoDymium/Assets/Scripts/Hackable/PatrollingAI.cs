@@ -11,6 +11,9 @@ public class PatrollingAI : MonoBehaviour
 		public Transform point;
 		public bool randomiseIdle;
 		public bool alwaysIdle;
+
+		[HideInInspector] 
+		public Collider col;
 	}
 	
 	public bool patrol = true;
@@ -36,12 +39,10 @@ public class PatrollingAI : MonoBehaviour
 	[HideInInspector] public NavMeshAgent agent;
 
 	PlayerController player;
-	List<Collider> colliders;
 	AI ai;
 
 	void Start ()
 	{
-		colliders = new List<Collider> ();
 		agent = GetComponent<NavMeshAgent> ();
 		ai = GetComponent<AI> ();
 		player = PlayerController.inst;
@@ -55,8 +56,8 @@ public class PatrollingAI : MonoBehaviour
 		reachedLastSeen = false;
 		isInvincible = false;
 
-		foreach (PatrolPoint point in patrolPoints)
-			colliders.Add (point.point.GetComponent<Collider> ());
+		for (int i = 0; i < patrolPoints.Length; i++)
+			patrolPoints[i].col = patrolPoints[i].point.GetComponent<Collider> ();
 	}
 
 	void Update () 
@@ -200,7 +201,7 @@ public class PatrollingAI : MonoBehaviour
 		{
 			registered = true;
 
-			if (patrol && colliders.Contains (other)) 
+			if (patrol && other == patrolPoints[currentIndex].col) 
 			{
 				Idle ();
 

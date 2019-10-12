@@ -79,6 +79,9 @@ public class PlayerController : MonoBehaviour
 	[Header ("Others")]
 	public Action action;
 	public PostProcessProfile ppp;
+	public bool holdingPass;
+	public bool vipPass;
+	Pass previousPass;
 
 	//For Getting Private Components. May want to use Properties instead
 	#region Additional Functions To Get Private Vars
@@ -301,6 +304,32 @@ public class PlayerController : MonoBehaviour
 				ui.Focus(isFocusing);
 				return;
 			}
+
+			if (aimRayHit.collider.GetComponent<Pass> () && WithinInteractDistance ())
+			{
+				bool passed = true;
+				if (hackedObj != null)
+					if (hackedObj.GetType () == typeof(CCTV))
+						passed = false;
+				
+				if (previousPass == aimRayHit.collider.GetComponent<Pass> ())
+					passed = false;
+				else if (previousPass != null)
+					previousPass.textHolder.gameObject.SetActive (false);
+
+				if (passed)
+				{
+					previousPass = aimRayHit.collider.GetComponent<Pass> ();
+					previousPass.textHolder.gameObject.SetActive (true);
+				}
+			}
+			else
+			{
+				if (previousPass != null)
+					previousPass.textHolder.gameObject.SetActive (false);
+				previousPass = null;
+			}
+			
 
 			if (prevCollider == aimRayHit.collider) return;
 			else prevCollider = aimRayHit.collider;

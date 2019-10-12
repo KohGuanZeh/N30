@@ -30,6 +30,6 @@ public class ObjectiveManager : MonoBehaviour
             uiManager.SetNewObjective (goals[currentGoalNumber].transform);
         }
 
-        displayCurrentGoal.text = goals[currentGoalNumber].GetComponent<RespectiveGoals>().currentGoal;
+        //displayCurrentGoal.text = goals[currentGoalNumber].GetComponent<RespectiveGoals>().currentGoal;
     }
 }

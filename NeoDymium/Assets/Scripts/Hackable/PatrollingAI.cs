@@ -22,6 +22,8 @@ public class PatrollingAI : MonoBehaviour
 	public float idleDuration = 1;
 	
 	public PatrolPoint[] patrolPoints;
+	public Vector3 alarmPos;
+	public bool alarmCorrected = false;
 
 	public int currentIndex;
 	public bool registered = false;
@@ -62,10 +64,22 @@ public class PatrollingAI : MonoBehaviour
 
 	void Update () 
 	{
-		if (!alarmed && !sentBack && !ai.isDisabled)
-			ReRoute ();
+		if (!isInvincible)
+		{
+			if (alarmed && !alarmCorrected)
+				ChaseAlarm ();
+
+			if (!alarmed && !sentBack && !ai.isDisabled)
+				ReRoute ();
+		}
 		
 		PlayerChase ();
+	}
+
+	void ChaseAlarm ()
+	{
+		alarmCorrected = true;
+		agent.SetDestination (alarmPos);
 	}
 
 	void PlayerChase ()
@@ -104,13 +118,12 @@ public class PatrollingAI : MonoBehaviour
 	IEnumerator LookAround ()
 	{
 		Vector3 startRotation = transform.eulerAngles;
-		Vector3 leftRotation = transform.eulerAngles + new Vector3 (0, 45, 0);
-		Vector3 rightRotation = transform.eulerAngles - new Vector3 (0, 45, 0);
+		//Vector3 leftRotation = transform.eulerAngles + new Vector3 (0, 45, 0);
+		//Vector3 rightRotation = transform.eulerAngles - new Vector3 (0, 45, 0);
 
 		for (int i = 0; i < 45; i++)
 		{
 			transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
-			//transform.eulerAngles = Vector3.Slerp (startRotation, leftRotation, 10 * Time.deltaTime);
 			yield return null;
 		}
 		

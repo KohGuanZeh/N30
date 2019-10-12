@@ -8,39 +8,36 @@ public class Checkpoint : MonoBehaviour
 	//to Disable the Control Panels that are meant to be disabled
 	[SerializeField] PlayerController player;
 	[SerializeField] LayerMask playerLayer;
-
 	[SerializeField] Collider coll;
-	[SerializeField] Transform checkPoint; //Position where the Player spawns
-	[SerializeField] ControlPanel[] controlPanels; //List of Disabled Control Panels up to Checkpoint
-	[SerializeField] ServerPanelDoor[] serverPanelDoors; //List of Server Panel Doors Disabled up to Checkpoint
-	[SerializeField] ServerPanel[] serverPanels; //List of Disabled Server Panels up to Checkpoint
+	[SerializeField] GameObject wall;
+	[SerializeField] List<IHackable> hackables;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-		player = PlayerController.inst;
+		if (wall) wall.SetActive(false);
+		player = FindObjectOfType<PlayerController>(); //Need to Find Object of Type since this has to be initialised together with Player
 		coll = GetComponent<Collider>();
     }
 
-	public void LoadCheckPoint(bool setPlayerPos = true)
+	public void LoadCheckPoint()
 	{
+		if (wall) wall.SetActive(true);
 		coll.enabled = false;
-		foreach (ControlPanel controlPanel in controlPanels) controlPanel.Disable();
-		foreach (ServerPanel serverPanel in serverPanels) serverPanel.Disable();
-		foreach (ServerPanelDoor door in serverPanelDoors) door.NumPadUnlock();
 
-		if (setPlayerPos)
-		{
-			player.transform.position = transform.position;
-			//Need to Set Rotation for Player and Player Canera as well
-		}
+		//Yaw and Pitch of Players are Set in Respawn function
+		player.transform.position = transform.position;
+		player.transform.eulerAngles = transform.eulerAngles;
 	}
 
-	public void ResetStateBeforeCheckpoint()
+	public void SetHackableMemory(int cpIndex)
 	{
-		foreach (ControlPanel controlPanel in controlPanels) controlPanel.Restore();
-		foreach (ServerPanel serverPanel in serverPanels) serverPanel.Restore();
-		foreach (ServerPanelDoor door in serverPanelDoors) door.NumPadLock();
+		for (int i = 0; i < hackables.Count; i++) hackables[i].GetSetPlayerMemory(cpIndex, i, false);
+	}
+
+	public void GetHackableMemory(int cpIndex)
+	{
+		for (int i = 0; i < hackables.Count; i++) hackables[i].GetSetPlayerMemory(cpIndex, i);
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -49,6 +46,8 @@ public class Checkpoint : MonoBehaviour
 		if (playerLayer == (playerLayer | (1 << other.gameObject.layer)))
 		{
 			PlayerPrefs.SetInt("Checkpoint", ++player.checkPointsPassed);
+			SetHackableMemory(player.checkPointsPassed);
+			if (wall) wall.SetActive(true);
 			coll.enabled = false;
 		}
 	}

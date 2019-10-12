@@ -196,7 +196,7 @@ public class IHackable : MonoBehaviour
 		#endregion
 
 		hacked = true;
-		postProcessVolume.profile = ppp;
+		//postProcessVolume.profile = ppp;
 	}
 
 	public virtual void OnUnhack()
@@ -209,7 +209,7 @@ public class IHackable : MonoBehaviour
 		}*/
 		#endregion
 
-		postProcessVolume.profile = player.ppp;
+		//postProcessVolume.profile = player.ppp;
 		hacked = false;
 	}
 
@@ -288,5 +288,12 @@ public class IHackable : MonoBehaviour
 			else return string.Empty;
 		}
 		else return string.Empty;
+	}
+
+	public void GetSetPlayerMemory(int cpIndex, int index, bool get = true) //If Get is false, It is Set
+	{
+		if (get) hasPlayerMemory = PlayerPrefs.GetInt(string.Format("Checkpoint {0} Hackable {1}", cpIndex, index)) == 1 ? true : false;
+		else PlayerPrefs.SetInt(string.Format("Checkpoint {0} Hackable {1}", cpIndex, index), hasPlayerMemory ? 1 : 0);
+		//print(string.Format("Checkpoint {0} Hackable {1} Has Memory: {2}", cpIndex, index, hasPlayerMemory));
 	}
 }

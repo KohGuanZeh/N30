@@ -195,7 +195,7 @@ public class UIManager : MonoBehaviour
 	{
 		if (isHackableObj)
 		{
-			print(string.Format("Show Secondary: {0}", haveSecondary));
+			//print(string.Format("Show Secondary: {0}", haveSecondary));
 
 			controls[0].show = true;
 			controls[0].hasError = hasErrors[0];
@@ -608,10 +608,17 @@ public class UIManager : MonoBehaviour
 		SceneManager.LoadScene ("Main Menu", LoadSceneMode.Single);
 	}
 
-	public void Retry()
+	public void LoadCheckpoint()
+	{
+		Time.timeScale = 1;
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+	}
+
+	public void Restart()
 	{
 		//Need a Proper Respawn
 		Time.timeScale = 1;
+		PlayerPrefs.DeleteKey("Checkpoint");
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
 	}
 	#endregion

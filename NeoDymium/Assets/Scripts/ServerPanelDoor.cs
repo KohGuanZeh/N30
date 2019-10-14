@@ -222,7 +222,9 @@ public class ServerPanelDoor : IInteractable
 	public void Backspace()
 	{
 		if (input.Length == 0) return;
-		input.Remove(input.Length - 1);
+		input = input.Remove(input.Length-1);
+		inputText.text = input;
+		print ("Piece of Shit");
 	}
 
 	public void Clear()

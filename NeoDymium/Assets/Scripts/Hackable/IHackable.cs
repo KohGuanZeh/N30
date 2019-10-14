@@ -98,11 +98,22 @@ public class IHackable : MonoBehaviour
 
 		//whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
 	
-		
 		RaycastHit hit;
 		Vector3 currentPos = transform.position + Vector3.up * whiteDotRaycastHeightOffset;
-		Physics.Raycast (currentPos, player.CurrentViewingCamera.transform.position - currentPos, out hit, Mathf.Infinity);
-		if (hit.collider == null)
+		Physics.Raycast (currentPos, (player.CurrentViewingCamera.transform.position - currentPos).normalized, out hit, Mathf.Infinity, player.aimingRaycastLayers);
+		
+		if (hit.collider != null)
+		{
+			if (hit.collider.tag == player.CurrentViewingCamera.transform.tag && hit.collider.name != gameObject.name) 
+			{
+				whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+				whiteDot.SetActive(true);
+			}
+			else whiteDot.SetActive(false);
+		}
+		else whiteDot.SetActive(false);
+
+		/*if (hit.collider == null)
 		{
 			whiteDot.SetActive (false);
 			return;
@@ -119,7 +130,7 @@ public class IHackable : MonoBehaviour
 		{
 			whiteDot.SetActive (true);
 			whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
-		}
+		}*/
 	}
 
 	/// <summary>

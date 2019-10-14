@@ -207,7 +207,7 @@ public class PatrollingAI : MonoBehaviour
 
 	void OnTriggerStay (Collider other) 
 	{
-		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed && !ai.isDisabled)
+		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed && !ai.isDisabled && !chasingPlayer)
 		{
 			registered = true;
 

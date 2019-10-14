@@ -98,6 +98,7 @@ public class IHackable : MonoBehaviour
 
 		//whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
 	
+		/* 
 		RaycastHit hit;
 		Vector3 currentPos = transform.position + Vector3.up * whiteDotRaycastHeightOffset;
 		Physics.Raycast (currentPos, (player.CurrentViewingCamera.transform.position - currentPos).normalized, out hit, Mathf.Infinity, player.aimingRaycastLayers);
@@ -112,6 +113,40 @@ public class IHackable : MonoBehaviour
 			else whiteDot.SetActive(false);
 		}
 		else whiteDot.SetActive(false);
+		*/
+
+        Ray r = new Ray (transform.position, (player.CurrentViewingCamera.transform.position - transform.position).normalized);
+		RaycastHit[] hits = Physics.RaycastAll (r, (player.CurrentViewingCamera.transform.position - transform.position).magnitude, player.aimingRaycastLayers);
+
+		bool passed = true;
+		foreach (RaycastHit hit in hits)
+		{
+			if (hit.collider.gameObject != player.CurrentViewingCamera.gameObject)
+			{
+				passed = false;
+				whiteDot.gameObject.SetActive (false);
+			}
+		}
+
+		if (passed)
+		{
+			whiteDot.gameObject.SetActive (true);
+        	whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+		}
+		/* 
+        if (Physics.RaycastAll (r, out hit, (player.CurrentViewingCamera.transform.position - transform.position).magnitude, player.aimingRaycastLayers)) 
+		{
+            if (hit.collider.gameObject == player.CurrentViewingCamera.gameObject) 
+			{
+                whiteDot.gameObject.SetActive (true);
+                whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+            } 
+			else 
+			{
+                whiteDot.gameObject.SetActive (false);
+            }
+        }
+		*/
 
 		/*if (hit.collider == null)
 		{

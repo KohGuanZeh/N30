@@ -11,21 +11,22 @@ public class ObjectiveManager : MonoBehaviour
 
     public int currentGoalNumber;
 
-    ScoreSystem scoreSystem;
     UIManager uiManager;
 
-    void Awake() {
-        scoreSystem = FindObjectOfType<ScoreSystem>();
+    void Awake() 
+    {
         uiManager = FindObjectOfType<UIManager>();
     }
-    void Start() {
+    void Start() 
+    {
         currentGoalNumber = 0;
     }
 
-    void Update() {
+    void Update() 
+    {
         if (goals[currentGoalNumber].GetComponent<RespectiveGoals>().isCompleted)
 		{
-            scoreSystem.totalScore += goals[currentGoalNumber].GetComponent<RespectiveGoals>().pointsGained;
+            currentGoalNumber++;
 			currentGoalNumber = Mathf.Min(currentGoalNumber, goals.Length - 1); //To prevent errors!
             uiManager.SetNewObjective (goals[currentGoalNumber].transform);
         }

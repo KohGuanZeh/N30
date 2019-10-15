@@ -493,7 +493,7 @@ public class PlayerController : MonoBehaviour
 	bool WithinWipeDistance()
 	{
 		//Does not Check if Hackable is Null
-		if ((aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 9) return false;
+		if ((aimRayHit.point - currentViewingCamera.transform.position).sqrMagnitude > 25) return false;
 		else return true;
 	}
 

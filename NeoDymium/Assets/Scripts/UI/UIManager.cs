@@ -58,6 +58,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] Transform objective;
 	[SerializeField] float offset; //Offset for Min Max XY
 	[SerializeField] Vector2 minXY, maxXY;
+	[SerializeField] TextMeshProUGUI distanceToObj;
 
 	[Header("Stealth Gauge")]
 	public RectTransform mainPointer; //Pointer to Instantiate
@@ -281,21 +282,40 @@ public class UIManager : MonoBehaviour
 		Vector3 objPos = objective.position;
 		Vector2 objScreenPos = player.CurrentViewingCamera.WorldToScreenPoint(objPos);
 
-		//Check if Objective is in front or behind of Player (any body that the Player is in)
+		//Distance from Player to Objective
+		int dist = Mathf.RoundToInt((player.transform.position - objPos).magnitude);
+
+		distanceToObj.text = dist.ToString() + "m";
+		
+		// //Check if Objective is in front or behind of Player (any body that the Player is in)
+		// Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
+		// //If Objective is behind of where Player (any body that the Player is in) is at
+		// if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToObj) < 0)
+		// {
+		// 	//If Object is on the Right side of the Player, Clamp it to the LEFT (Since Player is facing behind) and vice versa
+		// 	if (objScreenPos.x > Screen.width / 2) objScreenPos.x = minXY.x;
+		// 	else objScreenPos.x = maxXY.x;
+		// }
+
+		// //Clamp to prevent Marker from going Offscreen
+		// objScreenPos.x = Mathf.Clamp(objScreenPos.x, minXY.x, maxXY.x);
+		// objScreenPos.y = Mathf.Clamp(objScreenPos.y, minXY.y, maxXY.y);
+
 		Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
-		//If Objective is behind of where Player (any body that the Player is in) is at
+
 		if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToObj) < 0)
 		{
-			//If Object is on the Right side of the Player, Clamp it to the LEFT (Since Player is facing behind) and vice versa
-			if (objScreenPos.x > Screen.width / 2) objScreenPos.x = minXY.x;
-			else objScreenPos.x = maxXY.x;
+			marker.gameObject.SetActive (false);
+			distanceToObj.gameObject.SetActive (false);
+		}
+		else 
+		{
+			marker.gameObject.SetActive (true);
+			distanceToObj.gameObject.SetActive (true);
 		}
 
-		//Clamp to prevent Marker from going Offscreen
-		objScreenPos.x = Mathf.Clamp(objScreenPos.x, minXY.x, maxXY.x);
-		objScreenPos.y = Mathf.Clamp(objScreenPos.y, minXY.y, maxXY.y);
-
 		marker.transform.position = objScreenPos;
+		distanceToObj.transform.position = objScreenPos;
 	}
 
 	void ShowMarker()

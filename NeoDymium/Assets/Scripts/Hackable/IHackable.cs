@@ -40,8 +40,10 @@ public class IHackable : MonoBehaviour
 	public bool hasPlayerMemory = false;
 	public bool canWipeMemory = true;
 	public RectTransform pointer; //Stores the Pointer of the UI so that to specify which Pointer belongs to which AI.
-	
-	[Header ("UI")]
+
+	[Header("UI")]
+	public string roomName;
+	public string hackableName;
 	public GameObject exclamationMark;
 	public GameObject questionMark;
 	public float whiteDotRaycastHeightOffset = 0.5f;

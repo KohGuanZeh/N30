@@ -22,7 +22,11 @@ public class ControlPanel : IInteractable
 	{
 		if (!activated) 
 			Disable();
-		gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
+
+		//Get Component and Check if Component Exist to prevent error
+		RespectiveGoals goal = GetComponent<RespectiveGoals>();
+		if (goal) goal.isCompleted = true;
+		//gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
 	}
 
 	public override string GetError(int key = 0)

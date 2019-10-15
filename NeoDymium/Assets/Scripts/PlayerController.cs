@@ -449,7 +449,9 @@ public class PlayerController : MonoBehaviour
 		if (interactError == string.Empty) interactError = WithinWipeDistance() ? interactError : "Target is out of reach";
 		ui.DisplayError(interactError); //May want to use Display Error to Return a Bool. If the Bool is true, return so you dont have to do additional Checks
 
-		if (!WithinInteractDistance()) return;
+		if (interactError != string.Empty) return; //Prevent Interaction so long an Error is being produced
+
+		//if (!WithinInteractDistance()) return;
 		if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
 		else if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();
 
@@ -500,28 +502,31 @@ public class PlayerController : MonoBehaviour
 	void WipeMemory()
 	{
 		if (!detectedHackable) return;
+		if (!detectedHackable.hasPlayerMemory) return;
 
 		string wipeError = detectedHackable.GetError(1);
 		if (wipeError == string.Empty) wipeError = WithinWipeDistance() ? wipeError : "Target is out of reach";
 		ui.DisplayError(wipeError); //May want to use Display Error to Return a Bool. If the Bool is true, return so you dont have to do additional Checks
 
-		if (!WithinWipeDistance()) return;
-		if (!detectedHackable.hasPlayerMemory || !detectedHackable.canWipeMemory) return;
+		if (wipeError != string.Empty) return; //Prevent Wiping of Memory if Error is produced
 
+		//if (!WithinWipeDistance() || !detectedHackable.canWipeMemory) return;
 		detectedHackable.hasPlayerMemory = false;
 	}
 
 	void Hack()
 	{
 		if (!detectedHackable) return;
+		if (!detectedHackable || hackedObj == detectedHackable) return;
 
-		ui.DisplayError(detectedHackable.GetError());
+		string hackError = detectedHackable.GetError();
+		ui.DisplayError(hackError);
 
-		if (!detectedHackable.hackable) return;
+		if (hackError != string.Empty) return; //Prevent Hacking if Error is produced
 
 		//Note that Player Camera
-		if (!detectedHackable || hackedObj == detectedHackable) return;
-		if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;
+		//if (!detectedHackable.hackable) return;
+		//if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;
 
 		if (!ui.cctvUI.activeSelf)
 		{

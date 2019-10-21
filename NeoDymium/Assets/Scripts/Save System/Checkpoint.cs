@@ -18,6 +18,8 @@ public class Checkpoint : MonoBehaviour
 		if (wall) wall.SetActive(false);
 		player = FindObjectOfType<PlayerController>(); //Need to Find Object of Type since this has to be initialised together with Player
 		coll = GetComponent<Collider>();
+
+		//System for Setting Hackable Names
     }
 
 	public void LoadCheckPoint()
@@ -49,6 +51,28 @@ public class Checkpoint : MonoBehaviour
 			SetHackableMemory(player.checkPointsPassed);
 			if (wall) wall.SetActive(true);
 			coll.enabled = false;
+		}
+	}
+
+	void SetHackableNames()
+	{
+		int cctvIndex = 0;
+		int aiIndex = 0;
+
+		for (int i = 0; i < hackables.Count; i++)
+		{
+			hackables[i].roomName = "RM-001"; //Need to Store a String to indicate Room Name
+
+			if (hackables[i].GetComponent<CCTV>()) //May want to have an Enum to indicate type
+			{
+				++cctvIndex;
+				hackables[i].hackableName = string.Format("CAM{0}", cctvIndex.ToString("000"));
+			}
+			else
+			{
+				++aiIndex;
+				hackables[i].hackableName = string.Format("AI{0}", aiIndex.ToString("000"));
+			}
 		}
 	}
 }

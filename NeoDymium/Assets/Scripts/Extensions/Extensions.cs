@@ -18,7 +18,7 @@ public static class Extensions
 	}
 
 	//Need to Manually Adjust Player's Bounds as the Player Bounds is still a little Bigger than what its meant to be... hence having some frames where you cant see the Player but still registered as detected
-	public static bool RaycastCheck(Collider collider, Camera camera, float offset = 0.15f, bool debugMode = false)
+	public static bool RaycastCheck(Collider collider, Camera camera, float offset = 0.2f, bool debugMode = false)
 	{
 		RaycastHit hit;
 
@@ -40,7 +40,7 @@ public static class Extensions
 		{
 			if (hit.collider.GetComponentInChildren<Renderer>() == collider)
 			{
-				//Debug.Log("Hit by Center");
+				if (debugMode) Debug.Log("Hit by Center");
 				return true;
 			}
 		}
@@ -48,7 +48,7 @@ public static class Extensions
 		{
 			if (hit.collider == collider)
 			{
-				//Debug.Log("Hit by Top");
+				if (debugMode) Debug.Log("Hit by Top");
 				return true;
 			}
 		}
@@ -56,7 +56,7 @@ public static class Extensions
 		{
 			if (hit.collider == collider)
 			{
-				//Debug.Log("Hit by Bottom");
+				if (debugMode) Debug.Log("Hit by Bottom");
 				return true;
 			}
 		}
@@ -64,7 +64,7 @@ public static class Extensions
 		{
 			if (hit.collider == collider)
 			{
-				//Debug.Log("Hit by Right");
+				if (debugMode) Debug.Log("Hit by Right");
 				return true;
 			}
 		}
@@ -72,7 +72,7 @@ public static class Extensions
 		{
 			if (hit.collider == collider)
 			{
-				//Debug.Log("Hit by Left");
+				if (debugMode) Debug.Log("Hit by Left");
 				return true;
 			}
 		}

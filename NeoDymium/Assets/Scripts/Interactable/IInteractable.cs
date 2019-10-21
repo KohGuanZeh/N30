@@ -19,7 +19,7 @@ public class IInteractable : MonoBehaviour
 		whiteDot = Instantiate (UIManager.inst.whiteDot, Vector3.zero, Quaternion.identity, UIManager.inst.whiteDotHolder);
 	}
 
-	void FixedUpdate ()
+	protected virtual void Update ()
 	{
 		WhiteDot ();
 	}
@@ -60,7 +60,7 @@ public class IInteractable : MonoBehaviour
 		}
 		*/
 
-		RaycastHit hit;
+		/*RaycastHit hit;
 		Vector3 currentPos = transform.position + Vector3.up * whiteDotRaycastHeightOffset;
 		Physics.Raycast (currentPos, player.CurrentViewingCamera.transform.position - currentPos, out hit, Mathf.Infinity);
 
@@ -78,7 +78,24 @@ public class IInteractable : MonoBehaviour
 		{
 			whiteDot.SetActive (true);
 			whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
+		}*/
+
+		Ray ray = new Ray(player.CurrentViewingCamera.transform.position, (transform.position - player.CurrentViewingCamera.transform.position).normalized);
+		RaycastHit hit;
+
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, player.aimingRaycastLayers))
+		{
+			//Debug.DrawLine(ray.origin, hit.point, Color.red);
+
+			if (col == hit.collider)
+			{
+				//print(name + "is Hit");
+				whiteDot.gameObject.SetActive(true);
+				whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint(transform.position);
+			}
+			else whiteDot.gameObject.SetActive(false);
 		}
+		else whiteDot.gameObject.SetActive(false);
 	}
 
 

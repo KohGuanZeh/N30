@@ -8,14 +8,27 @@ using TMPro;
 [Serializable]
 public struct ControlsInfo
 {
+	public bool show; //Check if it should be Visible
+	public bool hasError; //Check if Current Action can be Executed
+	public bool isLerping; //Check if Current UI Element is Lerping
+	public float lerpTime; //Lerp Time of Current UI Element
+	public float errorLerpTime; //Lerp Time for Showing Error of Current UI (From Full White to Disabled Color)
+	public Image icon; //Icon of the Controls
+	public TextMeshProUGUI text; //Text of the Controls
+	public Image border; //The Line
+}
+
+[Serializable]
+public struct NewControlsInfo
+{
 	public bool show;
-	public bool hasError;
-	public bool isLerping;
 	public float lerpTime;
-	public float errorLerpTime;
 	public Image icon;
 	public TextMeshProUGUI text;
-	public Image border;
+	public RectTransform parentHolder;
+
+	public Sprite iconSpr;
+	public string textStr;
 }
 
 public class UIManager : MonoBehaviour
@@ -70,7 +83,6 @@ public class UIManager : MonoBehaviour
 	[Header("Instructions and Error Msgs")]
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
 	[SerializeField] ControlsInfo[] controls;
-
 	[SerializeField] bool errorFadeIn; //Checks if Error is Fading in
 	[SerializeField] TextMeshProUGUI errorMsg;
 	[SerializeField] float errorLerpTime;
@@ -80,6 +92,14 @@ public class UIManager : MonoBehaviour
 	public bool isGameOver;
 	public bool isPaused;
 
+	[Header("New UI")]
+	[SerializeField] Image[] crosshairs; //Unfilled Dot and Filled Dot
+	[SerializeField] float backdropLerpTime;
+	[SerializeField] bool showBackdrop;
+	[SerializeField] Image backDrop;
+	[SerializeField] NewControlsInfo[] controlsInfo;
+
+	[Header ("Others")]
 	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
 	public Action action;
 
@@ -147,13 +167,19 @@ public class UIManager : MonoBehaviour
 		errorMsg.color = Color.clear;
 
 		action += LerpInstructions;
-		//action += LerpActionAvailability;
+		action += LerpActionAvailability;
+
+		//action += LerpBackdrop;
+		//action += NewLerpInsturctions;
 	}
 
 	void Update()
 	{
 		PointToObjective();
 		stealthGauge.fillAmount = (player.stealthGauge / player.stealthThreshold);
+
+		if (player.isFocusing || player.inHackable) showBackdrop = true;
+		else showBackdrop = false;
 
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver) PausePlay();
 
@@ -287,19 +313,19 @@ public class UIManager : MonoBehaviour
 
 		distanceToObj.text = dist.ToString() + "m";
 		
-		// //Check if Objective is in front or behind of Player (any body that the Player is in)
-		// Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
-		// //If Objective is behind of where Player (any body that the Player is in) is at
-		// if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToObj) < 0)
-		// {
-		// 	//If Object is on the Right side of the Player, Clamp it to the LEFT (Since Player is facing behind) and vice versa
-		// 	if (objScreenPos.x > Screen.width / 2) objScreenPos.x = minXY.x;
-		// 	else objScreenPos.x = maxXY.x;
-		// }
+		/*//Check if Objective is in front or behind of Player (any body that the Player is in)
+		Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
+		//If Objective is behind of where Player (any body that the Player is in) is at
+		if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToObj) < 0)
+		{
+			//If Object is on the Right side of the Player, Clamp it to the LEFT (Since Player is facing behind) and vice versa
+			if (objScreenPos.x > Screen.width / 2) objScreenPos.x = minXY.x;
+			else objScreenPos.x = maxXY.x;
+		}
 
-		// //Clamp to prevent Marker from going Offscreen
-		// objScreenPos.x = Mathf.Clamp(objScreenPos.x, minXY.x, maxXY.x);
-		// objScreenPos.y = Mathf.Clamp(objScreenPos.y, minXY.y, maxXY.y);
+		//Clamp to prevent Marker from going Offscreen
+		objScreenPos.x = Mathf.Clamp(objScreenPos.x, minXY.x, maxXY.x);
+		objScreenPos.y = Mathf.Clamp(objScreenPos.y, minXY.y, maxXY.y);*/
 
 		Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
 
@@ -379,6 +405,27 @@ public class UIManager : MonoBehaviour
 			crosshairIsLerping = false;
 			action -= LerpFocusFeedback;
 		}
+
+		/*crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
+		crosshairs[0].color = Color.Lerp(Color.white, Color.clear, crosshairLerpTime); //May not even need 0. Just Lerp the Filled Dot Color
+		crosshairs[1].color = Color.Lerp(Color.clear, Color.white, crosshairLerpTime);
+
+		if (crosshairLerpTime >= 1 && isFocusing)
+		{
+			crosshairs[0].color = Color.clear;
+			crosshairs[1].color = Color.white;
+
+			crosshairIsLerping = false;
+			action -= LerpFocusFeedback;
+		}
+		else if (crosshairLerpTime <= 0 && !isFocusing)
+		{
+			crosshairs[0].color = Color.white;
+			crosshairs[1].color = Color.clear;
+
+			crosshairIsLerping = false;
+			action -= LerpFocusFeedback;
+		}*/
 	}
 
 	void FlashDetectedWarning()
@@ -588,7 +635,6 @@ public class UIManager : MonoBehaviour
 					controls[i].text.color = disabledUIColor;
 					controls[i].icon.color = disabledUIColor;
 				}
-
 			}
 			else if (controls[i].errorLerpTime <= 0 && !controls[i].hasError)
 			{
@@ -633,13 +679,15 @@ public class UIManager : MonoBehaviour
 	public void MainMenu ()
 	{
 		Time.timeScale = 1;
-		SceneManager.LoadScene ("Main Menu", LoadSceneMode.Single);
+		LoadingScreen.inst.LoadScene("Main Menu");
+		//SceneManager.LoadScene ("Main Menu", LoadSceneMode.Single);
 	}
 
 	public void LoadCheckpoint()
 	{
 		Time.timeScale = 1;
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+		LoadingScreen.inst.LoadScene(SceneManager.GetActiveScene().name);
+		//SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
 	}
 
 	public void Restart()
@@ -647,7 +695,126 @@ public class UIManager : MonoBehaviour
 		//Need a Proper Respawn
 		Time.timeScale = 1;
 		PlayerPrefs.DeleteKey("Checkpoint");
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+		LoadingScreen.inst.LoadScene(SceneManager.GetActiveScene().name);
+		//SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+	}
+	#endregion
+
+	#region For New UI
+	public void SetControlsFeedback(List<string> instructions)
+	{
+		for (int i = 0; i < instructions.Count; i++)
+		{
+			controlsInfo[i].textStr = instructions[i];
+			controlsInfo[i].iconSpr = GetSpriteFromStr(instructions[i]);
+			controlsInfo[i].show = false;
+		}
+
+		for (int i = instructions.Count; i < controlsInfo.Length; i++)
+		{
+			controlsInfo[i].textStr = string.Empty;
+			controlsInfo[i].iconSpr = null;
+			controlsInfo[i].show = false;
+		}
+	}
+
+	void LerpBackdrop()
+	{
+		//Lerp Backdrop
+		if ((showBackdrop && backdropLerpTime >= 1) || (!showBackdrop && backdropLerpTime <= 0)) return; //No Change
+		backdropLerpTime = showBackdrop ? Mathf.Min(backdropLerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(backdropLerpTime - Time.deltaTime * 4.5f, 0);
+
+		float y = Mathf.Lerp(-30, 0, backdropLerpTime);
+		backDrop.rectTransform.anchoredPosition = new Vector2(backDrop.rectTransform.anchoredPosition.x, y);
+
+		if (showBackdrop && backdropLerpTime >= 1)
+		{
+			backDrop.rectTransform.anchoredPosition = new Vector2(backDrop.rectTransform.anchoredPosition.x, 0);
+		}
+		else if (!showBackdrop && backdropLerpTime <= 0)
+		{
+			backDrop.rectTransform.anchoredPosition = new Vector2(backDrop.rectTransform.anchoredPosition.x, -30);
+		}
+	}
+
+	void NewLerpInsturctions()
+	{
+		int clearCount = 0;
+
+		for (int i = 0; i < controlsInfo.Length; i++)
+		{
+			//if ((controlsInfo[i].lerpTime >= 1 && controlsInfo[i].show) || (controlsInfo[i].lerpTime <= 0 && !controlsInfo[i].show)) continue;
+
+			controlsInfo[i].lerpTime = controlsInfo[i].show ? Mathf.Min(controlsInfo[i].lerpTime + Time.deltaTime * 6f, 1) : Mathf.Max(controlsInfo[i].lerpTime - Time.deltaTime * 6f, 0);
+
+			Color controlsColor = Color.Lerp(Color.clear, Color.white, controlsInfo[i].lerpTime);
+			controlsInfo[i].icon.color = controlsColor;
+			controlsInfo[i].text.color = controlsColor;
+
+			if (controlsInfo[i].lerpTime >= 1 && controlsInfo[i].show)
+			{
+				controlsInfo[i].text.color = Color.white;
+				controlsInfo[i].icon.color = Color.white;
+			}
+			else if (controlsInfo[i].lerpTime <= 0 && !controlsInfo[i].show)
+			{
+				controlsInfo[i].text.color = Color.clear;
+				controlsInfo[i].icon.color = Color.clear;
+				clearCount++;
+			}
+		}
+
+		if (clearCount == controlsInfo.Length) OnInstructionsFadeOut();
+	}
+
+	void OnInstructionsFadeOut()
+	{
+		//Resizing Instructions
+		float xPos = -15; //Start Margin is 15
+		for (int i = 0; i < controlsInfo.Length; i++)
+		{
+			if (!showBackdrop) controlsInfo[i].show = false;
+			if (controlsInfo[i].textStr != string.Empty)
+			{
+				controlsInfo[i].show = true;
+			} 
+
+			//Change String of Text
+			controlsInfo[i].text.text = controlsInfo[i].textStr;
+			controlsInfo[i].icon.sprite = controlsInfo[i].iconSpr;
+
+			float textSize = controlsInfo[i].text.text.Length * 5.5f;
+			float rectSize = textSize + 3 + 20; //5 is Spacing Between Img and Text, 20 is size of Img
+
+			//Reize Rect of Text Box
+			controlsInfo[i].text.rectTransform.sizeDelta = new Vector2(textSize, controlsInfo[i].text.rectTransform.sizeDelta.y);
+			//Adjust Position of Text Box
+			controlsInfo[i].text.rectTransform.anchoredPosition = new Vector2(-textSize, controlsInfo[i].text.rectTransform.anchoredPosition.y);
+			//Resize Rect Parent (Text + Icon)
+			controlsInfo[i].parentHolder.sizeDelta = new Vector2(rectSize, controlsInfo[i].parentHolder.sizeDelta.y);
+			//Adjust Position of Rect Parent
+			controlsInfo[i].parentHolder.anchoredPosition = new Vector2(xPos, controlsInfo[i].parentHolder.anchoredPosition.y);
+
+			//Update Next Position
+			xPos -= (rectSize + 15); //Additional 20 for spacing between 2 Instructions
+		}
+	}
+
+	Sprite GetSpriteFromStr(string str)
+	{
+		switch (str)
+		{
+			case "Hack":
+				return controlsSprites[0];
+			case "Interact":
+				return controlsSprites[1];
+			case "Wipe Memory":
+				return controlsSprites[1];
+			case "Unhack":
+				return controlsSprites[0];
+			default:
+				return null;
+		}
 	}
 	#endregion
 }

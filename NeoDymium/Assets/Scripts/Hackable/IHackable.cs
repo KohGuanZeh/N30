@@ -63,12 +63,14 @@ public class IHackable : MonoBehaviour
 		if (enabledShields.Count == 0 && disabledShields.Count == 0) hasNoShields = true;
 		else hasNoShields = false;
 
-		whiteDot = Instantiate (UIManager.inst.whiteDot, Vector3.zero, Quaternion.identity, UIManager.inst.whiteDotHolder);
-		col = GetComponent<Collider> ();
+		whiteDot = Instantiate (ui.whiteDot, Vector3.zero, Quaternion.identity, ui.whiteDotHolder);
+		col = GetComponent<CapsuleCollider>();
 	}
 
 	protected virtual void Update()
 	{
+		if (!isDisabled) NewWhiteDot();
+
 		if (ui.isPaused || ui.isGameOver) return;
 
 		if (camera && !isDisabled) CatchPlayer(); //If Hackable Object has a Camera, and is not disabled, it should actively look out for Player
@@ -79,9 +81,29 @@ public class IHackable : MonoBehaviour
 		}
 	}
 
-	void FixedUpdate ()
+	/*void FixedUpdate ()
 	{
-		if (!isDisabled) WhiteDot ();
+		if (!isDisabled) NewWhiteDot ();
+	}*/
+
+	void NewWhiteDot()
+	{
+		Ray ray = new Ray(player.CurrentViewingCamera.transform.position, (transform.position + Vector3.up * whiteDotRaycastHeightOffset - player.CurrentViewingCamera.transform.position).normalized);
+		RaycastHit hit;
+
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, player.aimingRaycastLayers))
+		{
+			//Debug.DrawLine(ray.origin, hit.point, Color.red);
+
+			if (col == hit.collider)
+			{
+				//print(name + "is Hit");
+				whiteDot.gameObject.SetActive(true);
+				whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint(transform.position);
+			}
+			else whiteDot.gameObject.SetActive(false);
+		}
+		else whiteDot.gameObject.SetActive(false);
 	}
 
 	void WhiteDot ()

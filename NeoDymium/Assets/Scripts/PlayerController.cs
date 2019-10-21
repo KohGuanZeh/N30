@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using System.Collections.Generic;
 using System;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,6 +10,7 @@ public class PlayerController : MonoBehaviour
 	public static PlayerController inst;
 	[SerializeField] CapsuleCollider detectionColl; //Capsule Collider that is same size as Char Controller Collider. Char Controller Collider cant have proper raycast on its hemisphere so need to use this
 	[SerializeField] UIManager ui;
+	[SerializeField] LoadingScreen loadingScreen;
 
 	[Header("Player Movement")]
 	[SerializeField] CharacterController controller;
@@ -131,6 +134,7 @@ public class PlayerController : MonoBehaviour
 
 		//Getting Components
 		ui = UIManager.inst;
+		loadingScreen = LoadingScreen.inst;
 		playerCam = GetComponentInChildren<Camera>();
 		controller = GetComponent<CharacterController>();
 		detectionColl = GetComponent<CapsuleCollider>();
@@ -151,6 +155,8 @@ public class PlayerController : MonoBehaviour
     {
 		if (!ui.isPaused && !ui.isGameOver)
 		{
+			if (loadingScreen.isLoading) return;
+
 			//mesh.mesh.RecalculateBounds();
 			if (!inSpInteraction)
 			{
@@ -163,7 +169,7 @@ public class PlayerController : MonoBehaviour
 				}
 
 				Aim();
-				UpdateDisplayMessages();
+				if (detectedHackable || detectedInteractable) UpdateDisplayMessages();
 				if (Input.GetKeyDown(KeyCode.E))
 				{
 					if (detectedHackable) WipeMemory();
@@ -341,8 +347,6 @@ public class PlayerController : MonoBehaviour
 			if (hackableInteractableLayer == (hackableInteractableLayer | 1 << aimRayHit.transform.gameObject.layer))
 			{
 				isFocusing = true;
-				string[] msgs = new string[] { "", "" };
-				//string msg = "";
 
 				switch (aimRayHit.collider.tag)
 				{
@@ -370,6 +374,7 @@ public class PlayerController : MonoBehaviour
 						break;
 
 					case ("Interactable"):
+
 						detectedInteractable = aimRayHit.collider.GetComponent<IInteractable>();
 						detectedHackable = null;
 
@@ -404,8 +409,6 @@ public class PlayerController : MonoBehaviour
 
 	void UpdateDisplayMessages()
 	{
-		string[] msgs = new string[] { "", "" };
-
 		if (detectedInteractable)
 		{
 			string interactError = detectedInteractable.GetError();
@@ -454,42 +457,6 @@ public class PlayerController : MonoBehaviour
 		//if (!WithinInteractDistance()) return;
 		if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
 		else if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();
-
-		#region Old Interact
-		/*void Interact ()
-		{
-			if (Input.GetKeyDown (KeyCode.E))
-			{
-				RaycastHit hit;
-				Physics.Raycast (playerCam.transform.position, playerCam.transform.forward , out hit, 3);
-
-				if (hit.collider != null)
-				{
-					switch (hit.collider.tag)
-					{
-						case ("ControlPanel"):
-						{
-							hit.collider.GetComponent<ControlPanel> ().Activate ();
-						}
-						break;
-
-						case ("ServerPanel"):
-						{
-							FindObjectOfType<ExitDoor> ().locked = false;
-						}
-						break;
-
-						case ("ExitDoor"):
-						{
-							if (!hit.collider.GetComponent<ExitDoor> ().locked)
-							hit.collider.GetComponent<ExitDoor> ().OpenDoor ();
-						}
-						break;
-					}
-				}
-			}
-		}*/
-		#endregion
 	}
 
 	bool WithinWipeDistance()
@@ -690,24 +657,6 @@ public class PlayerController : MonoBehaviour
 		}
 	}*/
 	#endregion
-
-	/*public void Unhack()
-	{
-		if (!hackedObj) return;
-		currentViewingCamera = playerCam;
-		hackedObj.OnUnhack();
-		hackedObj = null;
-		inHackable = false;
-	}
-
-	public void ChangeViewCamera(Camera camera, Transform headRefPoint = null)
-	{
-		currentViewingCamera.depth = 0;
-		ResetHeadBob(headRefPoint);
-		currentViewingCamera = camera;
-		currentViewingCamera.depth = 2;
-		MinimapCamera.inst.ChangeTarget (camera.transform);
-	}*/
 	#endregion
 
 	#region Player Detection

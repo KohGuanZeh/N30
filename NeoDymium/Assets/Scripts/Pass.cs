@@ -19,8 +19,9 @@ public class Pass : IInteractable
 		Physics.IgnoreCollision (col, player.GetPlayerCollider (), true);
 	}
 
-	void Update ()
+	protected override void Update ()
 	{
+		base.Update();
 		if (textHolder.gameObject.activeSelf)
 			textHolder.transform.LookAt (2 * text.transform.position - player.CurrentViewingCamera.transform.position);
 	}

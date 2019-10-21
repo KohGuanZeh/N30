@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] CapsuleCollider detectionColl; //Capsule Collider that is same size as Char Controller Collider. Char Controller Collider cant have proper raycast on its hemisphere so need to use this
 	[SerializeField] UIManager ui;
 	[SerializeField] LoadingScreen loadingScreen;
+	[SerializeField] AreaNamesManager areaNamesManager;
+	[SerializeField] AreaNames areaNames;
 
 	[Header("Player Movement")]
 	[SerializeField] CharacterController controller;
@@ -84,6 +86,7 @@ public class PlayerController : MonoBehaviour
 	public bool holdingPass;
 	public bool vipPass;
 	Pass previousPass;
+	private bool areaNameUpdated = false;
 
 	//For Getting Private Components. May want to use Properties instead
 	#region Additional Functions To Get Private Vars
@@ -135,6 +138,8 @@ public class PlayerController : MonoBehaviour
 		//Getting Components
 		ui = UIManager.inst;
 		loadingScreen = LoadingScreen.inst;
+		areaNamesManager = AreaNamesManager.inst;
+		areaNames = AreaNames.inst;
 		playerCam = GetComponentInChildren<Camera>();
 		controller = GetComponent<CharacterController>();
 		detectionColl = GetComponent<CapsuleCollider>();
@@ -320,7 +325,7 @@ public class PlayerController : MonoBehaviour
 				if (hackedObj != null)
 					if (hackedObj.GetType () == typeof(CCTV))
 						passed = false;
-				
+
 				if (previousPass == aimRayHit.collider.GetComponent<Pass> ())
 					passed = false;
 				else if (previousPass != null)
@@ -338,7 +343,7 @@ public class PlayerController : MonoBehaviour
 					previousPass.textHolder.gameObject.SetActive (false);
 				previousPass = null;
 			}
-			
+
 
 			if (prevCollider == aimRayHit.collider) return;
 			else prevCollider = aimRayHit.collider;
@@ -620,6 +625,24 @@ public class PlayerController : MonoBehaviour
 
 				action -= HackUnhackAnimation;
 			}
+		}
+	}
+
+	void OnTriggerEnter (Collider other)
+	{
+		if (!areaNameUpdated && other.tag == "AreaNames")
+		{
+			areaNamesManager.areaNameText.text = other.gameObject.GetComponent<AreaNames>().currentAreaName;
+			areaNames.fadeNow = true;
+			areaNameUpdated = true;
+		}
+	}
+
+	void OnTriggerExit (Collider other)
+	{
+		if (other.tag == "AreaNames")
+		{
+			areaNameUpdated = false;
 		}
 	}
 

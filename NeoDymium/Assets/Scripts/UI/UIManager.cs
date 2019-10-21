@@ -309,7 +309,7 @@ public class UIManager : MonoBehaviour
 		Vector2 objScreenPos = player.CurrentViewingCamera.WorldToScreenPoint(objPos);
 
 		//Distance from Player to Objective
-		int dist = Mathf.RoundToInt((player.transform.position - objPos).magnitude);
+		int dist = Mathf.RoundToInt((player.CurrentViewingCamera.transform.position - objPos).magnitude);
 
 		distanceToObj.text = dist.ToString() + "m";
 		

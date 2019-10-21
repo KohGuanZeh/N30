@@ -18,6 +18,8 @@ public class IHackable : MonoBehaviour
 	[Header ("General Hackable Properties")]
 	protected PlayerController player;
 	protected UIManager ui;
+	protected AreaNamesManager areaNamesManager;
+	protected AreaNames areaNames;
 	public Collider col;
 	
 	[Header ("Hacking Related Variables")]
@@ -48,12 +50,15 @@ public class IHackable : MonoBehaviour
 	public GameObject questionMark;
 	public float whiteDotRaycastHeightOffset = 0.5f;
 	GameObject whiteDot;
+	private bool areaNameUpdated = false;
 
 	protected virtual void Start()
 	{
 		//General
 		player = PlayerController.inst;
 		ui = UIManager.inst;
+		areaNamesManager = AreaNamesManager.inst;
+		areaNames = AreaNames.inst;
 
 		//Camera
 		camera = GetComponentInChildren<Camera>();
@@ -106,6 +111,23 @@ public class IHackable : MonoBehaviour
 		else whiteDot.gameObject.SetActive(false);
 	}
 
+	void OnTriggerStay (Collider other)
+	{
+		if (hacked && !areaNameUpdated && other.tag == "AreaNames")
+		{
+			areaNamesManager.areaNameText.text = other.gameObject.GetComponent<AreaNames>().currentAreaName;
+			areaNames.fadeNow = true;
+			areaNameUpdated = true;
+		}
+	}
+
+	void OnTriggerExit (Collider other)
+	{
+		if (hacked && other.tag == "AreaNames")
+		{
+			areaNameUpdated = false;
+		}
+	}
 	void WhiteDot ()
 	{
 		/*
@@ -267,6 +289,7 @@ public class IHackable : MonoBehaviour
 
 		hacked = true;
 		//postProcessVolume.profile = ppp;
+		areaNameUpdated = false;
 	}
 
 	public virtual void OnUnhack()

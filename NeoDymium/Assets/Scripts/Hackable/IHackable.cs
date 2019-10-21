@@ -69,12 +69,12 @@ public class IHackable : MonoBehaviour
 		else hasNoShields = false;
 
 		whiteDot = Instantiate (ui.whiteDot, Vector3.zero, Quaternion.identity, ui.whiteDotHolder);
-		col = GetComponent<CapsuleCollider>();
+		//col = GetComponent<CapsuleCollider>();
 	}
 
 	protected virtual void Update()
 	{
-		if (!isDisabled) NewWhiteDot();
+		if (!isDisabled) WhiteDot ();
 
 		if (ui.isPaused || ui.isGameOver) return;
 
@@ -86,11 +86,7 @@ public class IHackable : MonoBehaviour
 		}
 	}
 
-	/*void FixedUpdate ()
-	{
-		if (!isDisabled) NewWhiteDot ();
-	}*/
-
+	/* 
 	void NewWhiteDot()
 	{
 		Ray ray = new Ray(player.CurrentViewingCamera.transform.position, (transform.position + Vector3.up * whiteDotRaycastHeightOffset - player.CurrentViewingCamera.transform.position).normalized);
@@ -110,6 +106,7 @@ public class IHackable : MonoBehaviour
 		}
 		else whiteDot.gameObject.SetActive(false);
 	}
+	*/
 
 	void OnTriggerStay (Collider other)
 	{
@@ -130,88 +127,51 @@ public class IHackable : MonoBehaviour
 	}
 	void WhiteDot ()
 	{
-		/*
-		if (col.IsVisibleFrom (player.CurrentViewingCamera))
-		{
-			whiteDot.SetActive (true);
-			whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
-		}			
-		else if (hacked)
-			whiteDot.SetActive (false);
-		else
-			whiteDot.SetActive (false);
-		*/
-
-		//whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
-	
-		/* 
-		RaycastHit hit;
-		Vector3 currentPos = transform.position + Vector3.up * whiteDotRaycastHeightOffset;
-		Physics.Raycast (currentPos, (player.CurrentViewingCamera.transform.position - currentPos).normalized, out hit, Mathf.Infinity, player.aimingRaycastLayers);
-		
-		if (hit.collider != null)
-		{
-			if (hit.collider.tag == player.CurrentViewingCamera.transform.tag && hit.collider.name != gameObject.name) 
-			{
-				whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
-				whiteDot.SetActive(true);
-			}
-			else whiteDot.SetActive(false);
-		}
-		else whiteDot.SetActive(false);
-		*/
-
-        Ray r = new Ray (transform.position, (player.CurrentViewingCamera.transform.position - transform.position).normalized);
-		RaycastHit[] hits = Physics.RaycastAll (r, (player.CurrentViewingCamera.transform.position - transform.position).magnitude, player.aimingRaycastLayers);
+		Vector3 whiteDotPos = transform.position + Vector3.up * whiteDotRaycastHeightOffset;
+        Ray r = new Ray (whiteDotPos, (player.CurrentViewingCamera.transform.position - whiteDotPos).normalized);
+		RaycastHit[] hits = Physics.RaycastAll (r, (player.CurrentViewingCamera.transform.position - whiteDotPos).magnitude, player.aimingRaycastLayers);
 
 		bool passed = true;
 		foreach (RaycastHit hit in hits)
 		{
-			if (hit.collider.gameObject != player.CurrentViewingCamera.gameObject)
+			if (hit.collider != col)
 			{
-				passed = false;
-				whiteDot.gameObject.SetActive (false);
+				if (!player.inHackable)
+				{
+					if (hit.collider != player.GetPlayerCollider ())
+					{
+						passed = false;
+					}
+				}
+				else
+				{
+					if (hit.collider != player.hackedObj.col)
+					{
+						passed = false;
+					}
+				}
 			}
 		}
+
+		if (hacked || !col.IsVisibleFrom (player.CurrentViewingCamera))
+			passed = false;
 
 		if (passed)
 		{
 			whiteDot.gameObject.SetActive (true);
-        	whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
-		}
-		/* 
-        if (Physics.RaycastAll (r, out hit, (player.CurrentViewingCamera.transform.position - transform.position).magnitude, player.aimingRaycastLayers)) 
-		{
-            if (hit.collider.gameObject == player.CurrentViewingCamera.gameObject) 
-			{
-                whiteDot.gameObject.SetActive (true);
-                whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
-            } 
-			else 
-			{
-                whiteDot.gameObject.SetActive (false);
-            }
-        }
-		*/
-
-		/*if (hit.collider == null)
-		{
-			whiteDot.SetActive (false);
-			return;
-		}
-
-		if (!(hit.collider.tag == "Hackable" || 
-			hit.collider.tag == "Interactable" ||
-			hit.collider.tag == "Player") && 
-			hit.collider.name != gameObject.name)
-		{
-			whiteDot.SetActive (false);
+        	whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (whiteDotPos);
 		}
 		else
 		{
-			whiteDot.SetActive (true);
-			whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (transform.position);
-		}*/
+			whiteDot.gameObject.SetActive (false);
+		}
+	}
+
+	void OnDrawGizmos ()
+	{
+		Gizmos.color = Color.red;
+		if (player != null)
+			Gizmos.DrawLine (transform.position + Vector3.up * whiteDotRaycastHeightOffset, player.CurrentViewingCamera.transform.position);
 	}
 
 	/// <summary>

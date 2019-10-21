@@ -80,19 +80,6 @@ public class PlayerController : MonoBehaviour
 	[Header("For Animations")]
 	[SerializeField] Animator anim;
 
-	[Header ("Sounds")]
-	public AudioClip hack;
-	public AudioClip unhack;
-	public AudioClip forcedUnhack;
-
-	public AudioClip walk;
-	public AudioClip run;
-	public AudioClip crouch;
-	public AudioClip crouchWalk;
-
-	public AudioSource hackAudioSource; //manually set in inspector
-	AudioSource walkAudioSource;
-
 	[Header ("Others")]
 	public Action action;
 	public PostProcessProfile ppp;
@@ -100,6 +87,7 @@ public class PlayerController : MonoBehaviour
 	public bool vipPass;
 	Pass previousPass;
 	private bool areaNameUpdated = false;
+	SoundManager soundManager;
 
 	//For Getting Private Components. May want to use Properties instead
 	#region Additional Functions To Get Private Vars
@@ -153,6 +141,7 @@ public class PlayerController : MonoBehaviour
 		loadingScreen = LoadingScreen.inst;
 		areaNamesManager = AreaNamesManager.inst;
 		areaNames = AreaNames.inst;
+		soundManager = SoundManager.inst;
 		playerCam = GetComponentInChildren<Camera>();
 		controller = GetComponent<CharacterController>();
 		detectionColl = GetComponent<CapsuleCollider>();
@@ -162,8 +151,6 @@ public class PlayerController : MonoBehaviour
 
 		detectedOutline = GetComponentInChildren<Outline>();
 		detectedOutline.enabled = false;
-
-		walkAudioSource = GetComponent<AudioSource> ();
 
 		yaw = transform.eulerAngles.y;
 		pitch = playerCam.transform.eulerAngles.x;
@@ -240,31 +227,23 @@ public class PlayerController : MonoBehaviour
 		//Applying Gravity before moving
 		velocity.y = isGrounded ? onSlope ? -slopeForce : -9.81f * Time.deltaTime : velocity.y - 9.81f * Time.deltaTime;
 
-		controller.Move(velocity * Time.deltaTime);
+		controller.Move(velocity * Time.deltaTime);	
 
 		//sound
-		if (horVelocity.x != 0 && horVelocity.z != 0)
+		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.playerWalk))
 		{
-			if ((!walkAudioSource.isPlaying || walkAudioSource.clip != run) && Input.GetKey (KeyCode.LeftShift))
+			if (isCrouching)
 			{
-				walkAudioSource.clip = run;
-				walkAudioSource.Play ();
-			}
-			else if (!walkAudioSource.isPlaying || walkAudioSource.clip != crouchWalk && isCrouching)
-			{
-				walkAudioSource.clip = crouchWalk;
-				walkAudioSource.Play ();
-			}
-			else if (!walkAudioSource.isPlaying || walkAudioSource.clip != walk)
-			{
-				walkAudioSource.clip = walk;
-				walkAudioSource.Play ();
+				soundManager.PlaySound (soundManager.playerCrouchWalk);
 			}
 			else
 			{
-				walkAudioSource.clip = null;
+				soundManager.PlaySound (soundManager.playerWalk);
 			}
-		}			
+		}
+
+		if (velocity.x == 0 || velocity.z == 0)
+			soundManager.StopSound (soundManager.playerCrouchWalk);
 	}
 
 	void GroundAndSlopeCheck()
@@ -291,6 +270,8 @@ public class PlayerController : MonoBehaviour
 			action += LerpCrouchStand;
 			if (!inHackable) headRefPoint = isCrouching ? crouchCamPos : standCamPos;
 			headBob = false;
+
+			soundManager.PlaySound (soundManager.playerCrouch);
 		}
 	}
 

@@ -14,7 +14,7 @@ public class AI : IHackable
 	float yaw, pitch;
 	Vector3 velocity;
 
-	//slope specifics
+	//slope
 	public bool onSlope;
 	public LayerMask slopeLayer;
 
@@ -72,39 +72,13 @@ public class AI : IHackable
 		return camPos;
 	}
 
-	/*public override void Disable ()
-	{
-		if (ai.manager)
-			gameObject.layer = 9;
-		else
-		{
-			ai.agent.enabled = false;
-			ai.enabled = false;
-			base.Disable ();
-		}	
-	}*/
-
 	protected override void ExecuteHackingFunctionaliy ()
 	{
 		PlayerRotation ();
 		PlayerMovement ();
 		SlopeCheck ();
-		//Interact ();
 	}
-
-	/*void Interact () 
-	{
-		if (Input.GetKeyDown (key: KeyCode.E))
-		{
-			RaycastHit hit;
-			Physics.Raycast (camera.transform.position, camera.transform.forward, out hit, 3);
-
-			if (hit.collider != null) 
-				if (hit.collider.tag == "Interactable")
-					hit.collider.GetComponent<IInteractable> ().TryInteract (color);
-		}
-	}*/
-
+	
 	void PlayerRotation()
 	{
 		//Camera and Player Rotation
@@ -118,7 +92,6 @@ public class AI : IHackable
 
 	void PlayerMovement()
 	{
-		//if (controller.isGrounded)
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
 
 		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;

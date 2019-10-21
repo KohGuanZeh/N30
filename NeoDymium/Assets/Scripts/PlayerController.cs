@@ -77,6 +77,19 @@ public class PlayerController : MonoBehaviour
 	[Header("For Animations")]
 	[SerializeField] Animator anim;
 
+	[Header ("Sounds")]
+	public AudioClip hack;
+	public AudioClip unhack;
+	public AudioClip forcedUnhack;
+
+	public AudioClip walk;
+	public AudioClip run;
+	public AudioClip crouch;
+	public AudioClip crouchWalk;
+
+	public AudioSource hackAudioSource; //manually set in inspector
+	AudioSource walkAudioSource;
+
 	[Header ("Others")]
 	public Action action;
 	public PostProcessProfile ppp;
@@ -145,6 +158,8 @@ public class PlayerController : MonoBehaviour
 
 		detectedOutline = GetComponentInChildren<Outline>();
 		detectedOutline.enabled = false;
+
+		walkAudioSource = GetComponent<AudioSource> ();
 
 		yaw = transform.eulerAngles.y;
 		pitch = playerCam.transform.eulerAngles.x;
@@ -220,6 +235,30 @@ public class PlayerController : MonoBehaviour
 		velocity.y = isGrounded ? onSlope ? -slopeForce : -9.81f * Time.deltaTime : velocity.y - 9.81f * Time.deltaTime;
 
 		controller.Move(velocity * Time.deltaTime);
+
+		//sound
+		if (horVelocity.x != 0 && horVelocity.z != 0)
+		{
+			if ((!walkAudioSource.isPlaying || walkAudioSource.clip != run) && Input.GetKey (KeyCode.LeftShift))
+			{
+				walkAudioSource.clip = run;
+				walkAudioSource.Play ();
+			}
+			else if (!walkAudioSource.isPlaying || walkAudioSource.clip != crouchWalk && isCrouching)
+			{
+				walkAudioSource.clip = crouchWalk;
+				walkAudioSource.Play ();
+			}
+			else if (!walkAudioSource.isPlaying || walkAudioSource.clip != walk)
+			{
+				walkAudioSource.clip = walk;
+				walkAudioSource.Play ();
+			}
+			else
+			{
+				walkAudioSource.clip = null;
+			}
+		}			
 	}
 
 	void GroundAndSlopeCheck()
@@ -566,6 +605,8 @@ public class PlayerController : MonoBehaviour
 		}
 
 		hackedObj.OnHack();
+
+		
 	}
 
 	public void Unhack(bool forced = false) //Check if it is Forced Unhacking

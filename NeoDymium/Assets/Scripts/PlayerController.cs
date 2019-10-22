@@ -232,7 +232,7 @@ public class PlayerController : MonoBehaviour
 		controller.Move(velocity * Time.deltaTime);	
 
 		//sound
-		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.playerWalk))
+		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.playerWalk.sourceIndex))
 		{
 			if (isCrouching)
 			{
@@ -245,7 +245,7 @@ public class PlayerController : MonoBehaviour
 		}
 
 		if (velocity.x == 0 || velocity.z == 0)
-			soundManager.StopSound (soundManager.playerCrouchWalk);
+			soundManager.StopSound (soundManager.playerWalk.sourceIndex);
 	}
 
 	void GroundAndSlopeCheck()

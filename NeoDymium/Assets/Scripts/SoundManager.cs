@@ -59,9 +59,9 @@ public class SoundManager : MonoBehaviour
 		transform.position = player.CurrentViewingCamera.transform.position;
 	}
 
-	public bool IsSourcePlaying (Audio audio)
+	public bool IsSourcePlaying (int sourceIndex)
 	{
-		return audioSources[audio.sourceIndex].isPlaying;
+		return audioSources[sourceIndex].isPlaying;
 	}
 
 	public void PlaySound (Audio audio)
@@ -73,9 +73,9 @@ public class SoundManager : MonoBehaviour
 		source.Play ();
 	}
 
-	public void StopSound (Audio audio)
+	public void StopSound (int sourceIndex)
 	{
-		AudioSource source = audioSources[audio.sourceIndex];
+		AudioSource source = audioSources[sourceIndex];
 		source.Stop ();
 	}
 }

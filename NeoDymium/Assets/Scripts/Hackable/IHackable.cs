@@ -21,6 +21,7 @@ public class IHackable : MonoBehaviour
 	protected AreaNamesManager areaNamesManager;
 	protected AreaNames areaNames;
 	public Collider col;
+	public Collider controllerCol;
 	
 	[Header ("Hacking Related Variables")]
 	public new Camera camera;
@@ -138,7 +139,7 @@ public class IHackable : MonoBehaviour
 			{
 				if (!player.inHackable)
 				{
-					if (hit.collider != player.GetPlayerCollider ())
+					if (hit.collider != player.GetPlayerCollider () && hit.collider != player.controllerCol)
 					{
 						passed = false;
 					}
@@ -147,7 +148,17 @@ public class IHackable : MonoBehaviour
 				{
 					if (hit.collider != player.hackedObj.col)
 					{
-						passed = false;
+						if (controllerCol != null)
+						{
+							if (hit.collider != controllerCol)
+							{
+								passed = false;
+							}
+						}
+						else
+						{
+							passed = false;
+						}
 					}
 				}
 			}

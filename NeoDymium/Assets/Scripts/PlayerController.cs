@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 	[Header("General Variables")]
 	public static PlayerController inst;
 	[SerializeField] CapsuleCollider detectionColl; //Capsule Collider that is same size as Char Controller Collider. Char Controller Collider cant have proper raycast on its hemisphere so need to use this
+	public Collider controllerCol;
 	[SerializeField] UIManager ui;
 	[SerializeField] LoadingScreen loadingScreen;
 	[SerializeField] AreaNamesManager areaNamesManager;
@@ -145,6 +146,7 @@ public class PlayerController : MonoBehaviour
 		playerCam = GetComponentInChildren<Camera>();
 		controller = GetComponent<CharacterController>();
 		detectionColl = GetComponent<CapsuleCollider>();
+		controllerCol = GetComponent<Collider> ();
 		SetDetectionCollider();
 		currentViewingCamera = playerCam;
 		anim = GetComponentInChildren<Animator>();

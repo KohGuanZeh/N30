@@ -272,8 +272,6 @@ public class PlayerController : MonoBehaviour
 			action += LerpCrouchStand;
 			if (!inHackable) headRefPoint = isCrouching ? crouchCamPos : standCamPos;
 			headBob = false;
-
-			soundManager.PlaySound (soundManager.playerCrouch);
 		}
 	}
 

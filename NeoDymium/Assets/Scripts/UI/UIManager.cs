@@ -18,19 +18,6 @@ public struct ControlsInfo
 	public Image border; //The Line
 }
 
-[Serializable]
-public struct NewControlsInfo
-{
-	public bool show;
-	public float lerpTime;
-	public Image icon;
-	public TextMeshProUGUI text;
-	public RectTransform parentHolder;
-
-	public Sprite iconSpr;
-	public string textStr;
-}
-
 public class UIManager : MonoBehaviour
 {
 	[Header("General Properties")]
@@ -53,16 +40,14 @@ public class UIManager : MonoBehaviour
 	public bool uiFadeIn;
 	[SerializeField] bool uiFadeInProgress;
 	[SerializeField] float uiLerpTime;
-	[SerializeField] Image[] cctvCrosshair;
+	[SerializeField] Graphic[] unhackInstructions; //For now Store the Unhack Instructions as a Graphic
+	[SerializeField] Color[] defaultGraphicsColor;
 	[SerializeField] Image cctvUIBorder;
-	[SerializeField] Image[] otherIcons;
-	[SerializeField] TextMeshProUGUI date;
 	[SerializeField] TextMeshProUGUI hackableName;
 
 	[Header("Crosshair")]
 	[SerializeField] bool isFocusing; //Check if a Hackable or Interactable Object has been focused on
-	[SerializeField] Image[] rings; //For Rotation of Rings. 0 is Inner, 1 is Middle, 2 is Outer
-	[SerializeField] float[] ringRotSpeeds; //For Rotation of Rings
+	[SerializeField] Image[] crosshairs; //Stores the Unfilled and Filled Dot
 	[SerializeField] float crosshairLerpTime;
 	[SerializeField] bool crosshairIsLerping; //Check if the Focus Animation is Ongoing
 
@@ -91,13 +76,6 @@ public class UIManager : MonoBehaviour
 	//May want to use Enum for Game States
 	public bool isGameOver;
 	public bool isPaused;
-
-	[Header("New UI")]
-	[SerializeField] Image[] crosshairs; //Unfilled Dot and Filled Dot
-	[SerializeField] float backdropLerpTime;
-	[SerializeField] bool showBackdrop;
-	[SerializeField] Image backDrop;
-	[SerializeField] NewControlsInfo[] controlsInfo;
 
 	[Header ("Others")]
 	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
@@ -130,30 +108,24 @@ public class UIManager : MonoBehaviour
 	{
 		player = PlayerController.inst;
 
-		//Set Rings to Correct Local Scale First Before Game Start
-		rings[0].rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-		rings[2].rectTransform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-		rings[0].gameObject.SetActive(false);
-		rings[2].gameObject.SetActive(false);
-		action += RotateRings;
-
 		action += FlashDetectedWarning;
 		detectedWarning.color = new Color(detectedWarning.color.r, detectedWarning.color.g, detectedWarning.color.b, 0);
 
 		//CCTV UI Start Color and Anchored Positions
 		cctvUIBorder.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 		cctvUIBorder.color = Color.clear;
-		foreach (Image icon in otherIcons)
-		{
-			icon.rectTransform.anchoredPosition = new Vector2(icon.rectTransform.anchoredPosition.x, -260);
-			icon.color = Color.clear;
-		}
-		foreach (Image crosshair in cctvCrosshair) crosshair.color = Color.clear;
-		date.rectTransform.anchoredPosition = new Vector2(date.rectTransform.anchoredPosition.x, -260);
-		date.color = Color.clear;
 
-		hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 260);
 		hackableName.color = Color.clear;
+
+		crosshairs[1].color = Color.clear;
+
+		defaultGraphicsColor = new Color[unhackInstructions.Length];
+
+		for (int i = 0; i < unhackInstructions.Length; i++)
+		{
+			defaultGraphicsColor[i] = unhackInstructions[i].color;
+			unhackInstructions[i].color = Color.clear;
+		}
 
 		//Set Color and Border of Control Infos
 		Color startColor = Color.clear;
@@ -168,18 +140,12 @@ public class UIManager : MonoBehaviour
 
 		action += LerpInstructions;
 		action += LerpActionAvailability;
-
-		//action += LerpBackdrop;
-		//action += NewLerpInsturctions;
 	}
 
 	void Update()
 	{
 		PointToObjective();
 		stealthGauge.fillAmount = (player.stealthGauge / player.stealthThreshold);
-
-		if (player.isFocusing || player.inHackable) showBackdrop = true;
-		else showBackdrop = false;
 
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver) PausePlay();
 
@@ -203,17 +169,11 @@ public class UIManager : MonoBehaviour
 	public void Focus(bool playerIsFocusing)
 	{
 		if (playerIsFocusing && !isFocusing) isFocusing = true;
-		else if (!playerIsFocusing && isFocusing)
-		{
-			isFocusing = false;
-			for (int i = 0; i < controls.Length; i++) controls[i].show = false;
-		}
+		else if (!playerIsFocusing && isFocusing) isFocusing = false;
 		else return;
 
 		if (crosshairIsLerping) return;
 
-		rings[0].gameObject.SetActive(true);
-		rings[2].gameObject.SetActive(true);
 		crosshairIsLerping = true;
 		action += LerpFocusFeedback;
 	}
@@ -222,8 +182,6 @@ public class UIManager : MonoBehaviour
 	{
 		if (isHackableObj)
 		{
-			//print(string.Format("Show Secondary: {0}", haveSecondary));
-
 			controls[0].show = true;
 			controls[0].hasError = hasErrors[0];
 			controls[0].icon.sprite = controlsSprites[0];
@@ -274,7 +232,7 @@ public class UIManager : MonoBehaviour
 
 	public void ChangeHackableDisplayName(string roomName, string hackableName)
 	{
-		this.hackableName.text = string.Format("{0} {1}", roomName, hackableName);
+		this.hackableName.text = string.Format("{0}\n{1}", roomName, hackableName);
 	}
 
 	//Display Error Upon Button Press
@@ -312,7 +270,8 @@ public class UIManager : MonoBehaviour
 		int dist = Mathf.RoundToInt((player.CurrentViewingCamera.transform.position - objPos).magnitude);
 
 		distanceToObj.text = dist.ToString() + "m";
-		
+
+		#region Directional Tracking
 		/*//Check if Objective is in front or behind of Player (any body that the Player is in)
 		Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
 		//If Objective is behind of where Player (any body that the Player is in) is at
@@ -326,6 +285,7 @@ public class UIManager : MonoBehaviour
 		//Clamp to prevent Marker from going Offscreen
 		objScreenPos.x = Mathf.Clamp(objScreenPos.x, minXY.x, maxXY.x);
 		objScreenPos.y = Mathf.Clamp(objScreenPos.y, minXY.y, maxXY.y);*/
+		#endregion
 
 		Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
 
@@ -368,45 +328,11 @@ public class UIManager : MonoBehaviour
 	#endregion
 
 	#region GUI Animations
-	void RotateRings()
-	{
-		rings[1].rectTransform.Rotate(0, 0, ringRotSpeeds[1] * Time.deltaTime);
-
-		if (!rings[0].gameObject.activeInHierarchy) return;
-
-		rings[0].rectTransform.Rotate(0, 0, ringRotSpeeds[0] * Time.deltaTime);
-		rings[2].rectTransform.Rotate(0, 0, ringRotSpeeds[2] * Time.deltaTime);
-	}
-
 	void LerpFocusFeedback()
 	{
 		crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
-		rings[0].rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, crosshairLerpTime);
-		rings[2].rectTransform.localScale = Vector3.Lerp(new Vector3(0.75f, 0.75f, 0.75f), Vector3.one, crosshairLerpTime);
 
-		if (crosshairLerpTime >= 1 && isFocusing)
-		{
-			crosshairLerpTime = 1;
-			rings[0].rectTransform.localScale = Vector3.one;
-			rings[2].rectTransform.localScale = Vector3.one;
-
-			crosshairIsLerping = false;
-			action -= LerpFocusFeedback;
-		}
-		else if (crosshairLerpTime <= 0 && !isFocusing)
-		{
-			crosshairLerpTime = 0;
-			rings[0].rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-			rings[2].rectTransform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-
-			rings[0].gameObject.SetActive(false);
-			rings[2].gameObject.SetActive(false);
-
-			crosshairIsLerping = false;
-			action -= LerpFocusFeedback;
-		}
-
-		/*crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
+		crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
 		crosshairs[0].color = Color.Lerp(Color.white, Color.clear, crosshairLerpTime); //May not even need 0. Just Lerp the Filled Dot Color
 		crosshairs[1].color = Color.Lerp(Color.clear, Color.white, crosshairLerpTime);
 
@@ -425,7 +351,7 @@ public class UIManager : MonoBehaviour
 
 			crosshairIsLerping = false;
 			action -= LerpFocusFeedback;
-		}*/
+		}
 	}
 
 	void FlashDetectedWarning()
@@ -467,64 +393,35 @@ public class UIManager : MonoBehaviour
 
 	void LerpUITemplate()
 	{
-		uiLerpTime = uiFadeIn ? Mathf.Min(uiLerpTime + Time.deltaTime * 3f, 1) : Mathf.Max(uiLerpTime - Time.deltaTime * 3f, 0);
+		uiLerpTime = uiFadeIn ? Mathf.Min(uiLerpTime + Time.deltaTime * 2.5f, 1) : Mathf.Max(uiLerpTime - Time.deltaTime * 4.5f, 0);
 
-		cctvUIBorder.rectTransform.localScale = Vector3.Lerp(new Vector3(1.5f, 1.5f, 1.5f), Vector3.one, Mathf.Clamp(uiLerpTime/0.5f, 0, 1));
+		cctvUIBorder.rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, Mathf.Clamp(uiLerpTime/0.75f, 0, 1));
 		cctvUIBorder.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
 
-		foreach (Image icon in otherIcons)
-		{
-			icon.rectTransform.anchoredPosition = new Vector2(icon.rectTransform.anchoredPosition.x, Mathf.Lerp(-260, -238, Mathf.Clamp((uiLerpTime - 0.25f)/0.75f, 0, 1)));
-			icon.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
-		}
-
-		foreach (Image crosshair in cctvCrosshair) crosshair.color = Color.Lerp(Color.clear, Color.white, Mathf.Clamp((uiLerpTime - 0.25f) / 0.75f, 0, 1));
-
-		date.rectTransform.anchoredPosition = new Vector2(date.rectTransform.anchoredPosition.x, Mathf.Lerp(-260, -237, Mathf.Clamp((uiLerpTime - 0.25f)/0.75f, 0, 1)));
-		date.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
-
-		hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, Mathf.Lerp(260, 237, Mathf.Clamp((uiLerpTime - 0.25f)/0.75f, 0, 1)));
-		hackableName.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
+		float lerpTimeLate = Mathf.Clamp((uiLerpTime - 0.5f) / 0.5f, 0, 1);
+		for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = Color.Lerp(Color.clear, defaultGraphicsColor[i], lerpTimeLate);
+		hackableName.color = Color.Lerp(Color.clear, Color.white, lerpTimeLate);
 
 		if (uiLerpTime >= 1 && uiFadeIn)
 		{
 			cctvUIBorder.rectTransform.localScale = Vector3.one;
 			cctvUIBorder.color = Color.white;
 
-			foreach (Image icon in otherIcons)
-			{
-				icon.rectTransform.anchoredPosition = new Vector2(icon.rectTransform.anchoredPosition.x, -238);
-				icon.color = Color.white;
-			}
-			foreach (Image crosshair in cctvCrosshair) crosshair.color = Color.white;
-
-			date.rectTransform.anchoredPosition = new Vector2(date.rectTransform.anchoredPosition.x, -237);
-			date.color = Color.white;
-
-			hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 237);
 			hackableName.color = Color.white;
+
+			for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = defaultGraphicsColor[i];
 
 			uiFadeInProgress = false;
 			action -= LerpUITemplate;
 		}
 		else if (uiLerpTime <= 0 && !uiFadeIn)
 		{
-			cctvUIBorder.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+			cctvUIBorder.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
 			cctvUIBorder.color = Color.clear;
 
-			foreach (Image icon in otherIcons)
-			{
-				icon.rectTransform.anchoredPosition = new Vector2(icon.rectTransform.anchoredPosition.x, -260);
-				icon.color = Color.clear;
-			}
-
-			foreach (Image crosshair in cctvCrosshair) crosshair.color = Color.clear;
-
-			date.rectTransform.anchoredPosition = new Vector2(date.rectTransform.anchoredPosition.x, -260);
-			date.color = Color.clear;
-
-			hackableName.rectTransform.anchoredPosition = new Vector2(hackableName.rectTransform.anchoredPosition.x, 260);
 			hackableName.color = Color.clear;
+
+			foreach (Graphic graphic in unhackInstructions) graphic.color = Color.clear;
 
 			uiFadeInProgress = false;
 			action -= LerpUITemplate;
@@ -543,14 +440,14 @@ public class UIManager : MonoBehaviour
 
 			if (!uiFadeInProgress)
 			{
-				if ((controls[i].lerpTime >= 1 && controls[i].show) || (controls[i].lerpTime <= 0 && !controls[i].show)) ignoreLerp = true;
+				if ((controls[i].lerpTime >= 1 && controls[i].show && isFocusing) || (controls[i].lerpTime <= 0 && !controls[i].show)) ignoreLerp = true;
 				if ((controls[i].errorLerpTime >= 1 && controls[i].hasError && controls[i].show) || (controls[i].errorLerpTime <= 0 && !controls[i].hasError)) ignoreErrorLerp = true;
 			}	
 
 			if (!ignoreLerp)
 			{
 				controls[i].isLerping = true;
-				if (uiFadeInProgress) controls[i].show = false;
+				if (uiFadeInProgress || !isFocusing) controls[i].show = false;
 				controls[i].lerpTime = controls[i].show ? Mathf.Min(controls[i].lerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(controls[i].lerpTime - Time.deltaTime * 4.5f, 0);
 
 				controls[i].border.fillAmount = Mathf.Clamp(controls[i].lerpTime / 0.5f, 0, 1);
@@ -700,103 +597,22 @@ public class UIManager : MonoBehaviour
 	}
 	#endregion
 
-	#region For New UI
+	#region Other UI Utils
 	public void SetControlsFeedback(List<string> instructions)
 	{
 		for (int i = 0; i < instructions.Count; i++)
 		{
-			controlsInfo[i].textStr = instructions[i];
-			controlsInfo[i].iconSpr = GetSpriteFromStr(instructions[i]);
-			controlsInfo[i].show = false;
+			//If you want the Elements to FULLY Fade out before it changes, Have to Store in a String or Sprite instead of using text.text and icon.sprite
+			controls[i].text.text = instructions[i];
+			controls[i].icon.sprite = GetSpriteFromStr(instructions[i]);
+			controls[i].show = false;
 		}
 
-		for (int i = instructions.Count; i < controlsInfo.Length; i++)
+		for (int i = instructions.Count; i < controls.Length; i++)
 		{
-			controlsInfo[i].textStr = string.Empty;
-			controlsInfo[i].iconSpr = null;
-			controlsInfo[i].show = false;
-		}
-	}
-
-	void LerpBackdrop()
-	{
-		//Lerp Backdrop
-		if ((showBackdrop && backdropLerpTime >= 1) || (!showBackdrop && backdropLerpTime <= 0)) return; //No Change
-		backdropLerpTime = showBackdrop ? Mathf.Min(backdropLerpTime + Time.deltaTime * 4.5f, 1) : Mathf.Max(backdropLerpTime - Time.deltaTime * 4.5f, 0);
-
-		float y = Mathf.Lerp(-30, 0, backdropLerpTime);
-		backDrop.rectTransform.anchoredPosition = new Vector2(backDrop.rectTransform.anchoredPosition.x, y);
-
-		if (showBackdrop && backdropLerpTime >= 1)
-		{
-			backDrop.rectTransform.anchoredPosition = new Vector2(backDrop.rectTransform.anchoredPosition.x, 0);
-		}
-		else if (!showBackdrop && backdropLerpTime <= 0)
-		{
-			backDrop.rectTransform.anchoredPosition = new Vector2(backDrop.rectTransform.anchoredPosition.x, -30);
-		}
-	}
-
-	void NewLerpInsturctions()
-	{
-		int clearCount = 0;
-
-		for (int i = 0; i < controlsInfo.Length; i++)
-		{
-			//if ((controlsInfo[i].lerpTime >= 1 && controlsInfo[i].show) || (controlsInfo[i].lerpTime <= 0 && !controlsInfo[i].show)) continue;
-
-			controlsInfo[i].lerpTime = controlsInfo[i].show ? Mathf.Min(controlsInfo[i].lerpTime + Time.deltaTime * 6f, 1) : Mathf.Max(controlsInfo[i].lerpTime - Time.deltaTime * 6f, 0);
-
-			Color controlsColor = Color.Lerp(Color.clear, Color.white, controlsInfo[i].lerpTime);
-			controlsInfo[i].icon.color = controlsColor;
-			controlsInfo[i].text.color = controlsColor;
-
-			if (controlsInfo[i].lerpTime >= 1 && controlsInfo[i].show)
-			{
-				controlsInfo[i].text.color = Color.white;
-				controlsInfo[i].icon.color = Color.white;
-			}
-			else if (controlsInfo[i].lerpTime <= 0 && !controlsInfo[i].show)
-			{
-				controlsInfo[i].text.color = Color.clear;
-				controlsInfo[i].icon.color = Color.clear;
-				clearCount++;
-			}
-		}
-
-		if (clearCount == controlsInfo.Length) OnInstructionsFadeOut();
-	}
-
-	void OnInstructionsFadeOut()
-	{
-		//Resizing Instructions
-		float xPos = -15; //Start Margin is 15
-		for (int i = 0; i < controlsInfo.Length; i++)
-		{
-			if (!showBackdrop) controlsInfo[i].show = false;
-			if (controlsInfo[i].textStr != string.Empty)
-			{
-				controlsInfo[i].show = true;
-			} 
-
-			//Change String of Text
-			controlsInfo[i].text.text = controlsInfo[i].textStr;
-			controlsInfo[i].icon.sprite = controlsInfo[i].iconSpr;
-
-			float textSize = controlsInfo[i].text.text.Length * 5.5f;
-			float rectSize = textSize + 3 + 20; //5 is Spacing Between Img and Text, 20 is size of Img
-
-			//Reize Rect of Text Box
-			controlsInfo[i].text.rectTransform.sizeDelta = new Vector2(textSize, controlsInfo[i].text.rectTransform.sizeDelta.y);
-			//Adjust Position of Text Box
-			controlsInfo[i].text.rectTransform.anchoredPosition = new Vector2(-textSize, controlsInfo[i].text.rectTransform.anchoredPosition.y);
-			//Resize Rect Parent (Text + Icon)
-			controlsInfo[i].parentHolder.sizeDelta = new Vector2(rectSize, controlsInfo[i].parentHolder.sizeDelta.y);
-			//Adjust Position of Rect Parent
-			controlsInfo[i].parentHolder.anchoredPosition = new Vector2(xPos, controlsInfo[i].parentHolder.anchoredPosition.y);
-
-			//Update Next Position
-			xPos -= (rectSize + 15); //Additional 20 for spacing between 2 Instructions
+			controls[i].text.text = instructions[i];
+			controls[i].icon.sprite = GetSpriteFromStr(instructions[i]);
+			controls[i].show = false;
 		}
 	}
 
@@ -815,6 +631,12 @@ public class UIManager : MonoBehaviour
 			default:
 				return null;
 		}
+	}
+
+	//Meant to be Temporary so as for the Area Manager to work
+	public TextMeshProUGUI GetRoomAndHackableName()
+	{
+		return hackableName;
 	}
 	#endregion
 }

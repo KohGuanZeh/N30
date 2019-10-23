@@ -5,6 +5,8 @@ using UnityEngine.Rendering.PostProcessing;
 
 public enum ColorIdentifier { none, red, blue };
 
+public enum HackableType { none, CCTV, AI };
+
 [System.Serializable]
 public struct ShieldStruct
 {
@@ -20,6 +22,7 @@ public class IHackable : MonoBehaviour
 	protected UIManager ui;
 	protected AreaNamesManager areaNamesManager;
 	protected AreaNames areaNames;
+	public HackableType hackableType; //Hackable Type is Declared in Respective Start Functions
 	public Collider col;
 	public Collider controllerCol;
 	
@@ -70,7 +73,7 @@ public class IHackable : MonoBehaviour
 		else hasNoShields = false;
 
 		whiteDot = Instantiate (ui.whiteDot, Vector3.zero, Quaternion.identity, ui.whiteDotHolder);
-		//col = GetComponent<CapsuleCollider>();
+		col = GetComponent<CapsuleCollider>();
 	}
 
 	protected virtual void Update()
@@ -87,45 +90,6 @@ public class IHackable : MonoBehaviour
 		}
 	}
 
-	/* 
-	void NewWhiteDot()
-	{
-		Ray ray = new Ray(player.CurrentViewingCamera.transform.position, (transform.position + Vector3.up * whiteDotRaycastHeightOffset - player.CurrentViewingCamera.transform.position).normalized);
-		RaycastHit hit;
-
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, player.aimingRaycastLayers))
-		{
-			//Debug.DrawLine(ray.origin, hit.point, Color.red);
-
-			if (col == hit.collider)
-			{
-				//print(name + "is Hit");
-				whiteDot.gameObject.SetActive(true);
-				whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint(transform.position);
-			}
-			else whiteDot.gameObject.SetActive(false);
-		}
-		else whiteDot.gameObject.SetActive(false);
-	}
-	*/
-
-	void OnTriggerStay (Collider other)
-	{
-		if (hacked && !areaNameUpdated && other.tag == "AreaNames")
-		{
-			areaNamesManager.areaNameText.text = other.gameObject.GetComponent<AreaNames>().currentAreaName;
-			areaNames.fadeNow = true;
-			areaNameUpdated = true;
-		}
-	}
-
-	void OnTriggerExit (Collider other)
-	{
-		if (hacked && other.tag == "AreaNames")
-		{
-			areaNameUpdated = false;
-		}
-	}
 	void WhiteDot ()
 	{
 		Vector3 whiteDotPos = transform.position + Vector3.up * whiteDotRaycastHeightOffset;
@@ -164,25 +128,37 @@ public class IHackable : MonoBehaviour
 			}
 		}
 
-		if (hacked || !col.IsVisibleFrom (player.CurrentViewingCamera))
-			passed = false;
+		if (hacked || !col.IsVisibleFrom (player.CurrentViewingCamera)) passed = false;
 
 		if (passed)
 		{
-			whiteDot.gameObject.SetActive (true);
-        	whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint (whiteDotPos);
+			whiteDot.gameObject.SetActive(true);
+			whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint(whiteDotPos);
 		}
 		else
 		{
-			whiteDot.gameObject.SetActive (false);
+			whiteDot.gameObject.SetActive(false);
 		}
 	}
 
-	void OnDrawGizmos ()
+	void NewWhiteDot()
 	{
-		Gizmos.color = Color.red;
-		if (player != null)
-			Gizmos.DrawLine (transform.position + Vector3.up * whiteDotRaycastHeightOffset, player.CurrentViewingCamera.transform.position);
+		Ray ray = new Ray(player.CurrentViewingCamera.transform.position, (transform.position + Vector3.up * whiteDotRaycastHeightOffset - player.CurrentViewingCamera.transform.position).normalized);
+		RaycastHit hit;
+
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, player.aimingRaycastLayers))
+		{
+			//Debug.DrawLine(ray.origin, hit.point, Color.red);
+
+			if (col == hit.collider)
+			{
+				//print(name + "is Hit");
+				whiteDot.gameObject.SetActive(true);
+				whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint(transform.position);
+			}
+			else whiteDot.gameObject.SetActive(false);
+		}
+		else whiteDot.gameObject.SetActive(false);
 	}
 
 	/// <summary>
@@ -259,7 +235,6 @@ public class IHackable : MonoBehaviour
 		#endregion
 
 		hacked = true;
-		//postProcessVolume.profile = ppp;
 		areaNameUpdated = false;
 	}
 
@@ -273,7 +248,6 @@ public class IHackable : MonoBehaviour
 		}*/
 		#endregion
 
-		//postProcessVolume.profile = player.ppp;
 		hacked = false;
 	}
 
@@ -359,5 +333,31 @@ public class IHackable : MonoBehaviour
 		if (get) hasPlayerMemory = PlayerPrefs.GetInt(string.Format("Checkpoint {0} Hackable {1}", cpIndex, index)) == 1 ? true : false;
 		else PlayerPrefs.SetInt(string.Format("Checkpoint {0} Hackable {1}", cpIndex, index), hasPlayerMemory ? 1 : 0);
 		//print(string.Format("Checkpoint {0} Hackable {1} Has Memory: {2}", cpIndex, index, hasPlayerMemory));
+	}
+
+	void OnDrawGizmos()
+	{
+		Gizmos.color = Color.red;
+		if (player != null)
+			Gizmos.DrawLine(transform.position + Vector3.up * whiteDotRaycastHeightOffset, player.CurrentViewingCamera.transform.position);
+	}
+
+	void OnTriggerStay(Collider other)
+	{
+		if (hacked && !areaNameUpdated && other.tag == "AreaNames")
+		{
+			roomName = other.gameObject.GetComponent<AreaNames>().currentAreaName;
+			ui.ChangeHackableDisplayName(roomName, hackableName);
+			areaNames.fadeNow = true;
+			areaNameUpdated = true;
+		}
+	}
+
+	void OnTriggerExit(Collider other)
+	{
+		if (hacked && other.tag == "AreaNames")
+		{
+			areaNameUpdated = false;
+		}
 	}
 }

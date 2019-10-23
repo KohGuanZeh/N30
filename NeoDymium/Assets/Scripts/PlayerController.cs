@@ -345,7 +345,7 @@ public class PlayerController : MonoBehaviour
 			{
 				bool passed = true;
 				if (hackedObj != null)
-					if (hackedObj.GetType () == typeof(CCTV))
+					if (hackedObj.hackableType == HackableType.CCTV)
 						passed = false;
 
 				if (previousPass == aimRayHit.collider.GetComponent<Pass> ())

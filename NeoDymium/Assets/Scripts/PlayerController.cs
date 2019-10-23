@@ -343,7 +343,7 @@ public class PlayerController : MonoBehaviour
 			{
 				bool passed = true;
 				if (hackedObj != null)
-					if (hackedObj.GetType () == typeof(CCTV))
+					if (hackedObj.hackableType == HackableType.CCTV)
 						passed = false;
 
 				if (previousPass == aimRayHit.collider.GetComponent<Pass> ())
@@ -479,7 +479,6 @@ public class PlayerController : MonoBehaviour
 
 		if (interactError != string.Empty) return; //Prevent Interaction so long an Error is being produced
 
-		//if (!WithinInteractDistance()) return;
 		if (inHackable) detectedInteractable.TryInteract(hackedObj.color); //Not sure how to better structure this
 		else if (detectedInteractable.allowPlayerInteraction) detectedInteractable.Interact();
 	}
@@ -502,7 +501,6 @@ public class PlayerController : MonoBehaviour
 
 		if (wipeError != string.Empty) return; //Prevent Wiping of Memory if Error is produced
 
-		//if (!WithinWipeDistance() || !detectedHackable.canWipeMemory) return;
 		detectedHackable.hasPlayerMemory = false;
 	}
 
@@ -515,10 +513,6 @@ public class PlayerController : MonoBehaviour
 		ui.DisplayError(hackError);
 
 		if (hackError != string.Empty) return; //Prevent Hacking if Error is produced
-
-		//Note that Player Camera
-		//if (!detectedHackable.hackable) return;
-		//if (detectedHackable.enabledShields.Count > 0 || detectedHackable.isDisabled) return;
 
 		if (!ui.cctvUI.activeSelf)
 		{
@@ -548,6 +542,8 @@ public class PlayerController : MonoBehaviour
 			currentViewingCamera.enabled = true;
 
 			hackingLerpTime = 0;
+			ui.ResetInstructionsDisplayOnHack();
+			ui.SetUIColors(hackedObj.color);
 			ui.StartUILerp(false);
 			action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera
 		}
@@ -583,6 +579,7 @@ public class PlayerController : MonoBehaviour
 		currentViewingCamera.enabled = true;
 
 		//hackingLerpTime = 1;
+		ui.SetUIColors();
 		ui.StartUILerp(false);
 		action -= HackUnhackAnimation;
 		action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera

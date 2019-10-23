@@ -25,13 +25,15 @@ public class AI : IHackable
 
 	protected override void Start ()
 	{
-		base.Start ();
 		controller = GetComponent<CharacterController>();
-		ai = GetComponent<PatrollingAI> ();
+		ai = GetComponent<PatrollingAI>();
 		anim = GetComponentInChildren<Animator>();
-		distFromGround = GetComponentInChildren<Renderer>().bounds.extents.y + 0.02f ;
+		distFromGround = GetComponentInChildren<Renderer>().bounds.extents.y + 0.02f;
 		controller.enabled = false;
 		ai.enabled = true;
+		hackableType = HackableType.AI;
+
+		base.Start ();
 	}
 
 	protected override void Update ()

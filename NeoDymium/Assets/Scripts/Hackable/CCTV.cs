@@ -22,6 +22,8 @@ public class CCTV : IHackable
 		minHorRot = -maxHorRotFromCenter;
 		maxVertRot = maxVertRotFromCenter;
 		minVertRot = -maxVertRotFromCenter;
+
+		hackableType = HackableType.CCTV;
 		base.Start();
 	}
 

@@ -13,8 +13,13 @@ public class AreaNamesManager : MonoBehaviour
         inst = this;
     }
 
-    //Anim for Text Fading
-    IEnumerator FadeInFadeOut ()
+	private void Start()
+	{
+		if (!areaNameText) areaNameText = UIManager.inst.GetRoomAndHackableName();
+	}
+
+	//Anim for Text Fading
+	IEnumerator FadeInFadeOut ()
     {  
         areaNameText.canvasRenderer.SetAlpha(0.0f);
 

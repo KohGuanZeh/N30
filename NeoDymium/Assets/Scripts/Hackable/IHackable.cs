@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
-public enum ColorIdentifier { none, red, blue };
+public enum ColorIdentifier { none, red, blue, yellow };
 
 public enum HackableType { none, CCTV, AI };
 

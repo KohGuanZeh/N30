@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviour
 	[Header("General Properties")]
 	public static UIManager inst;
 	[SerializeField] PlayerController player;
+	[SerializeField] ColorIdentifier currentColor = ColorIdentifier.none;
 	[SerializeField] Animator guiAnim; //Stand in for now... Will think about how to better integrate Animations
 	[SerializeField] Vector2 baseResolution, currentResolution;
 
@@ -77,13 +78,16 @@ public class UIManager : MonoBehaviour
 	public bool isGameOver;
 	public bool isPaused;
 
-	[Header ("Others")]
-	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
-	public Action action;
-
 	[Header("White Dots")]
 	public GameObject whiteDot;
 	public RectTransform whiteDotHolder;
+
+	[Header ("Others")]
+	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
+	public Color redColor = Color.red;
+	public Color blueColor = Color.blue;
+	public Color yellowColor = Color.yellow;
+	public Action action;
 
 	private void Awake()
 	{
@@ -203,6 +207,31 @@ public class UIManager : MonoBehaviour
 			controls[0].text.text = "Interact";
 
 			controls[1].show = false;
+		}
+	}
+
+	public void SetUIColors(ColorIdentifier color = ColorIdentifier.none)
+	{
+		currentColor = color;
+		Color uiColor = GetCurrentColor(currentColor);
+
+		for (int i = 0; i < controls.Length; i++) controls[i].border.color = uiColor;
+
+		foreach (Image crosshair in crosshairs)
+		{
+			uiColor.a = crosshair.color.a;
+			crosshair.color = uiColor;
+		}
+	}
+
+	public void ResetInstructionsDisplayOnHack()
+	{
+		for (int i = 0; i < controls.Length; i++)
+		{
+			controls[i].show = false;
+			controls[i].icon.color = Color.clear;
+			controls[i].text.color = Color.clear;
+			controls[i].border.fillAmount = 0;
 		}
 	}
 
@@ -333,20 +362,21 @@ public class UIManager : MonoBehaviour
 		crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
 
 		crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
-		crosshairs[0].color = Color.Lerp(Color.white, Color.clear, crosshairLerpTime); //May not even need 0. Just Lerp the Filled Dot Color
-		crosshairs[1].color = Color.Lerp(Color.clear, Color.white, crosshairLerpTime);
+		Color targetColor = GetCurrentColor(currentColor);
+		crosshairs[0].color = Color.Lerp(targetColor, Color.clear, crosshairLerpTime); //May not even need 0. Just Lerp the Filled Dot Color
+		crosshairs[1].color = Color.Lerp(Color.clear, targetColor, crosshairLerpTime);
 
 		if (crosshairLerpTime >= 1 && isFocusing)
 		{
 			crosshairs[0].color = Color.clear;
-			crosshairs[1].color = Color.white;
+			crosshairs[1].color = targetColor;
 
 			crosshairIsLerping = false;
 			action -= LerpFocusFeedback;
 		}
 		else if (crosshairLerpTime <= 0 && !isFocusing)
 		{
-			crosshairs[0].color = Color.white;
+			crosshairs[0].color = targetColor;
 			crosshairs[1].color = Color.clear;
 
 			crosshairIsLerping = false;
@@ -395,19 +425,21 @@ public class UIManager : MonoBehaviour
 	{
 		uiLerpTime = uiFadeIn ? Mathf.Min(uiLerpTime + Time.deltaTime * 2.5f, 1) : Mathf.Max(uiLerpTime - Time.deltaTime * 4.5f, 0);
 
+		Color targetColor = GetCurrentColor(currentColor);
+
 		cctvUIBorder.rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, Mathf.Clamp(uiLerpTime/0.75f, 0, 1));
-		cctvUIBorder.color = Color.Lerp(Color.clear, Color.white, uiLerpTime);
+		cctvUIBorder.color = Color.Lerp(Color.clear, targetColor, uiLerpTime);
 
 		float lerpTimeLate = Mathf.Clamp((uiLerpTime - 0.5f) / 0.5f, 0, 1);
+
+		hackableName.color = Color.Lerp(Color.clear, targetColor, lerpTimeLate);
 		for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = Color.Lerp(Color.clear, defaultGraphicsColor[i], lerpTimeLate);
-		hackableName.color = Color.Lerp(Color.clear, Color.white, lerpTimeLate);
 
 		if (uiLerpTime >= 1 && uiFadeIn)
 		{
 			cctvUIBorder.rectTransform.localScale = Vector3.one;
-			cctvUIBorder.color = Color.white;
-
-			hackableName.color = Color.white;
+			cctvUIBorder.color = targetColor;
+			hackableName.color = targetColor;
 
 			for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = defaultGraphicsColor[i];
 
@@ -605,7 +637,7 @@ public class UIManager : MonoBehaviour
 			//If you want the Elements to FULLY Fade out before it changes, Have to Store in a String or Sprite instead of using text.text and icon.sprite
 			controls[i].text.text = instructions[i];
 			controls[i].icon.sprite = GetSpriteFromStr(instructions[i]);
-			controls[i].show = false;
+			controls[i].show = true;
 		}
 
 		for (int i = instructions.Count; i < controls.Length; i++)
@@ -630,6 +662,21 @@ public class UIManager : MonoBehaviour
 				return controlsSprites[0];
 			default:
 				return null;
+		}
+	}
+
+	Color GetCurrentColor(ColorIdentifier color)
+	{
+		switch (color)
+		{
+			case ColorIdentifier.red:
+				return redColor;
+			case ColorIdentifier.blue:
+				return blueColor;
+			case ColorIdentifier.yellow:
+				return yellowColor;
+			default:
+				return Color.white;
 		}
 	}
 

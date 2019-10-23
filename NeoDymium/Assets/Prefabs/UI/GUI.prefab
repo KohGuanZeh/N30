@@ -5931,6 +5931,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  currentColor: 0
   guiAnim: {fileID: 8835226836788412131}
   baseResolution: {x: 0, y: 0}
   currentResolution: {x: 0, y: 0}
@@ -5947,6 +5948,7 @@ MonoBehaviour:
   - {fileID: 484236976823183519}
   - {fileID: 461187913489948874}
   - {fileID: 2150972012183533196}
+  defaultGraphicsColor: []
   cctvUIBorder: {fileID: 1489472364946742501}
   hackableName: {fileID: 1665670837774834124}
   isFocusing: 0
@@ -5991,10 +5993,12 @@ MonoBehaviour:
   errorLerpTime: 0
   isGameOver: 0
   isPaused: 0
-  disabledUIColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.75}
   whiteDot: {fileID: 5953394901748796200, guid: 81d69e91675e0c1409192661236682c8,
     type: 3}
   whiteDotHolder: {fileID: 2929237664177540959}
+  disabledUIColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.75}
+  redColor: {r: 1, g: 0, b: 0, a: 1}
+  blueColor: {r: 0, g: 0.6176338, b: 1, a: 1}
 --- !u!95 &8835226836788412131
 Animator:
   serializedVersion: 3
@@ -7365,13 +7369,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 8321558224654939268}
-    characterCount: 15
+    characterCount: 0
     spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
+    spaceCount: 0
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0

@@ -84,6 +84,7 @@ public class UIManager : MonoBehaviour
 
 	[Header ("Others")]
 	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
+	public Color playerColor = Color.white;
 	public Color redColor = Color.red;
 	public Color blueColor = Color.blue;
 	public Color yellowColor = Color.yellow;
@@ -122,6 +123,7 @@ public class UIManager : MonoBehaviour
 		hackableName.color = Color.clear;
 
 		crosshairs[1].color = Color.clear;
+		SetUIColors(ColorIdentifier.none); //Set Crosshair and Borders Color to fit player Color
 
 		defaultGraphicsColor = new Color[unhackInstructions.Length];
 
@@ -676,7 +678,7 @@ public class UIManager : MonoBehaviour
 			case ColorIdentifier.yellow:
 				return yellowColor;
 			default:
-				return Color.white;
+				return playerColor;
 		}
 	}
 

@@ -89,6 +89,7 @@ public class UIManager : MonoBehaviour
 	public Color blueColor = Color.blue;
 	public Color yellowColor = Color.yellow;
 	public Action action;
+	SoundManager soundManager;
 
 	private void Awake()
 	{
@@ -146,6 +147,8 @@ public class UIManager : MonoBehaviour
 
 		action += LerpInstructions;
 		action += LerpActionAvailability;
+
+		soundManager = SoundManager.inst;
 	}
 
 	void Update()
@@ -354,6 +357,7 @@ public class UIManager : MonoBehaviour
 	public void SetNewObjective(Transform newObjective)
 	{
 		objective = newObjective;
+		soundManager.PlaySound (soundManager.nextObjective);
 		ShowMarker();
 	}
 	#endregion

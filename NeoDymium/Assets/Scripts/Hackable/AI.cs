@@ -17,18 +17,27 @@ public class AI : IHackable
 	//slope
 	public bool onSlope;
 	public LayerMask slopeLayer;
+	bool isGrounded;
 
 	public float slopeForce = 2f;
 	public float distFromGround = 0.02f;
 
 	[HideInInspector] public Animator anim;
+	SoundManager soundManager;
+	AudioSource audioSource;
 
 	protected override void Start ()
 	{
 		controller = GetComponent<CharacterController>();
 		ai = GetComponent<PatrollingAI>();
 		anim = GetComponentInChildren<Animator>();
+		audioSource = GetComponent<AudioSource> ();
 		distFromGround = GetComponentInChildren<Renderer>().bounds.extents.y + 0.02f;
+		soundManager = SoundManager.inst;
+		audioSource.loop = false;
+		audioSource.playOnAwake = false;
+		audioSource.volume = soundManager.aiWalk.volume;
+		audioSource.pitch = soundManager.aiWalk.pitch;
 		controller.enabled = false;
 		ai.enabled = true;
 		hackableType = HackableType.AI;
@@ -39,10 +48,23 @@ public class AI : IHackable
 	protected override void Update ()
 	{
 		base.Update ();
+		GroundAndSlopeCheck ();
 		if (!hacked)
+		{
 			anim.SetFloat ("Speed", ai.agent.velocity.magnitude);
+			Sound ();
+		}
 		else
 			anim.SetFloat ("Speed", controller.velocity.magnitude);
+	}
+
+	void Sound ()
+	{
+		if (ai.agent.velocity.sqrMagnitude >= 0 && isGrounded && !audioSource.isPlaying)
+			audioSource.Play ();
+		
+		if (ai.agent.velocity.sqrMagnitude == 0)
+			audioSource.Stop ();
 	}
 
 	public override void OnHack ()
@@ -53,6 +75,7 @@ public class AI : IHackable
 		ai.hacked = true;
 		ai.enabled = false;
 		controller.enabled = true;
+		audioSource.Stop ();
 		Destroy (ai.GetComponent<Rigidbody> ());
 	}
 
@@ -78,7 +101,6 @@ public class AI : IHackable
 	{
 		PlayerRotation ();
 		PlayerMovement ();
-		SlopeCheck ();
 	}
 	
 	void PlayerRotation()
@@ -92,6 +114,7 @@ public class AI : IHackable
 		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
 	}
 
+	/* 
 	void PlayerMovement()
 	{
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
@@ -109,13 +132,67 @@ public class AI : IHackable
 		//Applying Gravity before moving
 		velocity.y = onSlope ? -slopeForce : -9.81f * Time.deltaTime;
 
+		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.playerWalk.sourceIndex))
+		{
+			if (isCrouching)
+			{
+				soundManager.PlaySound (soundManager.playerCrouchWalk);
+			}
+			else
+			{
+				soundManager.PlaySound (soundManager.playerWalk);
+			}
+		}
+
+		if (velocity.x == 0 || velocity.z == 0)
+			soundManager.StopSound (soundManager.playerWalk.sourceIndex);
+
 		controller.Move(velocity * Time.deltaTime);
 	}
+	*/
 
-	void SlopeCheck()
+	void PlayerMovement()
+	{
+		//if (controller.isGrounded)
+		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
+
+		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
+		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
+		Vector3 horVelocity = (xMovement + zMovement).normalized * walkSpeed;
+
+		if (horVelocity.sqrMagnitude == 0) 
+			player.SetBobSpeedAndOffset(0.75f, 0.01f); //Set Bobbing for Idle
+		else
+			player.SetBobSpeedAndOffset(3f, 0.04f);
+
+		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
+
+		//Applying Gravity before moving
+		velocity.y = isGrounded ? onSlope ? -slopeForce : -9.81f * Time.deltaTime : velocity.y - 9.81f * Time.deltaTime;
+
+		controller.Move(velocity * Time.deltaTime);	
+
+		//sound
+		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.aiWalk.sourceIndex))
+			soundManager.PlaySound (soundManager.aiWalk);
+
+		if (velocity.x == 0 || velocity.z == 0)
+			soundManager.StopSound (soundManager.aiWalk.sourceIndex);
+	}
+
+	void GroundAndSlopeCheck()
 	{
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position, -Vector3.up, out hit, distFromGround, slopeLayer)) onSlope = true;
+		if (Physics.Raycast(transform.position + controller.center, -Vector3.up, out hit, player.DistFromGround, player.groundLayer))
+		{
+			isGrounded = true;
+			onSlope = hit.normal != Vector3.up ? true : false;
+		}
+		else
+		{
+			isGrounded = false;
+			onSlope = false;
+		}
 	}
 
 	public override void EnableDisableHackable (bool isEnable, ColorIdentifier controlPanelColor)

@@ -47,6 +47,13 @@ public class VipDoor : IInteractable
 	public override void Interact ()
 	{
 		if (player.vipPass)
+		{
+			soundManager.PlaySound (soundManager.vipCardSuccess);
 			gameObject.SetActive (false);
+		}
+		else
+		{
+			soundManager.PlaySound (soundManager.vipCardFail);
+		}
 	}
 }

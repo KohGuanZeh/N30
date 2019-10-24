@@ -5,12 +5,14 @@ public class ServerPanel : IInteractable
 	public ExitDoor linkedDoor;
 	public Material serverPanelMat;
 	public Color defaultColor;
+	AudioSource audioSource;
 
 	public override void Start()
 	{
 		base.Start();
 		serverPanelMat = transform.GetChild(0).GetComponent<Renderer>().material;
 		defaultColor = serverPanelMat.color;
+		audioSource = GetComponent<AudioSource> ();
 	}
 
 	//If anything hackables try to interact, deny it. Only player can interact
@@ -21,6 +23,7 @@ public class ServerPanel : IInteractable
 
 	public override void Interact ()
 	{
+		audioSource.Play ();
 		Disable();
 		gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
 	}

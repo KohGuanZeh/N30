@@ -141,6 +141,7 @@ public class IHackable : MonoBehaviour
 		}
 	}
 
+	/* 
 	void NewWhiteDot()
 	{
 		Ray ray = new Ray(player.CurrentViewingCamera.transform.position, (transform.position + Vector3.up * whiteDotRaycastHeightOffset - player.CurrentViewingCamera.transform.position).normalized);
@@ -160,6 +161,7 @@ public class IHackable : MonoBehaviour
 		}
 		else whiteDot.gameObject.SetActive(false);
 	}
+	*/
 
 	/// <summary>
 	/// What to Execute when Player Hacks into the Object
@@ -333,13 +335,6 @@ public class IHackable : MonoBehaviour
 		if (get) hasPlayerMemory = PlayerPrefs.GetInt(string.Format("Checkpoint {0} Hackable {1}", cpIndex, index)) == 1 ? true : false;
 		else PlayerPrefs.SetInt(string.Format("Checkpoint {0} Hackable {1}", cpIndex, index), hasPlayerMemory ? 1 : 0);
 		//print(string.Format("Checkpoint {0} Hackable {1} Has Memory: {2}", cpIndex, index, hasPlayerMemory));
-	}
-
-	void OnDrawGizmos()
-	{
-		Gizmos.color = Color.red;
-		if (player != null)
-			Gizmos.DrawLine(transform.position + Vector3.up * whiteDotRaycastHeightOffset, player.CurrentViewingCamera.transform.position);
 	}
 
 	void OnTriggerStay(Collider other)

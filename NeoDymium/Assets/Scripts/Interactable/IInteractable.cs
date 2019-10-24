@@ -10,12 +10,14 @@ public class IInteractable : MonoBehaviour
 
 	public PlayerController player;
 	public Collider col;
-	GameObject whiteDot;
+	[HideInInspector] public GameObject whiteDot;
 	public float whiteDotRaycastHeightOffset = 0.5f;
+	[HideInInspector] public SoundManager soundManager;
 
 	public virtual void Start()
 	{
 		player = PlayerController.inst;
+		soundManager = SoundManager.inst;
 		whiteDot = Instantiate (UIManager.inst.whiteDot, Vector3.zero, Quaternion.identity, UIManager.inst.whiteDotHolder);
 	}
 
@@ -64,28 +66,6 @@ public class IInteractable : MonoBehaviour
 		{
 			whiteDot.gameObject.SetActive (false);
 		}
-
-		/*
-		Ray ray = new Ray (player.CurrentViewingCamera.transform.position, (transform.position - player.CurrentViewingCamera.transform.position).normalized);
-		RaycastHit hit;
-
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, player.aimingRaycastLayers))
-		{
-			if (col == hit.collider)
-			{
-				whiteDot.gameObject.SetActive(true);
-				whiteDot.transform.position = player.CurrentViewingCamera.WorldToScreenPoint(transform.position);
-			}
-			else
-			{
-				whiteDot.gameObject.SetActive(false);
-			}
-		}
-		else 
-		{
-			whiteDot.gameObject.SetActive(false);
-		}
-		*/
 	}
 
 

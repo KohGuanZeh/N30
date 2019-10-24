@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] Vector3 velocity; //Player Velocity
 	public float crouchSpeed = 5, walkSpeed = 10, runSpeed = 20; //Different Move Speed for Different Movement Action
 	[SerializeField] bool isGrounded, onSlope;
-	[SerializeField] LayerMask groundLayer;
+	[SerializeField] public LayerMask groundLayer;
 	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
 	public float groundOffset = 0.1f;
 	public float DistFromGround
@@ -89,6 +89,7 @@ public class PlayerController : MonoBehaviour
 	Pass previousPass;
 	private bool areaNameUpdated = false;
 	SoundManager soundManager;
+	bool playedSound;
 
 	//For Getting Private Components. May want to use Properties instead
 	#region Additional Functions To Get Private Vars
@@ -153,6 +154,7 @@ public class PlayerController : MonoBehaviour
 		SetDetectionCollider();
 		currentViewingCamera = playerCam;
 		anim = GetComponentInChildren<Animator>();
+		playedSound = false;
 
 		detectedOutline = GetComponentInChildren<Outline>();
 		detectedOutline.enabled = false;
@@ -198,6 +200,20 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	void DetectionSound ()
+	{	
+		if (isDetected && !playedSound)
+		{
+			soundManager.PlaySound (soundManager.playerDetected);
+			playedSound = true;
+		}	
+		
+		if (!isDetected)
+		{
+			playedSound = false;
+		}
+	}
+
 	#region Player Movement
 	void PlayerRotation()
 	{
@@ -235,7 +251,7 @@ public class PlayerController : MonoBehaviour
 		controller.Move(velocity * Time.deltaTime);	
 
 		//sound
-		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.playerWalk.sourceIndex))
+		if (horVelocity.sqrMagnitude != 0 && isGrounded && !soundManager.IsSourcePlaying (soundManager.playerWalk.sourceIndex))
 		{
 			if (isCrouching)
 			{
@@ -273,6 +289,7 @@ public class PlayerController : MonoBehaviour
 			isCrouching = !isCrouching;
 			anim.SetBool("Crouch", isCrouching);
 			action += LerpCrouchStand;
+			soundManager.PlaySound (soundManager.playerCrouch);
 			if (!inHackable) headRefPoint = isCrouching ? crouchCamPos : standCamPos;
 			headBob = false;
 		}
@@ -553,7 +570,8 @@ public class PlayerController : MonoBehaviour
 
 		hackedObj.OnHack();
 
-		
+		//sound
+		soundManager.PlaySound (soundManager.hack);
 	}
 
 	public void Unhack(bool forced = false) //Check if it is Forced Unhacking
@@ -575,6 +593,8 @@ public class PlayerController : MonoBehaviour
 		prevViewingCamera = currentViewingCamera;
 		currentViewingCamera = playerCam;
 		currentViewingCamera.depth = 0;
+
+		soundManager.PlaySound (soundManager.hack);
 
 		if (forced) return; //If Forced Unhacking, immediately set Previous Viewing Camera to Null
 

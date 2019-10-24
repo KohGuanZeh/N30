@@ -18,13 +18,14 @@ public class SoundManager : MonoBehaviour
 	// 0: general
 	// 1: movement
 	// 2: interactables
+	// 3: environment
+	// 4: ui
 
 	PlayerController player;	
 
 	[Header ("General")]
 	public Audio hack;
 	public Audio unhack;
-	public Audio forcedUnhack;
 
 	[Header ("Player")]
 	public Audio playerWalk;
@@ -35,7 +36,32 @@ public class SoundManager : MonoBehaviour
 	public Audio aiWalk;
 	
 	[Header ("CCTV")]
-	public Audio cctvRotate;
+	public Audio cctvRotate; //sourceindex 1
+
+	[Header ("Environment")]
+	public Audio slidingDoor;
+
+	[Header ("UI")]
+	public Audio nextObjective;
+	public Audio playerDetected;
+
+	[Header ("BGM")]
+	public Audio bgm;
+	public Audio ambientNoise;
+
+	[Header ("Interactable")]
+	public Audio[] numpad;
+	public Audio numpadSuccess;
+	public Audio numpadFail;
+	[Space (10)]
+	public Audio vipCardPickUp;
+	public Audio vipCardSuccess;
+	public Audio vipCardFail;
+
+	//Sounds that use their own audiosources:
+	// 1. control panel
+	// 2. server panel
+	// 3. emergency alarm
 
 	void Awake ()
 	{

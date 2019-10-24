@@ -10,19 +10,23 @@ public class ControlPanel : IInteractable
 
 	public bool activated = false;
 
+	AudioSource audioSource;
+
 	public override void Start ()
 	{
 		base.Start ();
 		activated = false;
 		controlPanelMat = transform.GetChild(0).GetComponent<Renderer>().material; //To Access the Material and Deactivate the Colors
 		defaultColor = controlPanelMat.color;
+		soundManager = SoundManager.inst;
+		audioSource = GetComponent<AudioSource> ();
 	}
 
 	public override void Interact ()
 	{
 		if (!activated) 
 			Disable();
-
+		audioSource.Play ();
 		//Get Component and Check if Component Exist to prevent error
 		RespectiveGoals goal = GetComponent<RespectiveGoals>();
 		if (goal) goal.isCompleted = true;

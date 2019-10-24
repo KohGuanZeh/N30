@@ -48,6 +48,7 @@ public class Pass : IInteractable
 			}
 		}
 		
+		soundManager.PlaySound (soundManager.vipCardPickUp);
 		player.holdingPass = true;
 		player.vipPass = vip;
 		Destroy (gameObject);

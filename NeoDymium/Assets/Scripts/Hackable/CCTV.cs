@@ -9,6 +9,8 @@ public class CCTV : IHackable
 	public float horRot, vertRot; //Runtime CCTV Rotations
 	public float maxHorRotFromCenter = 90, maxVertRotFromCenter = 30;
 	[SerializeField] float minHorRot, maxHorRot, minVertRot, maxVertRot; //Rotation Thresholds
+	Vector3 prevEulerAngles;
+	SoundManager soundManager;
 
 	protected override void Start()
 	{
@@ -24,6 +26,9 @@ public class CCTV : IHackable
 		minVertRot = -maxVertRotFromCenter;
 
 		hackableType = HackableType.CCTV;
+
+		prevEulerAngles = Vector3.zero;
+		soundManager = SoundManager.inst;
 		base.Start();
 	}
 
@@ -42,11 +47,23 @@ public class CCTV : IHackable
 	{
 		if (isStatic) return;
 
+		prevEulerAngles = transform.localEulerAngles;
+
 		horRot += Input.GetAxis("Mouse X") * degreesDelta; //* Time.deltaTime;
 		vertRot -= Input.GetAxis("Mouse Y") * degreesDelta; //* Time.deltaTime;
 
 		horRot = Mathf.Clamp(horRot, minHorRot, maxHorRot);
 		vertRot = Mathf.Clamp(vertRot, minVertRot, maxVertRot);
 		transform.localEulerAngles = new Vector3(vertRot, horRot, 0);
+
+		if (prevEulerAngles != transform.localEulerAngles && !soundManager.IsSourcePlaying (soundManager.cctvRotate.sourceIndex))
+		{
+			soundManager.PlaySound (soundManager.cctvRotate);
+		}
+		
+		if (prevEulerAngles == transform.localEulerAngles)
+		{
+			soundManager.StopSound (soundManager.cctvRotate.sourceIndex);
+		}
 	}
 }

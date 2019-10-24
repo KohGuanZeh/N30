@@ -43,9 +43,10 @@ public class ServerPanelDoor : IInteractable
 		buttons = GetComponentsInChildren<NumpadButton>();
 		coll.enabled = true;
 		foreach (NumpadButton button in buttons) button.EnableDisableCollider(false);
+		whiteDot.SetActive (false);
 	}
 
-	void Update()
+	protected override void Update()
 	{
 		if (action != null) action();
 		if (!isInteracting) return;
@@ -198,6 +199,7 @@ public class ServerPanelDoor : IInteractable
 		unlocked = true;
 		inputText.text = "Unlocked";
 		exitDoor.SetActive(false);
+		soundManager.PlaySound (soundManager.numpadSuccess);
 		//May want to change to Coroutine to add a Delay
 		if (isInteracting) Uninteract();//If not Loading from Checkpoint and Player unlocked the Passcode
 	}
@@ -215,6 +217,7 @@ public class ServerPanelDoor : IInteractable
 	{
 		if (input.Length >= 3) return; //Passcode Length
 		input = string.Concat(input, num);
+		soundManager.PlaySound (soundManager.numpad[num]);
 		inputText.text = input;
 		print(string.Format("Pressed {0}", num));
 	}
@@ -238,6 +241,7 @@ public class ServerPanelDoor : IInteractable
 		if (IsCorrectPasscode()) NumPadUnlock();
 		else
 		{
+			soundManager.PlaySound (soundManager.numpadFail);
 			inputText.text = "Wrong Passcode";
 			input = string.Empty;
 		}

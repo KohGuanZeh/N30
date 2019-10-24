@@ -130,8 +130,11 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
 		checkPointsPassed = PlayerPrefs.GetInt("Checkpoint");
-		for (int i = 0; i < checkPointsPassed + 1; i++) checkPoints[i].GetHackableMemory(i);
-		checkPoints[checkPointsPassed].LoadCheckPoint();
+		if (checkPoints.Length > 0)
+		{
+			for (int i = 0; i < checkPointsPassed + 1; i++) checkPoints[i].GetHackableMemory(i);
+			checkPoints[checkPointsPassed].LoadCheckPoint();
+		}
 
 		//Lock Cursor in Middle of Screen
 		Cursor.lockState = CursorLockMode.Locked;

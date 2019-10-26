@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class PrefabTool : EditorWindow
+public class KevinsPrefab : EditorWindow
 {
 	GameObject replacementPrefab;
 	string replacementName;
 
-	[MenuItem ("Window/Prefab Tool")]
+	[MenuItem ("Window/Prince of Nigeria Get Rich Scheme")]
 	public static void ShowWindow ()
 	{
-		GetWindow<PrefabTool> ("Prefab Tool");
+		GetWindow<KevinsPrefab> ("trojan64.exe");
 	}
 
 	void OnGUI ()

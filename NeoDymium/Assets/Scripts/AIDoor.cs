@@ -10,6 +10,8 @@ public class AIDoor : MonoBehaviour
 		{
 			transform.GetChild (0).gameObject.SetActive (false);
 			SoundManager.inst.PlaySound (SoundManager.inst.slidingDoor);
+			RespectiveGoals goal = GetComponent<RespectiveGoals>();
+			if (goal) goal.isCompleted = true;
 			gameObject.SetActive (false);
 		}
 	}

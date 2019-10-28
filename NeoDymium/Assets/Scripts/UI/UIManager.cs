@@ -82,6 +82,9 @@ public class UIManager : MonoBehaviour
 	public GameObject whiteDot;
 	public RectTransform whiteDotHolder;
 
+	[Header("Tutorial Instructions")]
+	public TextMeshProUGUI currentHint;
+
 	[Header ("Others")]
 	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
 	public Color playerColor = Color.white;

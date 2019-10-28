@@ -24,13 +24,14 @@ public class PatrollingAI : MonoBehaviour
 
 	bool idleRotation = false;
 	[HideInInspector] public bool reachedIdle = false;
+	[HideInInspector] public bool firstIdle = true;
 	
 	public PatrolPoint[] patrolPoints;
 	public Vector3 alarmPos;
 
 	public int currentIndex;
 	public bool registered = false;
-	public bool alarmed = false;
+	public bool alarmed = false;	
 	public bool sentBack = false;
 
 	bool chasingPlayer = false;
@@ -62,6 +63,7 @@ public class PatrollingAI : MonoBehaviour
 		isInvincible = false;
 		idleRotation = false;
 		reachedIdle = false;
+		firstIdle = true;
 
 		for (int i = 0; i < patrolPoints.Length; i++)
 			patrolPoints[i].col = patrolPoints[i].point.GetComponent<Collider> ();
@@ -76,9 +78,7 @@ public class PatrollingAI : MonoBehaviour
 		PlayerChase ();
 
 		if (idleLookAround && !idleRotation && !patrol && reachedIdle)
-		{
 			StartCoroutine ("IdleLookAround");
-		}
 	}
 
 	void ChaseAlarm ()
@@ -124,25 +124,30 @@ public class PatrollingAI : MonoBehaviour
 	{
 		idleRotation = true;
 
-		for (int i = 0; i < 45; i++)
+		if (firstIdle) 
 		{
-			transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
-			yield return null;
+			for (int i = 0; i < 45; i++)
+			{
+				transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
+				yield return null;
+			}
 		}
-		
+		else
+		{
+			for (int i = 0; i < 90; i++)
+			{
+				transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
+				yield return null;
+			}
+		}
+
+		firstIdle = false;
+
 		yield return new WaitForSeconds (1);
 
 		for (int i = 0; i < 90; i++)
 		{
 			transform.RotateAround (transform.position, Vector3.up, 45 * Time.deltaTime);
-			yield return null;
-		}
-
-		yield return new WaitForSeconds (1);
-
-		for (int i = 0; i < 45; i++)
-		{	
-			transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
 			yield return null;
 		}
 

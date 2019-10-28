@@ -75,7 +75,7 @@ public class AI : IHackable
 		ai.hacked = true;
 		ai.enabled = false;
 		controller.enabled = true;
-		ai.StopCoroutine ("IdleLookAround");
+		ai.StopAllCoroutines ();
 		audioSource.Stop ();
 		Destroy (ai.GetComponent<Rigidbody> ());
 	}
@@ -89,6 +89,7 @@ public class AI : IHackable
 		ai.hacked = false;
 		ai.registered = false;
 		ai.sentBack = false;
+		ai.firstIdle = true;
 		ai.gameObject.AddComponent<Rigidbody> ();
 		ai.reachedIdle = false;
 		ai.GetComponent<Rigidbody> ().useGravity = false;

@@ -62,7 +62,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\ObjectiveAreaTrigger.cs" />
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\AIDoor.cs" />
     <Compile Include="Assets\Scripts\DeskInfo.cs" />
@@ -84,8 +83,10 @@
     <Compile Include="Assets\Scripts\Interactable\ServerPanelDoor.cs" />
     <Compile Include="Assets\Scripts\Objectives\AreaNames.cs" />
     <Compile Include="Assets\Scripts\Objectives\AreaNamesManager.cs" />
+    <Compile Include="Assets\Scripts\Objectives\ObjectiveAreaTrigger.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveManager.cs" />
     <Compile Include="Assets\Scripts\Objectives\RespectiveGoals.cs" />
+    <Compile Include="Assets\Scripts\Objectives\TutorialManager.cs" />
     <Compile Include="Assets\Scripts\Pass.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Save System\Checkpoint.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Assets\Scripts\UI\Main Menu\MainMenu.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager.cs" />
     <Compile Include="Assets\Scripts\VipDoor.cs" />
+    <Compile Include="Assets\TutorialSection.cs" />
     <None Include="Assets\Shaders\Outline Shader.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />

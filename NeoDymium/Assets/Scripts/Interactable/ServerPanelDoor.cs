@@ -9,14 +9,17 @@ public class ServerPanelDoor : IInteractable
 	[SerializeField] Collider coll; //Store the Collider of the Numpad to prevent Raycast Error
 	[SerializeField] NumpadButton[] buttons; //Store all the Numpad Buttons to activate and deactivate colliders to prevent problems
 	[SerializeField] GameObject exitButton; //To uninteract
-	[SerializeField] GameObject exitDoor;
 	[SerializeField] bool isInteracting;
 	[SerializeField] bool unlocked;
+
+	[Header("Door Related Variables")]
+	[SerializeField] GameObject numpadDoor;
+	[SerializeField] Animator numpadDoorAnim;
 
 	[Header("For Password")]
 	public string password;
 	[SerializeField] string input;
-	[SerializeField] TextMeshPro inputText;
+	[SerializeField] TextMeshProUGUI inputText;
 
 	[Header("For Password Generation")]
 	public Transform[] deskPositions;
@@ -42,6 +45,7 @@ public class ServerPanelDoor : IInteractable
 		coll = GetComponent<Collider>();
 		buttons = GetComponentsInChildren<NumpadButton>();
 		coll.enabled = true;
+		numpadDoorAnim = numpadDoor.GetComponent<Animator>();
 		foreach (NumpadButton button in buttons) button.EnableDisableCollider(false);
 		whiteDot.SetActive (false);
 	}
@@ -118,7 +122,7 @@ public class ServerPanelDoor : IInteractable
 		if (!unlocked)
 		{
 			Clear();
-			inputText.text = "Enter Passcode";
+			inputText.text = "Input Passcode_";
 		}
 
 		Cursor.visible = false;
@@ -197,8 +201,8 @@ public class ServerPanelDoor : IInteractable
 	{
 		//Unlock Door?
 		unlocked = true;
-		inputText.text = "Unlocked";
-		exitDoor.SetActive(false);
+		inputText.text = "Unlocked_";
+		numpadDoorAnim.SetBool("Opened", unlocked);
 		soundManager.PlaySound (soundManager.numpadSuccess);
 		//May want to change to Coroutine to add a Delay
 		if (isInteracting) Uninteract();//If not Loading from Checkpoint and Player unlocked the Passcode
@@ -210,7 +214,7 @@ public class ServerPanelDoor : IInteractable
 		//Lock Door?
 		Clear(); //Clear any previous inputs
 		unlocked = false;
-		exitDoor.SetActive(true);
+		numpadDoorAnim.SetBool("Opened", unlocked);
 	}
 
 	public void AddNumberToInput(int num)
@@ -227,13 +231,12 @@ public class ServerPanelDoor : IInteractable
 		if (input.Length == 0) return;
 		input = input.Remove(input.Length-1);
 		inputText.text = input;
-		print ("Piece of Shit");
 	}
 
 	public void Clear()
 	{
 		input = string.Empty;
-		inputText.text = "Enter Passcode";
+		inputText.text = "Input Passcode_";
 	}
 
 	public void CheckPasscode()
@@ -242,7 +245,7 @@ public class ServerPanelDoor : IInteractable
 		else
 		{
 			soundManager.PlaySound (soundManager.numpadFail);
-			inputText.text = "Wrong Passcode";
+			inputText.text = "Wrong Passcode_";
 			input = string.Empty;
 		}
 	}

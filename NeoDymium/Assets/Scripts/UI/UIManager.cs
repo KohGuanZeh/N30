@@ -290,6 +290,7 @@ public class UIManager : MonoBehaviour
 	{
 		if (player.inHackable) cctvUI.gameObject.SetActive(show);
 		else playerUI.gameObject.SetActive(show);
+		foreach (Image crosshair in crosshairs) crosshair.gameObject.SetActive(show);
 		marker.gameObject.SetActive(show); //Show Hide Obj Marker
 		controlsGrp.SetActive(show); //Show Hide Controls
 		whiteDotHolder.gameObject.SetActive(show); //Show Hide White Dots

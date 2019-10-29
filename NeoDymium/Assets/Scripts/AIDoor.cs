@@ -19,6 +19,12 @@ public class AIDoor : MonoBehaviour
 		animator.SetBool  ("Opened", true);
 	}
 
+	void Close ()
+	{
+		SoundManager.inst.PlaySound (SoundManager.inst.slidingDoor);
+		animator.SetBool  ("Opened", false);
+	}
+
 	void OnTriggerStay (Collider other)
 	{
 		if ((other.tag == "Hackable" && other.GetComponent<IHackable> ().color == requiredColor))
@@ -29,6 +35,19 @@ public class AIDoor : MonoBehaviour
 		if (other.tag == "Player" && requiredColor == ColorIdentifier.none)
 		{
 			Open ();
+		}
+	}
+
+	void OnTriggerExit (Collider other)
+	{
+		if ((other.tag == "Hackable" && other.GetComponent<IHackable> ().color == requiredColor))
+		{
+			Close ();
+		}
+
+		if (other.tag == "Player" && requiredColor == ColorIdentifier.none)
+		{
+			Close ();
 		}
 	}
 }

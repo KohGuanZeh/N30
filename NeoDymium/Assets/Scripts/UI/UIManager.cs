@@ -91,6 +91,7 @@ public class UIManager : MonoBehaviour
 	public Color redColor = Color.red;
 	public Color blueColor = Color.blue;
 	public Color yellowColor = Color.yellow;
+	public Color greenColor = Color.green;
 	public Action action;
 	SoundManager soundManager;
 
@@ -685,6 +686,8 @@ public class UIManager : MonoBehaviour
 				return blueColor;
 			case ColorIdentifier.yellow:
 				return yellowColor;
+			case ColorIdentifier.green:
+				return greenColor;
 			default:
 				return playerColor;
 		}

@@ -6,24 +6,38 @@ public class TutorialSection : MonoBehaviour
 {
     public int tutorialSectionNumber;
     TutorialManager tutorialManager;
+    bool CorIsRunning = false;
     void Awake ()
     {
         tutorialManager = FindObjectOfType<TutorialManager>();
     }
-    void OnTriggerStay (Collider other)
+    void OnTriggerEnter (Collider other)
     {
         if (other.tag == "Player")
         {
             tutorialManager.currentTutoriaSectionNumber = tutorialSectionNumber;
+            if (CorIsRunning)
+            {
+                CancelInvoke ();
+            }
+            Invoke ("TutorialShowDuration", 5.0f);
         }
     }
 
-    void OnTriggerExit (Collider other)
+    // void OnTriggerExit (Collider other)
+    // {
+    //     if (other.tag == "Player")
+    //     {
+    //         tutorialManager.currentTutoriaSectionNumber = 0;
+    //         gameObject.SetActive (false);
+    //     }
+    // }
+
+    void TutorialShowDuration ()
     {
-        if (other.tag == "Player")
-        {
-            tutorialManager.currentTutoriaSectionNumber = 0;
-            gameObject.SetActive (false);
-        }
+        CorIsRunning = true;
+        tutorialManager.currentTutoriaSectionNumber = 0;
+        gameObject.SetActive (false);
+        CorIsRunning = false;
     }
 }

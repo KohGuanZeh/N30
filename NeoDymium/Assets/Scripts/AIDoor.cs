@@ -3,12 +3,13 @@
 public class AIDoor : MonoBehaviour
 {
 	public ColorIdentifier requiredColor;
-	
+	public bool nowForeverOpened;
 	Animator animator;
 
 	void Start ()
 	{
 		animator = GetComponent<Animator> ();
+		nowForeverOpened = false;
 	}
 
 	void Open ()
@@ -32,6 +33,11 @@ public class AIDoor : MonoBehaviour
 			Open ();
 		}
 
+		if (other.tag == "Player" && nowForeverOpened)
+		{
+			Open ();
+		}
+
 		if (other.tag == "Player" && requiredColor == ColorIdentifier.none)
 		{
 			Open ();
@@ -41,6 +47,12 @@ public class AIDoor : MonoBehaviour
 	void OnTriggerExit (Collider other)
 	{
 		if ((other.tag == "Hackable" && other.GetComponent<IHackable> ().color == requiredColor))
+		{
+			nowForeverOpened = true;
+			Close ();
+		}
+
+		if (other.tag == "Player" && nowForeverOpened)
 		{
 			Close ();
 		}

@@ -36,7 +36,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 5:
                 uIManager.currentHint.gameObject.SetActive (true);
-                uIManager.currentHint.text = "Seems like i don't have access to those Higher Security Level AI Robots" + "<br>" + "I will just sneak my way past them then ( ͡~ ͜ʖ ͡°)";
+                uIManager.currentHint.text = "Urgh, its those Higher Security Level AI Robots" + "<br>" + "I will just have to sneak my way past them for now";
                 break;
             case 4:
                 uIManager.currentHint.gameObject.SetActive (true);
@@ -44,7 +44,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 3:
                 uIManager.currentHint.gameObject.SetActive (true);
-                uIManager.currentHint.text = "The Locked Door can only be opened by the same coloured AI Robot" + "<br>" + "Guess it's time to put my skills to good use";
+                uIManager.currentHint.text = "Seems like the Blue Locked Coloured Door can only be opened by the same coloured AI Robot" + "<br>" + "I would need to find a Blue AI to unlock it";
                 break;
             case 2:
                 uIManager.currentHint.gameObject.SetActive (true);

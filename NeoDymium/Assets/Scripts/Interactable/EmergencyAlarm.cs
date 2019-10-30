@@ -18,7 +18,6 @@ public class EmergencyAlarm : IInteractable
 
 	public override void Interact ()
 	{
-		base.Start ();
 		StartAlarm ();
 	}
 
@@ -30,6 +29,7 @@ public class EmergencyAlarm : IInteractable
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = true;
+			ai.agent.isStopped = false;
 			ai.alarmPos = alarmPosition.position;
 			if (!ai.isInvincible)
 				ai.agent.SetDestination (alarmPosition.position);

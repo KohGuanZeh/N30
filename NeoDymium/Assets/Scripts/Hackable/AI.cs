@@ -77,7 +77,8 @@ public class AI : IHackable
 		controller.enabled = true;
 		ai.StopAllCoroutines ();
 		audioSource.Stop ();
-		Destroy (ai.GetComponent<Rigidbody> ());
+		ai.gameObject.AddComponent<Rigidbody> ();
+		ai.GetComponent<Rigidbody> ().useGravity = false;
 	}
 
 	public override void OnUnhack ()
@@ -90,9 +91,8 @@ public class AI : IHackable
 		ai.registered = false;
 		ai.sentBack = false;
 		ai.firstIdle = true;
-		ai.gameObject.AddComponent<Rigidbody> ();
 		ai.reachedIdle = false;
-		ai.GetComponent<Rigidbody> ().useGravity = false;
+		Destroy (ai.GetComponent<Rigidbody> ());
 	}
 
 	public override Transform GetCameraRefPoint()

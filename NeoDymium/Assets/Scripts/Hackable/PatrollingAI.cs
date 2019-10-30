@@ -143,7 +143,7 @@ public class PatrollingAI : MonoBehaviour
 
 		firstIdle = false;
 
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (3);
 
 		for (int i = 0; i < 90; i++)
 		{
@@ -151,7 +151,7 @@ public class PatrollingAI : MonoBehaviour
 			yield return null;
 		}
 
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (3);
 
 		idleRotation = false;
 	}
@@ -270,7 +270,7 @@ public class PatrollingAI : MonoBehaviour
 			}
 			else if (!patrol)
 			{
-				agent.SetDestination (transform.position);
+				agent.isStopped = true;
 				reachedIdle = true;
 				transform.eulerAngles = patrolPoints[0].point.eulerAngles;
 			}

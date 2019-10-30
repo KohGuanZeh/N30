@@ -230,10 +230,10 @@ public class PlayerController : MonoBehaviour
 	{
 		//if (controller.isGrounded)
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
-		float movementSpeed = isCrouching ? crouchSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+		float movementSpeed = isCrouching ? crouchSpeed : walkSpeed; //: Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
 		if (movementSpeed < walkSpeed) SetBobSpeedAndOffset(1f, 0.03f);
-		else if (movementSpeed > walkSpeed) SetBobSpeedAndOffset(5f, 0.05f);
+		//else if (movementSpeed > walkSpeed) SetBobSpeedAndOffset(5f, 0.05f);
 		else SetBobSpeedAndOffset(3f, 0.04f);
 
 		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;

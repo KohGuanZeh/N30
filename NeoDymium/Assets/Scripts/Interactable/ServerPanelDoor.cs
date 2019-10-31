@@ -28,6 +28,11 @@ public class ServerPanelDoor : IInteractable
 	public string[] possibleNames;
 	public string[] possibleJobPositions; //dont include IT guy in array
 
+	[Header("For Emission Change")]
+	[SerializeField] float intensity = 1;
+	[SerializeField] Renderer[] emissiveRs;
+	[SerializeField] Material[] emissiveMats;
+
 	[Header("For Lerping")]
 	[SerializeField] Transform camPos;
 	[SerializeField] Vector3 playerCamRot; //Stores Player Cam Rotation before Interaction
@@ -48,6 +53,10 @@ public class ServerPanelDoor : IInteractable
 		numpadDoorAnim = numpadDoor.GetComponent<Animator>();
 		foreach (NumpadButton button in buttons) button.EnableDisableCollider(false);
 		whiteDot.SetActive (false);
+
+		//Get Material to Change Emission
+		emissiveMats = new Material[emissiveRs.Length];
+		for (int i = 0; i < emissiveMats.Length; i++) emissiveMats[i] = emissiveRs[i].material;
 	}
 
 	protected override void Update()
@@ -204,6 +213,7 @@ public class ServerPanelDoor : IInteractable
 		inputText.text = "Unlocked_";
 		numpadDoorAnim.SetBool("Opened", unlocked);
 		soundManager.PlaySound (soundManager.numpadSuccess);
+		ChangeEmissionColor();
 		//May want to change to Coroutine to add a Delay
 		if (isInteracting) Uninteract();//If not Loading from Checkpoint and Player unlocked the Passcode
 	}
@@ -215,6 +225,7 @@ public class ServerPanelDoor : IInteractable
 		Clear(); //Clear any previous inputs
 		unlocked = false;
 		numpadDoorAnim.SetBool("Opened", unlocked);
+		ChangeEmissionColor(false);
 	}
 
 	public void AddNumberToInput(int num)
@@ -253,5 +264,11 @@ public class ServerPanelDoor : IInteractable
 	bool IsCorrectPasscode()
 	{
 		return (input == password);
+	}
+
+	void ChangeEmissionColor(bool unlocked = true)
+	{
+		Color emissiveColor = unlocked ? new Color(0.62f, 1.28f, 0.65f) * intensity : new Color(1.5f, 0.43f, 0.43f, 1) * intensity;
+		foreach (Material emissiveMat in emissiveMats) emissiveMat.SetColor("_EmissionColor", emissiveColor);
 	}
 }

@@ -286,6 +286,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.LeftControl))
 		{
+			if (isCrouching && !StandAvailability()) return;
 			isCrouching = !isCrouching;
 			anim.SetBool("Crouch", isCrouching);
 			action += LerpCrouchStand;
@@ -293,6 +294,13 @@ public class PlayerController : MonoBehaviour
 			if (!inHackable) headRefPoint = isCrouching ? crouchCamPos : standCamPos;
 			headBob = false;
 		}
+	}
+
+	bool StandAvailability()
+	{
+		//Debug.DrawLine(transform.position, transform.position + Vector3.up * (playerStandHeight + 0.2f), Color.red, 5);
+		if (Physics.Raycast(transform.position, Vector3.up, playerStandHeight + 0.1f, groundLayer)) return false;
+		else return true;
 	}
 
 	void LerpCrouchStand()

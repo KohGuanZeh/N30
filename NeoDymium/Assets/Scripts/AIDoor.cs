@@ -33,6 +33,11 @@ public class AIDoor : MonoBehaviour
 			Open ();
 		}
 
+		if (other.tag == "Hackable" && nowForeverOpened)
+		{
+			Open ();
+		}
+
 		if (other.tag == "Player" && nowForeverOpened)
 		{
 			Open ();
@@ -49,6 +54,11 @@ public class AIDoor : MonoBehaviour
 		if ((other.tag == "Hackable" && other.GetComponent<IHackable> ().color == requiredColor))
 		{
 			nowForeverOpened = true;
+			Close ();
+		}
+
+		if (other.tag == "Hackable" && nowForeverOpened)
+		{
 			Close ();
 		}
 

@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class ObjectiveAreaTrigger : MonoBehaviour
 {
+    UIManager uIManager;
+    
+    void Start ()
+    {
+        uIManager = UIManager.inst;
+    }
+    void OnTriggerEnter (Collider other)
+    {
+        uIManager.currentHint.text = string.Empty;
+    }
     void OnTriggerStay (Collider other)
     {
         if (other.tag == "Player")

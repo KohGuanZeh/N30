@@ -22,7 +22,7 @@ public class PatrollingAI : MonoBehaviour
 	public bool disable = false;
 	public float idleDuration = 1;
 
-	bool idleRotation = false;
+	[HideInInspector] public bool idleRotation = false;
 	[HideInInspector] public bool reachedIdle = false;
 	[HideInInspector] public bool firstIdle = true;
 	
@@ -37,6 +37,7 @@ public class PatrollingAI : MonoBehaviour
 	bool chasingPlayer = false;
 	bool reachedLastSeen = false;
 	public bool isInvincible = false;
+	public bool canChase = true;
 
 	public float minStealthPercent = 0.1f; //0.00 - 1.00
 	public GameObject chaseCheckpoint;
@@ -75,10 +76,26 @@ public class PatrollingAI : MonoBehaviour
 			if (!alarmed && !ai.isDisabled && !isInvincible)
 				ReRoute ();
 		
-		PlayerChase ();
+		if (canChase)
+			PlayerChase ();
+
+		Invincibility ();
 
 		if (idleLookAround && !idleRotation && !patrol && reachedIdle)
 			StartCoroutine ("IdleLookAround");
+	}
+
+	void Invincibility ()
+	{
+		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
+			(player.stealthGauge / player.stealthThreshold) >= minStealthPercent &&
+			!canChase)
+			isInvincible = true;
+		else
+			isInvincible = false;
+
+		ai.hackable = !isInvincible;
+		ai.canWipeMemory = !isInvincible;
 	}
 
 	void ChaseAlarm ()
@@ -94,9 +111,6 @@ public class PatrollingAI : MonoBehaviour
 			StartPlayerChase ();
 		
 		DuringPlayerChase ();
-
-		ai.hackable = !isInvincible;
-		ai.canWipeMemory = !isInvincible;
 	}
 
 	void StartPlayerChase ()
@@ -271,6 +285,7 @@ public class PatrollingAI : MonoBehaviour
 			else if (!patrol)
 			{
 				agent.isStopped = true;
+				agent.velocity = Vector3.zero;
 				reachedIdle = true;
 				transform.eulerAngles = patrolPoints[0].point.eulerAngles;
 			}

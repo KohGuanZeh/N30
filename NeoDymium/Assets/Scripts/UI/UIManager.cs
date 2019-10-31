@@ -257,6 +257,25 @@ public class UIManager : MonoBehaviour
 		pointer.eulerAngles = new Vector3(0, 0, -horAngle); //Set Rotation of Player Pointer to Point at Player
 	}
 
+	public void SwitchUI(HackableType type = HackableType.none)
+	{
+		switch (type)
+		{
+			case HackableType.CCTV:
+				cctvUI.SetActive(true);
+				playerUI.SetActive(false);
+				break;
+			case HackableType.AI:
+				cctvUI.SetActive(true);
+				playerUI.SetActive(false);
+				break;
+			default:
+				playerUI.SetActive(true);
+				cctvUI.SetActive(false);
+				break;
+		}
+	}
+
 	public void StartUILerp(bool fadeIn)
 	{
 		action -= LerpUITemplate; //Remove to prevent Errors

@@ -546,6 +546,7 @@ public class PlayerController : MonoBehaviour
 		{
 			ui.cctvUI.SetActive(true);
 			ui.playerUI.SetActive(false);
+			print("Player UI is False");
 		}
 
 		anim.SetFloat("Speed", 0);

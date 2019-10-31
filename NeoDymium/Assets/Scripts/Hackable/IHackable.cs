@@ -45,6 +45,7 @@ public class IHackable : MonoBehaviour
 	[Header("Player Detection")]
 	public bool hasPlayerMemory = false;
 	public bool canWipeMemory = true;
+	public bool canHaveMemory = false;
 	public RectTransform pointer; //Stores the Pointer of the UI so that to specify which Pointer belongs to which AI.
 
 	[Header("UI")]
@@ -55,6 +56,9 @@ public class IHackable : MonoBehaviour
 	public float whiteDotRaycastHeightOffset = 0.5f;
 	GameObject whiteDot;
 	private bool areaNameUpdated = false;
+
+	[Header("Tutorial")]
+	bool tutHasFinished;
 
 	protected virtual void Start()
 	{
@@ -74,6 +78,8 @@ public class IHackable : MonoBehaviour
 
 		whiteDot = Instantiate (ui.whiteDot, Vector3.zero, Quaternion.identity, ui.whiteDotHolder);
 		col = GetComponent<CapsuleCollider>();
+		exclamationMark.SetActive (false);
+		questionMark.SetActive (false);
 	}
 
 	protected virtual void Update()
@@ -195,22 +201,26 @@ public class IHackable : MonoBehaviour
 
 			player.IncreaseStealthGauge();
 			//print("Seen by " + gameObject.name);
-			
-			hasPlayerMemory = true;
 			exclamationMark.SetActive(true);
+			if (!canHaveMemory)
+				return;
+			hasPlayerMemory = true;
 			questionMark.SetActive (false);
 			exclamationMark.transform.LookAt(player.CurrentViewingCamera.transform);
 		}
 		else
 		{
-			questionMark.SetActive (hasPlayerMemory);
-			questionMark.transform.LookAt (player.CurrentViewingCamera.transform);
-			exclamationMark.SetActive(false);
 			if (pointer)
 			{
 				pointer.gameObject.SetActive(false);
 				pointer = null;
 			}
+
+			exclamationMark.SetActive(false);
+			if (!canHaveMemory)
+				return;
+			questionMark.SetActive (hasPlayerMemory);
+			questionMark.transform.LookAt (player.CurrentViewingCamera.transform);
 		}
 	}
 
@@ -235,6 +245,12 @@ public class IHackable : MonoBehaviour
 			player.ChangeViewCamera(camera);
 		}*/
 		#endregion
+
+		if (!tutHasFinished)
+		{
+			ui.currentHint.text = string.Empty;
+			tutHasFinished = true;
+		}
 
 		hacked = true;
 		areaNameUpdated = false;

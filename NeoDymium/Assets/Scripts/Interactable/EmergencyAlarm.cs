@@ -6,6 +6,8 @@ public class EmergencyAlarm : IInteractable
 	public Transform alarmPosition;
 	public PatrollingAI[] affectedAis;
 	AudioSource audioSource;
+	UIManager uIManager;
+	bool tutHasFinished;
 
 	bool alarmed;
 
@@ -14,6 +16,7 @@ public class EmergencyAlarm : IInteractable
 		base.Start ();
 		alarmed = false;
 		audioSource = GetComponent<AudioSource> ();
+		uIManager = UIManager.inst;
 	}
 
 	public override void Interact ()
@@ -26,6 +29,11 @@ public class EmergencyAlarm : IInteractable
 		if (alarmed || affectedAis[0].alarmed) //cheap check
 			return;
 		audioSource.Play ();
+		if (!tutHasFinished && uIManager.currentHint.gameObject.activeInHierarchy)
+		{
+			uIManager.currentHint.text = string.Empty;
+			tutHasFinished = true;
+		}
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = true;

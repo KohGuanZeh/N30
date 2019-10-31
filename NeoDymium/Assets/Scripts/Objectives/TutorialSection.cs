@@ -1,43 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TutorialSection : MonoBehaviour
 {
-    public int tutorialSectionNumber;
+    [TextArea (5, 20)]
+    public string textToDisplay;
     TutorialManager tutorialManager;
-    bool CorIsRunning = false;
+    UIManager uIManager;
+    bool tutHasFinished;
     void Awake ()
     {
         tutorialManager = FindObjectOfType<TutorialManager>();
     }
+    void Start ()
+    {
+        uIManager = UIManager.inst;
+    }
     void OnTriggerEnter (Collider other)
     {
         if (other.tag == "Player")
-        {
-            tutorialManager.currentTutoriaSectionNumber = tutorialSectionNumber;
-            if (CorIsRunning)
-            {
-                CancelInvoke ();
-            }
-            Invoke ("TutorialShowDuration", 5.0f);
-        }
+            tutorialManager.DiscountCoroutine (gameObject, textToDisplay);
     }
-
-    // void OnTriggerExit (Collider other)
-    // {
-    //     if (other.tag == "Player")
-    //     {
-    //         tutorialManager.currentTutoriaSectionNumber = 0;
-    //         gameObject.SetActive (false);
-    //     }
-    // }
-
-    void TutorialShowDuration ()
+    void OnTriggerStay (Collider other)
     {
-        CorIsRunning = true;
-        tutorialManager.currentTutoriaSectionNumber = 0;
-        gameObject.SetActive (false);
-        CorIsRunning = false;
+        if (!tutHasFinished)
+        {
+            if (Input.GetKeyDown (KeyCode.LeftControl))
+            {
+                uIManager.currentHint.text = string.Empty;
+                tutHasFinished = true;
+            }
+        }
     }
 }

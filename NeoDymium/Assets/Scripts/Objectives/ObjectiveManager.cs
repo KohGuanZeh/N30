@@ -16,7 +16,7 @@ public class ObjectiveManager : MonoBehaviour
     void Start() 
     {
         currentGoalNumber = 0;
-        uiManager = FindObjectOfType<UIManager>();
+        uiManager = UIManager.inst;
     }
 
     void Update() 

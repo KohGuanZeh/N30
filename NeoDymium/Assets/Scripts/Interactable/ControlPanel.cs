@@ -5,27 +5,25 @@ using UnityEngine;
 public class ControlPanel : IInteractable
 {
 	public List<IHackable> affectedItems;
-	[SerializeField] Material controlPanelMat;
-	[SerializeField] Color defaultColor;
-
 	public bool activated = false;
-
 	AudioSource audioSource;
+
+	[Header("For Mat Change")]
+	[SerializeField] Renderer[] screenRs;
+	[SerializeField] Material[] screenMats;
 
 	public override void Start ()
 	{
 		base.Start ();
 		activated = false;
-		controlPanelMat = transform.GetChild(0).GetComponent<Renderer>().material; //To Access the Material and Deactivate the Colors
-		defaultColor = controlPanelMat.color;
+		screenMats = MaterialUtils.GetMaterialsFromRenderers(screenRs);
 		soundManager = SoundManager.inst;
 		audioSource = GetComponent<AudioSource> ();
 	}
 
 	public override void Interact ()
 	{
-		if (!activated) 
-			Disable();
+		if (!activated) Disable();
 		audioSource.Play ();
 		//Get Component and Check if Component Exist to prevent error
 		RespectiveGoals goal = GetComponent<RespectiveGoals>();
@@ -42,8 +40,7 @@ public class ControlPanel : IInteractable
 	public void Disable()
 	{
 		activated = true;
-		controlPanelMat.DisableKeyword("_EMISSION");
-		controlPanelMat.color = Color.grey;
+		MaterialUtils.ToggleMaterialsEmission(screenMats, false);
 		foreach (IHackable item in affectedItems)
 			item.EnableDisable(false, color);
 	}
@@ -51,8 +48,7 @@ public class ControlPanel : IInteractable
 	public void Restore() //If we adding Circuit Enablers
 	{
 		activated = false;
-		controlPanelMat.EnableKeyword("_EMISSION");
-		controlPanelMat.color = defaultColor;
+		MaterialUtils.ToggleMaterialsEmission(screenMats, true);
 		foreach (IHackable item in affectedItems)
 			item.EnableDisable(true, color);
 	}

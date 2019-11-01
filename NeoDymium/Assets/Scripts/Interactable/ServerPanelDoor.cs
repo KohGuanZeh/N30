@@ -55,8 +55,7 @@ public class ServerPanelDoor : IInteractable
 		whiteDot.SetActive (false);
 
 		//Get Material to Change Emission
-		emissiveMats = new Material[emissiveRs.Length];
-		for (int i = 0; i < emissiveMats.Length; i++) emissiveMats[i] = emissiveRs[i].material;
+		emissiveMats = MaterialUtils.GetMaterialsFromRenderers(emissiveRs);
 	}
 
 	protected override void Update()
@@ -270,7 +269,8 @@ public class ServerPanelDoor : IInteractable
 
 	void ChangeEmissionColor(bool unlocked = true)
 	{
-		Color emissiveColor = unlocked ? new Color(0.62f, 1.28f, 0.65f) * intensity : new Color(1.5f, 0.43f, 0.43f, 1) * intensity;
-		foreach (Material emissiveMat in emissiveMats) emissiveMat.SetColor("_EmissionColor", emissiveColor);
+		Color emissiveColor = unlocked ? new Color(0.62f, 1.28f, 0.65f) : new Color(1.5f, 0.43f, 0.43f, 1);
+		MaterialUtils.ChangeMaterialsEmission(emissiveMats, emissiveColor, intensity);
+		//foreach (Material emissiveMat in emissiveMats) emissiveMat.SetColor("_EmissionColor", emissiveColor);
 	}
 }

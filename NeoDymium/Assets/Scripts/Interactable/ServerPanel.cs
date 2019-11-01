@@ -3,15 +3,16 @@ using UnityEngine;
 public class ServerPanel : IInteractable
 {
 	public ExitDoor linkedDoor;
-	public Material serverPanelMat;
-	public Color defaultColor;
 	AudioSource audioSource;
+
+	[Header("For Mat Change")]
+	[SerializeField] Renderer screenR;
+	[SerializeField] Material screenMat;
 
 	public override void Start()
 	{
 		base.Start();
-		serverPanelMat = transform.GetChild(0).GetComponent<Renderer>().material;
-		defaultColor = serverPanelMat.color;
+		screenMat = screenR.material;
 		audioSource = GetComponent<AudioSource> ();
 	}
 
@@ -39,15 +40,13 @@ public class ServerPanel : IInteractable
 	public void Disable()
 	{
 		linkedDoor.locked = false;
-		serverPanelMat.DisableKeyword("_EMISSION");
-		serverPanelMat.color = Color.grey;
+		MaterialUtils.ToggleMaterialEmission(screenMat, false);
 	}
 
 	//If there is even a Restore for the Server Panel
 	public void Restore()
 	{
 		linkedDoor.locked = true;
-		serverPanelMat.EnableKeyword("_EMISSION");
-		serverPanelMat.color = defaultColor;
+		MaterialUtils.ToggleMaterialEmission(screenMat, true);
 	}
 }

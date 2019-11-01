@@ -9,6 +9,10 @@ public class EmergencyAlarm : IInteractable
 	UIManager uIManager;
 	bool tutHasFinished;
 
+	[Header ("For Mat Change")]
+	[SerializeField] Renderer screenR;
+	[SerializeField] Material screenMat;
+
 	bool alarmed;
 
 	public override void Start ()
@@ -17,6 +21,7 @@ public class EmergencyAlarm : IInteractable
 		alarmed = false;
 		audioSource = GetComponent<AudioSource> ();
 		uIManager = UIManager.inst;
+		screenMat = screenR.material;
 	}
 
 	public override void Interact ()
@@ -29,6 +34,7 @@ public class EmergencyAlarm : IInteractable
 		if (alarmed || affectedAis[0].alarmed) //cheap check
 			return;
 		audioSource.Play ();
+		MaterialUtils.ChangeMaterialEmission(screenMat, new Color(0.61f, 0.12f, 0.15f), 1);
 		if (!tutHasFinished && uIManager.currentHint.gameObject.activeInHierarchy)
 		{
 			uIManager.currentHint.text = string.Empty;
@@ -51,6 +57,7 @@ public class EmergencyAlarm : IInteractable
 		alarmed = false;
 		audioSource.Stop ();
 		CancelInvoke ();
+		MaterialUtils.ChangeMaterialEmission(screenMat, new Color(0.12f, 0.58f, 0.61f), 1);
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = false;

@@ -5,21 +5,21 @@ using UnityEngine;
 public class ObjectiveAreaTrigger : MonoBehaviour
 {
     UIManager uIManager;
+
+    RespectiveGoals goal;
     
     void Start ()
     {
         uIManager = UIManager.inst;
+        goal = GetComponent<RespectiveGoals>();
     }
     void OnTriggerEnter (Collider other)
     {
         uIManager.currentHint.text = string.Empty;
-    }
-    void OnTriggerStay (Collider other)
-    {
+
         if (other.tag == "Player")
         {
-            RespectiveGoals goal = GetComponent<RespectiveGoals>();
-			if (goal) goal.isCompleted = true;
+			goal.isCompleted = true;
         }
     }
 }

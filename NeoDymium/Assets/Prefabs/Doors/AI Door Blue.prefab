@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7700156875546812553}
   - component: {fileID: 2675702501530085035}
   - component: {fileID: 4353259897558825184}
+  - component: {fileID: 5430282608569056609}
   m_Layer: 0
   m_Name: AI Door Blue
   m_TagString: Untagged
@@ -160,6 +161,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!208 &5430282608569056609
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 681385373917668493}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.780435, y: 1.159724, z: 0.02}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.0422689, y: 1.338441, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &1991941855604742932
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,7 +346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6955164655302900382
 Transform:
   m_ObjectHideFlags: 0

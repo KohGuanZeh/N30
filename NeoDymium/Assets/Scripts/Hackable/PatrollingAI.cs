@@ -73,8 +73,11 @@ public class PatrollingAI : MonoBehaviour
 	void Update () 
 	{
 		if (!sentBack)
-			if (!alarmed && !ai.isDisabled && !isInvincible)
-				ReRoute ();
+			if (!ai.isDisabled && !isInvincible)
+				if (!alarmed)
+					ReRoute ();
+				else
+					agent.SetDestination (alarmPos);
 		
 		if (canChase)
 			PlayerChase ();
@@ -282,7 +285,7 @@ public class PatrollingAI : MonoBehaviour
 
 				agent.SetDestination (patrolPoints[currentIndex].point.position);
 			}
-			else if (!patrol)
+			else if (!patrol && other == patrolPoints[0].col)
 			{
 				agent.isStopped = true;
 				agent.velocity = Vector3.zero;

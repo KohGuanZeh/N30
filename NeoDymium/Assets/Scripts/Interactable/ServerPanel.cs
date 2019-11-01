@@ -6,13 +6,13 @@ public class ServerPanel : IInteractable
 	AudioSource audioSource;
 
 	[Header("For Mat Change")]
-	[SerializeField] Renderer screenR;
-	[SerializeField] Material screenMat;
+	[SerializeField] Renderer[] screenRs;
+	[SerializeField] Material[] screenMats;
 
 	public override void Start()
 	{
 		base.Start();
-		screenMat = screenR.material;
+		screenMats = MaterialUtils.GetMaterialsFromRenderers(screenRs);
 		audioSource = GetComponent<AudioSource> ();
 	}
 
@@ -40,13 +40,13 @@ public class ServerPanel : IInteractable
 	public void Disable()
 	{
 		linkedDoor.locked = false;
-		MaterialUtils.ToggleMaterialEmission(screenMat, false);
+		MaterialUtils.ToggleMaterialsEmission(screenMats, false);
 	}
 
 	//If there is even a Restore for the Server Panel
 	public void Restore()
 	{
 		linkedDoor.locked = true;
-		MaterialUtils.ToggleMaterialEmission(screenMat, true);
+		MaterialUtils.ToggleMaterialsEmission(screenMats, true);
 	}
 }

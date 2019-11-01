@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class AIDoor : MonoBehaviour
 {
@@ -8,10 +9,12 @@ public class AIDoor : MonoBehaviour
 	[SerializeField] Renderer[] emissiveRs;
 	[SerializeField] Material[] emissiveMats;
 	Animator animator;
+	NavMeshObstacle obstacle;
 
 	void Start ()
 	{
 		animator = GetComponent<Animator> ();
+		obstacle = GetComponent<NavMeshObstacle> ();
 		nowForeverOpened = false;
 
 		//Get Material to Change Emission
@@ -44,6 +47,8 @@ public class AIDoor : MonoBehaviour
 		if ((other.tag == "Hackable" && other.GetComponent<IHackable> ().color == requiredColor))
 		{
 			if (!nowForeverOpened) ChangeEmissionColor();
+			nowForeverOpened = true;
+			obstacle.enabled = false;
 			Open ();
 		}
 
@@ -68,7 +73,6 @@ public class AIDoor : MonoBehaviour
 	{
 		if ((other.tag == "Hackable" && other.GetComponent<IHackable> ().color == requiredColor))
 		{
-			nowForeverOpened = true;
 			Close ();
 		}
 

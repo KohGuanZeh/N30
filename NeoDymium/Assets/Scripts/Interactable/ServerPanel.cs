@@ -25,7 +25,8 @@ public class ServerPanel : IInteractable
 	{
 		audioSource.Play ();
 		Disable();
-		gameObject.GetComponent<RespectiveGoals>().isCompleted = true; //Nigel
+		RespectiveGoals goal = GetComponent<RespectiveGoals>();
+		if (goal) goal.isCompleted = true;
 	}
 
 	public override string GetError(int key = 0)

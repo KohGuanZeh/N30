@@ -230,10 +230,10 @@ public class PlayerController : MonoBehaviour
 	{
 		//if (controller.isGrounded)
 		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
-		float movementSpeed = isCrouching ? crouchSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+		float movementSpeed = isCrouching ? crouchSpeed : walkSpeed; //: Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
 		if (movementSpeed < walkSpeed) SetBobSpeedAndOffset(1f, 0.03f);
-		else if (movementSpeed > walkSpeed) SetBobSpeedAndOffset(5f, 0.05f);
+		//else if (movementSpeed > walkSpeed) SetBobSpeedAndOffset(5f, 0.05f);
 		else SetBobSpeedAndOffset(3f, 0.04f);
 
 		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
@@ -286,6 +286,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.LeftControl))
 		{
+			if (isCrouching && !StandAvailability()) return;
 			isCrouching = !isCrouching;
 			anim.SetBool("Crouch", isCrouching);
 			action += LerpCrouchStand;
@@ -293,6 +294,13 @@ public class PlayerController : MonoBehaviour
 			if (!inHackable) headRefPoint = isCrouching ? crouchCamPos : standCamPos;
 			headBob = false;
 		}
+	}
+
+	bool StandAvailability()
+	{
+		//Debug.DrawLine(transform.position, transform.position + Vector3.up * (playerStandHeight + 0.2f), Color.red, 5);
+		if (Physics.Raycast(transform.position, Vector3.up, playerStandHeight + 0.1f, groundLayer)) return false;
+		else return true;
 	}
 
 	void LerpCrouchStand()
@@ -538,6 +546,7 @@ public class PlayerController : MonoBehaviour
 		{
 			ui.cctvUI.SetActive(true);
 			ui.playerUI.SetActive(false);
+			print("Player UI is False");
 		}
 
 		anim.SetFloat("Speed", 0);

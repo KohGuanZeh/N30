@@ -82,12 +82,16 @@ public class UIManager : MonoBehaviour
 	public GameObject whiteDot;
 	public RectTransform whiteDotHolder;
 
+	[Header("Tutorial Instructions")]
+	public TextMeshProUGUI currentHint;
+
 	[Header ("Others")]
 	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
 	public Color playerColor = Color.white;
 	public Color redColor = Color.red;
 	public Color blueColor = Color.blue;
 	public Color yellowColor = Color.yellow;
+	public Color greenColor = Color.green;
 	public Action action;
 	SoundManager soundManager;
 
@@ -253,6 +257,25 @@ public class UIManager : MonoBehaviour
 		pointer.eulerAngles = new Vector3(0, 0, -horAngle); //Set Rotation of Player Pointer to Point at Player
 	}
 
+	public void SwitchUI(HackableType type = HackableType.none)
+	{
+		switch (type)
+		{
+			case HackableType.CCTV:
+				cctvUI.SetActive(true);
+				playerUI.SetActive(false);
+				break;
+			case HackableType.AI:
+				cctvUI.SetActive(true);
+				playerUI.SetActive(false);
+				break;
+			default:
+				playerUI.SetActive(true);
+				cctvUI.SetActive(false);
+				break;
+		}
+	}
+
 	public void StartUILerp(bool fadeIn)
 	{
 		action -= LerpUITemplate; //Remove to prevent Errors
@@ -287,6 +310,7 @@ public class UIManager : MonoBehaviour
 	{
 		if (player.inHackable) cctvUI.gameObject.SetActive(show);
 		else playerUI.gameObject.SetActive(show);
+		foreach (Image crosshair in crosshairs) crosshair.gameObject.SetActive(show);
 		marker.gameObject.SetActive(show); //Show Hide Obj Marker
 		controlsGrp.SetActive(show); //Show Hide Controls
 		whiteDotHolder.gameObject.SetActive(show); //Show Hide White Dots
@@ -681,6 +705,8 @@ public class UIManager : MonoBehaviour
 				return blueColor;
 			case ColorIdentifier.yellow:
 				return yellowColor;
+			case ColorIdentifier.green:
+				return greenColor;
 			default:
 				return playerColor;
 		}

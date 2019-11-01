@@ -17,21 +17,27 @@ public class PatrollingAI : MonoBehaviour
 	}
 	
 	public bool patrol = true;
+	public bool idleLookAround = true;
 	public bool hacked = false;
 	public bool disable = false;
 	public float idleDuration = 1;
+
+	[HideInInspector] public bool idleRotation = false;
+	[HideInInspector] public bool reachedIdle = false;
+	[HideInInspector] public bool firstIdle = true;
 	
 	public PatrolPoint[] patrolPoints;
 	public Vector3 alarmPos;
 
 	public int currentIndex;
 	public bool registered = false;
-	public bool alarmed = false;
+	public bool alarmed = false;	
 	public bool sentBack = false;
 
 	bool chasingPlayer = false;
 	bool reachedLastSeen = false;
 	public bool isInvincible = false;
+	public bool canChase = true;
 
 	public float minStealthPercent = 0.1f; //0.00 - 1.00
 	public GameObject chaseCheckpoint;
@@ -56,6 +62,9 @@ public class PatrollingAI : MonoBehaviour
 		chasingPlayer = false;
 		reachedLastSeen = false;
 		isInvincible = false;
+		idleRotation = false;
+		reachedIdle = false;
+		firstIdle = true;
 
 		for (int i = 0; i < patrolPoints.Length; i++)
 			patrolPoints[i].col = patrolPoints[i].point.GetComponent<Collider> ();
@@ -67,7 +76,26 @@ public class PatrollingAI : MonoBehaviour
 			if (!alarmed && !ai.isDisabled && !isInvincible)
 				ReRoute ();
 		
-		PlayerChase ();
+		if (canChase)
+			PlayerChase ();
+
+		Invincibility ();
+
+		if (idleLookAround && !idleRotation && !patrol && reachedIdle)
+			StartCoroutine ("IdleLookAround");
+	}
+
+	void Invincibility ()
+	{
+		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
+			(player.stealthGauge / player.stealthThreshold) >= minStealthPercent &&
+			!canChase)
+			isInvincible = true;
+		else
+			isInvincible = false;
+
+		ai.hackable = !isInvincible;
+		ai.canWipeMemory = !isInvincible;
 	}
 
 	void ChaseAlarm ()
@@ -83,9 +111,6 @@ public class PatrollingAI : MonoBehaviour
 			StartPlayerChase ();
 		
 		DuringPlayerChase ();
-
-		ai.hackable = !isInvincible;
-		ai.canWipeMemory = !isInvincible;
 	}
 
 	void StartPlayerChase ()
@@ -109,9 +134,45 @@ public class PatrollingAI : MonoBehaviour
 		}
 	}
 
+	IEnumerator IdleLookAround ()
+	{
+		idleRotation = true;
+
+		if (firstIdle) 
+		{
+			for (int i = 0; i < 45; i++)
+			{
+				transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
+				yield return null;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < 90; i++)
+			{
+				transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
+				yield return null;
+			}
+		}
+
+		firstIdle = false;
+
+		yield return new WaitForSeconds (3);
+
+		for (int i = 0; i < 90; i++)
+		{
+			transform.RotateAround (transform.position, Vector3.up, 45 * Time.deltaTime);
+			yield return null;
+		}
+
+		yield return new WaitForSeconds (3);
+
+		idleRotation = false;
+	}
+
 	IEnumerator LookAround ()
 	{
-		Vector3 startRotation = transform.eulerAngles;
+		//Vector3 startRotation = transform.eulerAngles;
 		//Vector3 leftRotation = transform.eulerAngles + new Vector3 (0, 45, 0);
 		//Vector3 rightRotation = transform.eulerAngles - new Vector3 (0, 45, 0);
 
@@ -223,7 +284,9 @@ public class PatrollingAI : MonoBehaviour
 			}
 			else if (!patrol)
 			{
-				agent.SetDestination (transform.position);
+				agent.isStopped = true;
+				agent.velocity = Vector3.zero;
+				reachedIdle = true;
 				transform.eulerAngles = patrolPoints[0].point.eulerAngles;
 			}
 		}

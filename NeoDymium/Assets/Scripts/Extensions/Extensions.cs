@@ -12,6 +12,7 @@ public static class Extensions
 	/// <returns>Returns Returns true if Renderer is Visible from Specified Camera. If not, returns false.</returns>
 	public static bool IsVisibleFrom(this Collider collider, Camera camera) //this Renderer means that it will be used as Renderer.IsVisibleFrom()
 	{
+		//MAY WANT TO ADD A LAYER MASK PARAMETER TO CHECK WHAT LAYER THE RAYCASTS WILL HIT... IN ORDER TO TURN OFF QUERY TRIGGER INTERACTIONS
 		Plane[] camPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
 		if (GeometryUtility.TestPlanesAABB(camPlanes, collider.bounds)) return (RaycastCheck(collider, camera));//return PlayerCanBeSeen(collider.GetComponentInParent<CharacterController>(), camera);
 		else return false;

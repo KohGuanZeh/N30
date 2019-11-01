@@ -9,14 +9,17 @@ public class ServerPanelDoor : IInteractable
 	[SerializeField] Collider coll; //Store the Collider of the Numpad to prevent Raycast Error
 	[SerializeField] NumpadButton[] buttons; //Store all the Numpad Buttons to activate and deactivate colliders to prevent problems
 	[SerializeField] GameObject exitButton; //To uninteract
-	[SerializeField] GameObject exitDoor;
 	[SerializeField] bool isInteracting;
 	[SerializeField] bool unlocked;
+
+	[Header("Door Related Variables")]
+	[SerializeField] GameObject numpadDoor;
+	[SerializeField] Animator numpadDoorAnim;
 
 	[Header("For Password")]
 	public string password;
 	[SerializeField] string input;
-	[SerializeField] TextMeshPro inputText;
+	[SerializeField] TextMeshProUGUI inputText;
 
 	[Header("For Password Generation")]
 	public Transform[] deskPositions;
@@ -24,6 +27,11 @@ public class ServerPanelDoor : IInteractable
 	//for randoming of the personal info, age and password will be random
 	public string[] possibleNames;
 	public string[] possibleJobPositions; //dont include IT guy in array
+
+	[Header("For Emission Change")]
+	[SerializeField] float intensity = 1;
+	[SerializeField] Renderer[] emissiveRs;
+	[SerializeField] Material[] emissiveMats;
 
 	[Header("For Lerping")]
 	[SerializeField] Transform camPos;
@@ -42,8 +50,13 @@ public class ServerPanelDoor : IInteractable
 		coll = GetComponent<Collider>();
 		buttons = GetComponentsInChildren<NumpadButton>();
 		coll.enabled = true;
+		numpadDoorAnim = numpadDoor.GetComponent<Animator>();
 		foreach (NumpadButton button in buttons) button.EnableDisableCollider(false);
 		whiteDot.SetActive (false);
+
+		//Get Material to Change Emission
+		emissiveMats = new Material[emissiveRs.Length];
+		for (int i = 0; i < emissiveMats.Length; i++) emissiveMats[i] = emissiveRs[i].material;
 	}
 
 	protected override void Update()
@@ -118,7 +131,7 @@ public class ServerPanelDoor : IInteractable
 		if (!unlocked)
 		{
 			Clear();
-			inputText.text = "Enter Passcode";
+			inputText.text = "Input Passcode_";
 		}
 
 		Cursor.visible = false;
@@ -197,9 +210,12 @@ public class ServerPanelDoor : IInteractable
 	{
 		//Unlock Door?
 		unlocked = true;
-		inputText.text = "Unlocked";
-		exitDoor.SetActive(false);
+		inputText.text = "Unlocked_";
+		numpadDoorAnim.SetBool("Opened", unlocked);
 		soundManager.PlaySound (soundManager.numpadSuccess);
+		ChangeEmissionColor();
+		RespectiveGoals goal = GetComponent<RespectiveGoals>();
+		if (goal) goal.isCompleted = true;
 		//May want to change to Coroutine to add a Delay
 		if (isInteracting) Uninteract();//If not Loading from Checkpoint and Player unlocked the Passcode
 	}
@@ -210,7 +226,8 @@ public class ServerPanelDoor : IInteractable
 		//Lock Door?
 		Clear(); //Clear any previous inputs
 		unlocked = false;
-		exitDoor.SetActive(true);
+		numpadDoorAnim.SetBool("Opened", unlocked);
+		ChangeEmissionColor(false);
 	}
 
 	public void AddNumberToInput(int num)
@@ -227,13 +244,12 @@ public class ServerPanelDoor : IInteractable
 		if (input.Length == 0) return;
 		input = input.Remove(input.Length-1);
 		inputText.text = input;
-		print ("Piece of Shit");
 	}
 
 	public void Clear()
 	{
 		input = string.Empty;
-		inputText.text = "Enter Passcode";
+		inputText.text = "Input Passcode_";
 	}
 
 	public void CheckPasscode()
@@ -242,7 +258,7 @@ public class ServerPanelDoor : IInteractable
 		else
 		{
 			soundManager.PlaySound (soundManager.numpadFail);
-			inputText.text = "Wrong Passcode";
+			inputText.text = "Wrong Passcode_";
 			input = string.Empty;
 		}
 	}
@@ -250,5 +266,11 @@ public class ServerPanelDoor : IInteractable
 	bool IsCorrectPasscode()
 	{
 		return (input == password);
+	}
+
+	void ChangeEmissionColor(bool unlocked = true)
+	{
+		Color emissiveColor = unlocked ? new Color(0.62f, 1.28f, 0.65f) * intensity : new Color(1.5f, 0.43f, 0.43f, 1) * intensity;
+		foreach (Material emissiveMat in emissiveMats) emissiveMat.SetColor("_EmissionColor", emissiveColor);
 	}
 }

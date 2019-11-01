@@ -214,6 +214,8 @@ public class ServerPanelDoor : IInteractable
 		numpadDoorAnim.SetBool("Opened", unlocked);
 		soundManager.PlaySound (soundManager.numpadSuccess);
 		ChangeEmissionColor();
+		RespectiveGoals goal = GetComponent<RespectiveGoals>();
+		if (goal) goal.isCompleted = true;
 		//May want to change to Coroutine to add a Delay
 		if (isInteracting) Uninteract();//If not Loading from Checkpoint and Player unlocked the Passcode
 	}

@@ -6,20 +6,17 @@ using TMPro;
 public class ObjectiveManager : MonoBehaviour
 {
     public GameObject[] goals;
-
     public TextMeshProUGUI displayCurrentGoal;
-
+    public GameObject[] mainObjectives;
+    public int currentMainObjNumber;
     public int currentGoalNumber;
 
     UIManager uiManager;
 
-    void Awake() 
-    {
-        uiManager = FindObjectOfType<UIManager>();
-    }
     void Start() 
     {
         currentGoalNumber = 0;
+        uiManager = FindObjectOfType<UIManager>();
     }
 
     void Update() 

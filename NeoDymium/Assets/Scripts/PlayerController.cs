@@ -67,6 +67,8 @@ public class PlayerController : MonoBehaviour
 	public Outline detectedOutline; //Player Outline
 
 	[Header("Checkpoint System")]
+	public bool overwriteCheckpoints;
+	public int forcedCheckPointsPassed;
 	public int checkPointsPassed;
 	[SerializeField] Checkpoint[] checkPoints;
 
@@ -130,7 +132,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-		checkPointsPassed = PlayerPrefs.GetInt("Checkpoint");
+		if (!overwriteCheckpoints)
+			checkPointsPassed = PlayerPrefs.GetInt("Checkpoint");
+		else
+			checkPointsPassed = forcedCheckPointsPassed;
 		if (checkPoints.Length > 0)
 		{
 			for (int i = 0; i < checkPointsPassed + 1; i++) checkPoints[i].GetHackableMemory(i);

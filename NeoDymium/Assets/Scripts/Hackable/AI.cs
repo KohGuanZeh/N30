@@ -117,44 +117,7 @@ public class AI : IHackable
 		transform.eulerAngles = new Vector3(0, yaw, 0);
 		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
 	}
-
-	/* 
-	void PlayerMovement()
-	{
-		//Default to Walk Speed if Aiming. If not aiming, check if Player is holding shift.
-
-		Vector3 xMovement = Input.GetAxisRaw("Horizontal") * transform.right;
-		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
-		Vector3 horVelocity = (xMovement + zMovement).normalized * walkSpeed;
-		anim.SetFloat("Speed", horVelocity.sqrMagnitude);
-
-		if (horVelocity.sqrMagnitude != 0) player.SetBobSpeedAndOffset(5f, 0.03f);
-		else player.SetBobSpeedAndOffset(1f, 0.015f);
-
-		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
-
-		//Applying Gravity before moving
-		velocity.y = onSlope ? -slopeForce : -9.81f * Time.deltaTime;
-
-		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.playerWalk.sourceIndex))
-		{
-			if (isCrouching)
-			{
-				soundManager.PlaySound (soundManager.playerCrouchWalk);
-			}
-			else
-			{
-				soundManager.PlaySound (soundManager.playerWalk);
-			}
-		}
-
-		if (velocity.x == 0 || velocity.z == 0)
-			soundManager.StopSound (soundManager.playerWalk.sourceIndex);
-
-		controller.Move(velocity * Time.deltaTime);
-	}
-	*/
-
+	
 	void PlayerMovement()
 	{
 		//if (controller.isGrounded)

@@ -381,7 +381,7 @@ public class UIManager : MonoBehaviour
 	public void SetNewObjective (Vector3 newObjective, bool firstTime = false)
 	{
 		objective = newObjective;
-		if (firstTime)
+		if (!firstTime)
 			soundManager.PlaySound (soundManager.nextObjective);
 		ShowMarker();
 	}

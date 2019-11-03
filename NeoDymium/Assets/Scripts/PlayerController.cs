@@ -632,6 +632,9 @@ public class PlayerController : MonoBehaviour
 		prevViewingCamera.enabled = false;
 		prevViewingCamera = null;
 
+		ui.SetUIColors();
+		ui.StartUILerp(false);
+
 		isHacking = false;
 	}
 

@@ -57,7 +57,7 @@ public class EmergencyAlarm : IInteractable
 		alarmed = false;
 		audioSource.Stop ();
 		CancelInvoke ();
-		MaterialUtils.ChangeMaterialsEmission(screenMats, new Color(0.199f, 2.676f, 2.818f), 1.9f);
+		MaterialUtils.ChangeMaterialsEmission(screenMats, new Color(0.47f, 2.00f, 2.11f), 1f);
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = false;

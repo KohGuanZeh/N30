@@ -142,7 +142,7 @@ public class PlayerController : MonoBehaviour
 
 		if (checkPoints.Length > 0)
 		{
-			for (int i = 0; i < checkPointsPassed; i++) checkPoints[i].GetHackableMemory(i);
+			for (int i = 0; i < checkPointsPassed + 1; i++) checkPoints[i].GetHackableMemory(i);
 			checkPoints[checkPointsPassed].LoadCheckPoint();
 		}
 

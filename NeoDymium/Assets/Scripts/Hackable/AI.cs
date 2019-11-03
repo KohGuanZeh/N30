@@ -93,6 +93,7 @@ public class AI : IHackable
 		ai.firstIdle = true;
 		ai.reachedIdle = false;
 		ai.idleRotation = false;
+		ai.findingPlayer = false;
 		//Destroy (ai.GetComponent<Rigidbody> ());
 	}
 

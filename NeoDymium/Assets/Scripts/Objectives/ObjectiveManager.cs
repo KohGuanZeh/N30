@@ -33,7 +33,9 @@ public class ObjectiveManager : MonoBehaviour
         if (goal[currentGoalNumber].goal.isCompleted)
 		{
             currentGoalNumber++;
-			currentGoalNumber = Mathf.Min(currentGoalNumber, goal.Length - 1); //To prevent errors!
+			if (currentGoalNumber >= goal.Length)
+				return;
+			//currentGoalNumber = Mathf.Min(currentGoalNumber, goal.Length - 1); //To prevent errors!
             uiManager.SetNewObjective (goal[currentGoalNumber].goal.transform.position + goal[currentGoalNumber].offset);
         }
 

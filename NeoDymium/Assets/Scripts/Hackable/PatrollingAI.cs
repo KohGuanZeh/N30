@@ -35,6 +35,7 @@ public class PatrollingAI : MonoBehaviour
 	public bool sentBack = false;
 
 	bool chasingPlayer = false;
+	[HideInInspector] public bool findingPlayer = false;
 	bool reachedLastSeen = false;
 	public bool isInvincible = false;
 	public bool canChase = true;
@@ -60,6 +61,7 @@ public class PatrollingAI : MonoBehaviour
 		sentBack = false;
 		disable = false;
 		chasingPlayer = false;
+		findingPlayer = false;
 		reachedLastSeen = false;
 		isInvincible = false;
 		idleRotation = false;
@@ -90,9 +92,9 @@ public class PatrollingAI : MonoBehaviour
 
 	void Invincibility ()
 	{
-		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
-			(player.stealthGauge / player.stealthThreshold) >= minStealthPercent &&
-			!canChase)
+		if (//player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
+			(player.stealthGauge / player.stealthThreshold) >= minStealthPercent || findingPlayer || player.GetPlayerCollider ().IsVisibleFrom (ai.camera)) //&&
+			//!canChase)
 			isInvincible = true;
 		else
 			isInvincible = false;
@@ -120,6 +122,7 @@ public class PatrollingAI : MonoBehaviour
 	{
 		agent.SetDestination (player.transform.position);
 		chasingPlayer = true;
+		findingPlayer = true;
 		isInvincible = true;
 		reachedLastSeen = false;
 		StopAllCoroutines ();
@@ -215,6 +218,7 @@ public class PatrollingAI : MonoBehaviour
 			Destroy (storedCheckpoint);
 
 		sentBack = true;
+		findingPlayer = false;
 		registered = false;
 		isInvincible = false;
 

@@ -626,8 +626,8 @@ public class UIManager : MonoBehaviour
 		isPaused = !isPaused;
 		optionsScreen.gameObject.SetActive(false); //If Players Press the Esc Key when in the Options Menu. Unless you want to disable use of Shortcut Keys when in Pause
 		pauseScreen.gameObject.SetActive(isPaused);
-		Cursor.visible = isPaused;
-		Cursor.lockState = isPaused ?  CursorLockMode.None : CursorLockMode.Locked;
+		Cursor.visible = isPaused ? true : player.inSpInteraction ? true : isPaused;
+		Cursor.lockState = isPaused ?  CursorLockMode.None : player.inSpInteraction ? CursorLockMode.None : CursorLockMode.Locked;
 		Time.timeScale = isPaused ? 0 : 1;
 	}
 

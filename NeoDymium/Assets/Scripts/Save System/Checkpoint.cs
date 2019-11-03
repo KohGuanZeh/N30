@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Checkpoint : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class Checkpoint : MonoBehaviour
 
 	public void GetHackableMemory(int cpIndex)
 	{
-		for (int i = 0; i < hackables.Count; i++) hackables[i].GetSetPlayerMemory(cpIndex, i);
+		if (hackables.Count > 0) for (int i = 0; i < hackables.Count; i++) hackables[i].GetSetPlayerMemory(cpIndex, i);
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -47,7 +48,7 @@ public class Checkpoint : MonoBehaviour
 		//If detected Player, Considered Check point Registered
 		if (playerLayer == (playerLayer | (1 << other.gameObject.layer)))
 		{
-			PlayerPrefs.SetInt("Checkpoint", ++player.checkPointsPassed);
+			PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + " Checkpoint", ++player.checkPointsPassed);
 			SetHackableMemory(player.checkPointsPassed);
 			if (wall) wall.SetActive(true);
 			coll.enabled = false;

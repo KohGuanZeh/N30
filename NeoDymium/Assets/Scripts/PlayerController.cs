@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
+﻿using System;
 using System.Collections.Generic;
-using System;
-
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerController : MonoBehaviour
 {
@@ -93,6 +93,9 @@ public class PlayerController : MonoBehaviour
 	SoundManager soundManager;
 	bool playedSound;
 
+	/*[Header("For Editor SS")]
+	[SerializeField] bool disablePlayerMove;*/
+
 	//For Getting Private Components. May want to use Properties instead
 	#region Additional Functions To Get Private Vars
 	public float GetYaw()
@@ -133,12 +136,13 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
 		if (!overwriteCheckpoints)
-			checkPointsPassed = PlayerPrefs.GetInt("Checkpoint");
+			checkPointsPassed = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + " Checkpoint");
 		else
 			checkPointsPassed = forcedCheckPointsPassed;
+
 		if (checkPoints.Length > 0)
 		{
-			for (int i = 0; i < checkPointsPassed + 1; i++) checkPoints[i].GetHackableMemory(i);
+			for (int i = 0; i < checkPointsPassed; i++) checkPoints[i].GetHackableMemory(i);
 			checkPoints[checkPointsPassed].LoadCheckPoint();
 		}
 
@@ -172,6 +176,15 @@ public class PlayerController : MonoBehaviour
 
 	void Update()
     {
+		/*//For Editor SS
+		if (Input.GetKeyDown(KeyCode.F))
+		{
+			disablePlayerMove = !disablePlayerMove;
+			Cursor.lockState = disablePlayerMove ? CursorLockMode.None : CursorLockMode.Locked;
+			Cursor.visible = disablePlayerMove;
+		} 
+		if (disablePlayerMove) return;*/
+
 		if (!ui.isPaused && !ui.isGameOver)
 		{
 			if (loadingScreen.isLoading) return;

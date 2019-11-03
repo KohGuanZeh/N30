@@ -54,7 +54,7 @@ public class UIManager : MonoBehaviour
 
 	[Header("Objective Marker")]
 	[SerializeField] Image marker;
-	[SerializeField] Transform objective;
+	[SerializeField] public Vector3 objective;
 	[SerializeField] float offset; //Offset for Min Max XY
 	[SerializeField] Vector2 minXY, maxXY;
 	[SerializeField] TextMeshProUGUI distanceToObj;
@@ -319,9 +319,9 @@ public class UIManager : MonoBehaviour
 	#region Objective Marker Functions
 	void PointToObjective()
 	{
-		if (!objective) return;
+		if (objective == Vector3.zero) return;
 
-		Vector3 objPos = objective.position;
+		Vector3 objPos = objective;
 		Vector2 objScreenPos = player.CurrentViewingCamera.WorldToScreenPoint(objPos);
 
 		//Distance from Player to Objective
@@ -372,16 +372,17 @@ public class UIManager : MonoBehaviour
 		marker.gameObject.SetActive(false);
 	}
 
-	void ClearObjective()
-	{
-		objective = null;
-	}
+	// void ClearObjective()
+	// {
+	// 	objective = null;
+	// }
 
 	// I put this to public - Nigel
-	public void SetNewObjective(Transform newObjective)
+	public void SetNewObjective (Vector3 newObjective, bool firstTime = false)
 	{
 		objective = newObjective;
-		soundManager.PlaySound (soundManager.nextObjective);
+		if (firstTime)
+			soundManager.PlaySound (soundManager.nextObjective);
 		ShowMarker();
 	}
 	#endregion

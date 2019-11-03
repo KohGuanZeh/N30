@@ -174,7 +174,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 16
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8217485995604302348
 Transform:
@@ -251,7 +251,7 @@ GameObject:
   m_TagString: Hackable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 16
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8217485995616740399
 Transform:
@@ -281,7 +281,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5d8e98b37ad1cc4b91360e96bba42dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hackableType: 0
   col: {fileID: 8217485995616740396}
+  controllerCol: {fileID: 0}
   camera: {fileID: 0}
   postProcessVolume: {fileID: 0}
   ppp: {fileID: 11400000, guid: 5b4820b1423df064aaf48c26a6b343af, type: 2}
@@ -298,7 +300,10 @@ MonoBehaviour:
   disabledShields: []
   hasPlayerMemory: 0
   canWipeMemory: 1
+  canHaveMemory: 0
   pointer: {fileID: 0}
+  roomName: 
+  hackableName: 
   exclamationMark: {fileID: 832633621293705702}
   questionMark: {fileID: 1491506173078340860}
   whiteDotRaycastHeightOffset: 0
@@ -343,7 +348,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 16
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8217485995689943879
 Transform:
@@ -476,7 +481,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 16
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8217485996693429791
 Transform:
@@ -512,7 +517,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 16
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8217485997179542187
 Transform:

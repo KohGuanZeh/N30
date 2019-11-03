@@ -82,7 +82,7 @@ public class MainMenu : MonoBehaviour
 	{
 		if (isLerping) return;
 		if (newGame) PlayerPrefs.DeleteAll();
-		LoadingScreen.inst.LoadScene("Office");
+		LoadingScreen.inst.LoadScene("Level 1");
 		//SceneManager.LoadScene ("Office", LoadSceneMode.Single);
 	}
 

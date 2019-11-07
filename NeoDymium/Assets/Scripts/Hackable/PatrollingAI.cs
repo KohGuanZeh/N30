@@ -49,6 +49,8 @@ public class PatrollingAI : MonoBehaviour
 	PlayerController player;
 	AI ai;
 
+	[HideInInspector] public bool invokedDoorChaseCancel;
+
 	void Start ()
 	{
 		agent = GetComponent<NavMeshAgent> ();
@@ -67,6 +69,7 @@ public class PatrollingAI : MonoBehaviour
 		idleRotation = false;
 		reachedIdle = false;
 		firstIdle = true;
+		invokedDoorChaseCancel = false;
 
 		for (int i = 0; i < patrolPoints.Length; i++)
 			patrolPoints[i].col = patrolPoints[i].point.GetComponent<Collider> ();
@@ -120,15 +123,18 @@ public class PatrollingAI : MonoBehaviour
 
 	void StartPlayerChase ()
 	{
-		agent.SetDestination (player.transform.position);
-		chasingPlayer = true;
-		findingPlayer = true;
-		isInvincible = true;
-		reachedLastSeen = false;
-		StopAllCoroutines ();
-		if (storedCheckpoint != null)
-			Destroy (storedCheckpoint);
-		storedCheckpoint = Instantiate (chaseCheckpoint, player.transform.position, Quaternion.identity);
+		if (!invokedDoorChaseCancel)
+		{
+			agent.SetDestination (player.transform.position);
+			chasingPlayer = true;
+			findingPlayer = true;
+			isInvincible = true;
+			reachedLastSeen = false;
+			StopAllCoroutines ();
+			if (storedCheckpoint != null)
+				Destroy (storedCheckpoint);
+			storedCheckpoint = Instantiate (chaseCheckpoint, player.transform.position, Quaternion.identity);
+		}
 	}
 
 	void DuringPlayerChase ()
@@ -206,6 +212,11 @@ public class PatrollingAI : MonoBehaviour
 
 		yield return new WaitForSeconds (3);
 
+		EndChase ();
+	}
+
+	void EndChase ()
+	{
 		if (alarmed)
 			ChaseAlarm ();
 		else
@@ -244,6 +255,21 @@ public class PatrollingAI : MonoBehaviour
 	bool RandomBool ()
 	{
 		return Random.Range (0, 2) == 1 ? true : false;
+	}
+
+	void TwoSecIdle ()
+	{
+		agent.SetDestination (transform.position);
+		Invoke ("EndTwoSecIdle", 2);
+	}
+	
+	void EndTwoSecIdle ()
+	{
+		EndChase ();
+		chasingPlayer = false;
+		findingPlayer = false;
+		reachedLastSeen = false;
+		invokedDoorChaseCancel = false;
 	}
 
 	void Idle ()
@@ -303,6 +329,16 @@ public class PatrollingAI : MonoBehaviour
 			reachedLastSeen = true;
 			chasingPlayer = false;
 			Destroy (storedCheckpoint);
+		}
+
+		if (other.tag == "Door" && !invokedDoorChaseCancel && chasingPlayer)
+		{
+			if (other.GetComponent<AIDoor> ().requiredColor != ai.color && !other.GetComponent<AIDoor> ().nowForeverOpened)
+			{
+				invokedDoorChaseCancel = true;
+				Destroy (storedCheckpoint);
+				TwoSecIdle ();
+			}
 		}
 	}
 

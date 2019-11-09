@@ -26,7 +26,14 @@ public class AIDoor : MonoBehaviour
 		SoundManager.inst.PlaySound (SoundManager.inst.slidingDoor);
 		RespectiveGoals goal = GetComponent<RespectiveGoals>();
 		if (goal) goal.isCompleted = true;
+		float startTime = 0;
+		animator.SetBool("Opened", true);
+		/*if (animator.GetCurrentAnimatorStateInfo(0).IsName("Closed"))
+		{
+			startTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+		}
 		animator.SetBool  ("Opened", true);
+		animator.GetCurrentAnimatorStateInfo(0).normalizedTime;*/
 	}
 
 	void Close ()

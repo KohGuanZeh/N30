@@ -93,7 +93,7 @@ public class PatrollingAI : MonoBehaviour
 	void Invincibility ()
 	{
 		if (//player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
-			(player.stealthGauge / player.stealthThreshold) >= minStealthPercent || findingPlayer || player.GetPlayerCollider ().IsVisibleFrom (ai.camera)) //&&
+			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent || findingPlayer || player.GetPlayerCollider ().IsVisibleFrom (ai.camera)) //&&
 			//!canChase)
 			isInvincible = true;
 		else
@@ -112,7 +112,7 @@ public class PatrollingAI : MonoBehaviour
 	void PlayerChase ()
 	{
 		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
-			(player.stealthGauge / player.stealthThreshold) >= minStealthPercent)
+			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent)
 			StartPlayerChase ();
 		
 		DuringPlayerChase ();

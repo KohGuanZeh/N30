@@ -59,9 +59,9 @@ public class PlayerController : MonoBehaviour
 
 	[Header("Stealth Gauge")]
 	public bool isDetected;
-	public float stealthGauge;
-	public float stealthThreshold;
-	public float prevStealthGauge; //Keeps track of Previous Frame Stealth Gauge Value. If there is no change, it means that Player is no longer Detected
+	public float detectionGauge;
+	public float detectionThreshold;
+	public float prevDetectionGauge; //Keeps track of Previous Frame Stealth Gauge Value. If there is no change, it means that Player is no longer Detected
 	public float increaseMult;
 	public float decreaseMult;
 	public Outline detectedOutline; //Player Outline
@@ -211,8 +211,8 @@ public class PlayerController : MonoBehaviour
 				if (Input.GetMouseButtonDown(1)) Unhack();
 			}
 
-			if (prevStealthGauge == stealthGauge) DecreaseStealthGauge();
-			else prevStealthGauge = stealthGauge;
+			if (prevDetectionGauge == detectionGauge) DecreaseDetectionGauge();
+			else prevDetectionGauge = detectionGauge;
 
 			if (action != null) action();
 		}
@@ -755,21 +755,21 @@ public class PlayerController : MonoBehaviour
 	#endregion
 
 	#region Player Detection
-	public void IncreaseStealthGauge()
+	public void IncreaseDetectionGauge()
 	{
 		isDetected = true;
 		detectedOutline.enabled = true;
-		stealthGauge = Mathf.Min(stealthGauge + Time.deltaTime * increaseMult, stealthThreshold);
-		if (stealthGauge >= stealthThreshold) ui.GameOver();
+		detectionGauge = Mathf.Min(detectionGauge + Time.deltaTime * increaseMult, detectionThreshold);
+		//if (detectionGauge >= detectionThreshold) ui.GameOver();
 	}
 
-	public void DecreaseStealthGauge()
+	public void DecreaseDetectionGauge()
 	{
-		if (stealthGauge <= 0) return;
+		if (detectionGauge <= 0) return;
 		detectedOutline.enabled = false;
 		isDetected = false;
-		stealthGauge = Mathf.Max(stealthGauge - Time.deltaTime * decreaseMult, 0);
-		prevStealthGauge = stealthGauge;
+		detectionGauge = Mathf.Max(detectionGauge - Time.deltaTime * decreaseMult, 0);
+		prevDetectionGauge = detectionGauge;
 	}
 	#endregion
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 
 public class AIDoor : MonoBehaviour
@@ -15,7 +16,9 @@ public class AIDoor : MonoBehaviour
 	{
 		animator = GetComponent<Animator> ();
 		obstacle = GetComponent<NavMeshObstacle> ();
-		nowForeverOpened = false;
+
+		nowForeverOpened = requiredColor == ColorIdentifier.none? true : false;
+		if (nowForeverOpened) SetDoorToUnlocked();
 
 		//Get Materials to Change Emission
 		emissiveMats = MaterialUtils.GetMaterialsFromRenderers(emissiveRs);
@@ -49,53 +52,29 @@ public class AIDoor : MonoBehaviour
 		//foreach (Material emissiveMat in emissiveMats) emissiveMat.SetColor("_EmissionColor", emissiveColor);
 	}
 
+	public void SetDoorToUnlocked()
+	{
+		ChangeEmissionColor();
+		obstacle.enabled = false;
+		nowForeverOpened = true;
+		animator.SetBool("Unlocked", true);
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.tag == "Hackable" && other.GetComponent<IHackable>().color == requiredColor && !nowForeverOpened)
+		{
+			if (!animator.GetCurrentAnimatorStateInfo(1).IsName("Unlock")) animator.SetTrigger("Unlock");
+		}
+	}
+
 	void OnTriggerStay (Collider other)
 	{
-		if ((other.tag == "Hackable" && other.GetComponent<IHackable> ().color == requiredColor))
-		{
-			if (!nowForeverOpened) ChangeEmissionColor();
-			nowForeverOpened = true;
-			obstacle.enabled = false;
-			Open ();
-		}
-
-		if (other.tag == "Hackable" && nowForeverOpened)
-		{
-			Open ();
-		}
-
-		if (other.tag == "Player" && nowForeverOpened)
-		{
-			Open ();
-		}
-
-		if (other.tag == "Player" && requiredColor == ColorIdentifier.none)
-		{
-			if (!nowForeverOpened) ChangeEmissionColor();
-			Open ();
-		}
+		if (nowForeverOpened && (other.tag == "Hackable" || other.tag == "Player")) Open();
 	}
 
 	void OnTriggerExit (Collider other)
 	{
-		if ((other.tag == "Hackable" && other.GetComponent<IHackable> ().color == requiredColor))
-		{
-			Close ();
-		}
-
-		if (other.tag == "Hackable" && nowForeverOpened)
-		{
-			Close ();
-		}
-
-		if (other.tag == "Player" && nowForeverOpened)
-		{
-			Close ();
-		}
-
-		if (other.tag == "Player" && requiredColor == ColorIdentifier.none)
-		{
-			Close ();
-		}
+		if (nowForeverOpened && (other.tag == "Hackable" || other.tag == "Player")) Close();
 	}
 }

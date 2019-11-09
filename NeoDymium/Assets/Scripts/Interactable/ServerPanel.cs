@@ -33,7 +33,7 @@ public class ServerPanel : IInteractable
 	public override string GetError(int key = 0)
 	{
 		if (player.inHackable) return "AI cannot interact with this Object";
-		else if (!linkedDoor.locked) return "Server Panel has already been Disabled";
+		else if (linkedDoor != null && !linkedDoor.locked) return "Server Panel has already been Disabled";
 		else return string.Empty;
 	}
 

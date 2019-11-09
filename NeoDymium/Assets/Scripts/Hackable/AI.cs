@@ -94,6 +94,7 @@ public class AI : IHackable
 		ai.reachedIdle = false;
 		ai.idleRotation = false;
 		ai.findingPlayer = false;
+		ai.invokedDoorChaseCancel = false;
 		//Destroy (ai.GetComponent<Rigidbody> ());
 	}
 

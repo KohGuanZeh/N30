@@ -177,7 +177,7 @@ public class IHackable : MonoBehaviour
 			}
 			else ui.LocateHackable(this, pointer);
 
-			player.IncreaseStealthGauge();
+			player.IncreaseDetectionGauge();
 			//print("Seen by " + gameObject.name);
 			exclamationMark.SetActive(true);
 			if (!canHaveMemory)

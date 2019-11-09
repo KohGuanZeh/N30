@@ -43,7 +43,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] float uiLerpTime;
 	[SerializeField] Graphic[] unhackInstructions; //For now Store the Unhack Instructions as a Graphic
 	[SerializeField] Color[] defaultGraphicsColor;
-	[SerializeField] Image cctvUIBorder;
+	[SerializeField] Image[] cctvUIBorders;
 	[SerializeField] TextMeshProUGUI hackableName;
 
 	[Header("Crosshair")]
@@ -54,7 +54,7 @@ public class UIManager : MonoBehaviour
 
 	[Header("Objective Marker")]
 	[SerializeField] Image marker;
-	[SerializeField] public Vector3 objective;
+	public Vector3 objective;
 	[SerializeField] float offset; //Offset for Min Max XY
 	[SerializeField] Vector2 minXY, maxXY;
 	[SerializeField] TextMeshProUGUI distanceToObj;
@@ -62,9 +62,12 @@ public class UIManager : MonoBehaviour
 	[Header("Stealth Gauge")]
 	public RectTransform mainPointer; //Pointer to Instantiate
 	public List<RectTransform> detectedPointers; //To Point to where Player is detected from. Only problem that has not been fixed is instantiating when not enough pointers... (Can be Coded in Optimisation)
-	[SerializeField] Image stealthGauge;
-	[SerializeField] Image detectedWarning;
+	[SerializeField] RectTransform playerPointer;
+	[SerializeField] Image[] detectionGauges; //[0] is Player, [1] is for CCTV/AI
+	[SerializeField] Image[] detectionGaugeBackdrops; //[0] is Player, [1] is for CCTV/AI
+	[SerializeField] Image[] detectedAlerts; //[0] is for Player, [1] is for CCTV/AI
 	[SerializeField] float warningTime;
+	[SerializeField] bool showGaugeBackdrop;
 
 	[Header("Instructions and Error Msgs")]
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
@@ -110,6 +113,7 @@ public class UIManager : MonoBehaviour
 		}
 
 		//Set Min Max XY for Waypoint Pos
+		offset = offset / 1920 * Screen.width;
 		minXY = new Vector2(marker.GetPixelAdjustedRect().width / 2 + offset, marker.GetPixelAdjustedRect().height / 2 + offset);
 		maxXY = new Vector2(Screen.width - minXY.x, Screen.height - minXY.y);
 	}
@@ -118,12 +122,16 @@ public class UIManager : MonoBehaviour
 	{
 		player = PlayerController.inst;
 
-		action += FlashDetectedWarning;
-		detectedWarning.color = new Color(detectedWarning.color.r, detectedWarning.color.g, detectedWarning.color.b, 0);
+		foreach (Image backdrop in detectionGaugeBackdrops) backdrop.gameObject.SetActive(false);
+		foreach (Image warning in detectedAlerts) warning.color = new Color(warning.color.r, warning.color.g, warning.color.b, 0);
 
 		//CCTV UI Start Color and Anchored Positions
-		cctvUIBorder.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-		cctvUIBorder.color = Color.clear;
+		foreach (Image cctvUIBorder in cctvUIBorders)
+		{
+			cctvUIBorder.rectTransform.anchoredPosition = Vector2.zero;
+			cctvUIBorder.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+			cctvUIBorder.color = Color.clear;
+		}
 
 		hackableName.color = Color.clear;
 
@@ -151,14 +159,18 @@ public class UIManager : MonoBehaviour
 
 		action += LerpInstructions;
 		action += LerpActionAvailability;
+		action += FlashDetectedWarning;
+
+		action += PointToObjective;
+		action += PointToPlayer;
+		action += ShowHideGaugeBackdrop;
 
 		soundManager = SoundManager.inst;
 	}
 
 	void Update()
 	{
-		PointToObjective();
-		stealthGauge.fillAmount = (player.stealthGauge / player.stealthThreshold);
+		foreach (Image detectionGauge in detectionGauges) detectionGauge.fillAmount = (player.detectionGauge / player.detectionThreshold);
 
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver) PausePlay();
 
@@ -321,11 +333,10 @@ public class UIManager : MonoBehaviour
 	{
 		if (objective == Vector3.zero) return;
 
-		Vector3 objPos = objective;
-		Vector2 objScreenPos = player.CurrentViewingCamera.WorldToScreenPoint(objPos);
+		Vector2 objScreenPos = player.CurrentViewingCamera.WorldToScreenPoint(objective);
 
 		//Distance from Player to Objective
-		int dist = Mathf.RoundToInt((player.CurrentViewingCamera.transform.position - objPos).magnitude);
+		int dist = Mathf.RoundToInt((player.CurrentViewingCamera.transform.position - objective).magnitude);
 
 		distanceToObj.text = dist.ToString() + "m";
 
@@ -345,7 +356,7 @@ public class UIManager : MonoBehaviour
 		objScreenPos.y = Mathf.Clamp(objScreenPos.y, minXY.y, maxXY.y);*/
 		#endregion
 
-		Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
+		Vector3 dirToObj = (objective - player.CurrentViewingCamera.transform.position).normalized;
 
 		if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToObj) < 0)
 		{
@@ -387,6 +398,68 @@ public class UIManager : MonoBehaviour
 	}
 	#endregion
 
+	#region Detection Gauge Functions
+	public void ShowHideDetectionGauges(int i = 0, bool show = true)
+	{
+		detectionGauges[i].gameObject.SetActive(show);
+	}
+
+	void ShowHideGaugeBackdrop()
+	{
+		if (player.detectionGauge > 0 && !showGaugeBackdrop)
+		{
+			showGaugeBackdrop = true;
+			foreach (Image backdrop in detectionGaugeBackdrops) backdrop.gameObject.SetActive(true);
+		}
+		else if (player.detectionGauge <= 0 && showGaugeBackdrop)
+		{
+			showGaugeBackdrop = false;
+			foreach (Image backdrop in detectionGaugeBackdrops) backdrop.gameObject.SetActive(false);
+		}
+	}
+
+	void PointToPlayer()
+	{
+		if (!detectionGauges[1].gameObject.activeInHierarchy) return;
+
+		Vector3 playerPos = player.transform.position + new Vector3(0, player.DistFromGround, 0);
+		Vector3 currentCamPos = player.CurrentViewingCamera.transform.position;
+		Vector2 playerScreenPos = player.CurrentViewingCamera.WorldToScreenPoint(playerPos);
+		Vector3 dirToPlayer = (playerPos - currentCamPos).normalized;
+
+		if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToPlayer) < 0)
+		{
+			//If Player Body is on the Right side of the Current Cam, Clamp it to the LEFT (Since Player is facing behind) and vice versa
+			if (playerScreenPos.x > Screen.width / 2) playerScreenPos.x = minXY.x;
+			else playerScreenPos.x = maxXY.x;
+		}
+
+		if (player.isDetected)
+		{
+			if (playerScreenPos.x < minXY.x || playerScreenPos.x > maxXY.x || playerScreenPos.y < minXY.y || playerScreenPos.y > maxXY.y)
+			{
+				if (!playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(true);
+				print("Player is Off Screen");
+
+				Vector3 horDir = (new Vector3(playerPos.x, 0, playerPos.z) - new Vector3(currentCamPos.x, 0, currentCamPos.z)).normalized;
+				Vector3 forward = player.CurrentViewingCamera.transform.forward;
+
+				float horAngle = Vector3.SignedAngle(new Vector3(forward.x, 0, forward.z).normalized, horDir, Vector3.up); //Not Sure why this Works
+				playerPointer.eulerAngles = new Vector3(0, 0, -horAngle); //Set Rotation of Player Pointer to Point at Player
+			}
+			else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
+		}
+		else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
+
+		//Clamping to Edges of Screen
+		playerScreenPos.x = Mathf.Clamp(playerScreenPos.x, minXY.x, maxXY.x);
+		playerScreenPos.y = Mathf.Clamp(playerScreenPos.y, minXY.y, maxXY.y);
+
+		detectionGauges[1].transform.position = playerScreenPos;
+		detectionGaugeBackdrops[1].transform.position = playerScreenPos;
+	}
+	#endregion
+
 	#region GUI Animations
 	void LerpFocusFeedback()
 	{
@@ -420,7 +493,8 @@ public class UIManager : MonoBehaviour
 		if (warningTime == 0 && !player.isDetected) return;
 
 		float alpha = 0;
-		Color newColor = detectedWarning.color;
+
+		Color[] alertColors = new Color[2];
 
 		if (player.isDetected)
 		{
@@ -429,8 +503,12 @@ public class UIManager : MonoBehaviour
 		}
 		else warningTime = 0;
 
-		newColor.a = alpha;
-		detectedWarning.color = newColor;
+		for (int i = 0; i < detectedAlerts.Length; i++)
+		{
+			alertColors[i] = detectedAlerts[i].color;
+			alertColors[i].a = alpha;
+			detectedAlerts[i].color = alertColors[i];
+		}
 	}
 
 	void ErrorFadeInFadeOut()
@@ -458,8 +536,15 @@ public class UIManager : MonoBehaviour
 
 		Color targetColor = GetCurrentColor(currentColor);
 
-		cctvUIBorder.rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, Mathf.Clamp(uiLerpTime/0.75f, 0, 1));
-		cctvUIBorder.color = Color.Lerp(Color.clear, targetColor, uiLerpTime);
+		for (int i = 0; i < cctvUIBorders.Length; i++)
+		{
+			int xMult = cctvUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
+			int yMult = cctvUIBorders[i].rectTransform.pivot.y == 0 ? 1 : -1;
+
+			cctvUIBorders[i].rectTransform.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2(23.5f * xMult, 26.5f * yMult), Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
+			cctvUIBorders[i].rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
+			cctvUIBorders[i].color = Color.Lerp(Color.clear, targetColor, uiLerpTime);
+		}
 
 		float lerpTimeLate = Mathf.Clamp((uiLerpTime - 0.5f) / 0.5f, 0, 1);
 
@@ -468,8 +553,16 @@ public class UIManager : MonoBehaviour
 
 		if (uiLerpTime >= 1 && uiFadeIn)
 		{
-			cctvUIBorder.rectTransform.localScale = Vector3.one;
-			cctvUIBorder.color = targetColor;
+			for (int i = 0; i < cctvUIBorders.Length; i++)
+			{
+				int xMult = cctvUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
+				int yMult = cctvUIBorders[i].rectTransform.pivot.y == 0 ? 1 : -1;
+
+				cctvUIBorders[i].rectTransform.anchoredPosition = new Vector2(23.5f * xMult, 26.5f * yMult);
+				cctvUIBorders[i].rectTransform.localScale = Vector3.one;
+				cctvUIBorders[i].color = targetColor;
+			}
+
 			hackableName.color = targetColor;
 
 			for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = defaultGraphicsColor[i];
@@ -479,8 +572,12 @@ public class UIManager : MonoBehaviour
 		}
 		else if (uiLerpTime <= 0 && !uiFadeIn)
 		{
-			cctvUIBorder.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-			cctvUIBorder.color = Color.clear;
+			foreach (Image cctvUIBorder in cctvUIBorders)
+			{
+				cctvUIBorder.rectTransform.anchoredPosition = Vector2.zero;
+				cctvUIBorder.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+				cctvUIBorder.color = Color.clear;
+			}
 
 			hackableName.color = Color.clear;
 

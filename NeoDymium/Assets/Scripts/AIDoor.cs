@@ -18,7 +18,11 @@ public class AIDoor : MonoBehaviour
 		obstacle = GetComponent<NavMeshObstacle> ();
 
 		nowForeverOpened = requiredColor == ColorIdentifier.none? true : false;
-		if (nowForeverOpened) SetDoorToUnlocked();
+		if (nowForeverOpened)
+		{
+			SetDoorToUnlocked();
+			animator.Play("Unlock", 1, 1);
+		} 
 
 		//Get Materials to Change Emission
 		emissiveMats = MaterialUtils.GetMaterialsFromRenderers(emissiveRs);
@@ -29,14 +33,7 @@ public class AIDoor : MonoBehaviour
 		SoundManager.inst.PlaySound (SoundManager.inst.slidingDoor);
 		RespectiveGoals goal = GetComponent<RespectiveGoals>();
 		if (goal) goal.isCompleted = true;
-		float startTime = 0;
 		animator.SetBool("Opened", true);
-		/*if (animator.GetCurrentAnimatorStateInfo(0).IsName("Closed"))
-		{
-			startTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-		}
-		animator.SetBool  ("Opened", true);
-		animator.GetCurrentAnimatorStateInfo(0).normalizedTime;*/
 	}
 
 	void Close ()

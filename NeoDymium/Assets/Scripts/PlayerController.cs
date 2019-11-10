@@ -760,7 +760,7 @@ public class PlayerController : MonoBehaviour
 		isDetected = true;
 		detectedOutline.enabled = true;
 		detectionGauge = Mathf.Min(detectionGauge + Time.deltaTime * increaseMult, detectionThreshold);
-		//if (detectionGauge >= detectionThreshold) ui.GameOver();
+		if (detectionGauge >= detectionThreshold) ui.GameOver();
 	}
 
 	public void DecreaseDetectionGauge()

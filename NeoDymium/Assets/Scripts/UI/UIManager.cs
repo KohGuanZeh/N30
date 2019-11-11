@@ -114,6 +114,8 @@ public class UIManager : MonoBehaviour
 
 		//Set Min Max XY for Waypoint Pos
 		offset = offset / 1920 * Screen.width;
+		//minXY = new Vector2(0,0);
+		//maxXY = new Vector2(Screen.width, Screen.height);
 		minXY = new Vector2(marker.GetPixelAdjustedRect().width / 2 + offset, marker.GetPixelAdjustedRect().height / 2 + offset);
 		maxXY = new Vector2(Screen.width - minXY.x, Screen.height - minXY.y);
 	}
@@ -452,6 +454,7 @@ public class UIManager : MonoBehaviour
 		else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
 
 		//Clamping to Edges of Screen
+		print(playerScreenPos.y);
 		playerScreenPos.x = Mathf.Clamp(playerScreenPos.x, minXY.x, maxXY.x);
 		playerScreenPos.y = Mathf.Clamp(playerScreenPos.y, minXY.y, maxXY.y);
 

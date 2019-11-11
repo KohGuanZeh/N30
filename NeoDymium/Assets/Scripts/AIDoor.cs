@@ -21,7 +21,11 @@ public class AIDoor : MonoBehaviour
 		obstacle = GetComponent<NavMeshObstacle> ();
 
 		nowForeverOpened = requiredColor == ColorIdentifier.none? true : false;
-		if (nowForeverOpened) SetDoorToUnlocked();
+		if (nowForeverOpened) 
+		{
+			SetDoorToUnlocked();
+			animator.Play("Unlock", 1, 1.0f);
+		}
 
 		inRange = false;
 

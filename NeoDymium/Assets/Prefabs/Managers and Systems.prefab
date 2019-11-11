@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4128693903568713348
+--- !u!1 &142166962378238380
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,58 +8,114 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4128693903568713349}
-  - component: {fileID: 4128693903568713351}
-  - component: {fileID: 4128693903568713350}
+  - component: {fileID: 4192516512401397837}
+  - component: {fileID: 6176016310346254735}
+  - component: {fileID: 949129879368563200}
   m_Layer: 0
-  m_Name: Lure Hint
+  m_Name: Control Kiosk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4128693903568713349
+--- !u!4 &4192516512401397837
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693903568713348}
+  m_GameObject: {fileID: 142166962378238380}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -91.11, y: 0, z: 3.1100082}
+  m_LocalPosition: {x: -6.525, y: 1.85, z: -10.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 2
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4128693903568713351
+--- !u!65 &6176016310346254735
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693903568713348}
+  m_GameObject: {fileID: 142166962378238380}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.5437105, y: 2, z: 3.9155128}
-  m_Center: {x: 1.1207737, y: 0.7995393, z: 0.08304703}
---- !u!114 &4128693903568713350
+  m_Size: {x: 4, y: 4, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &949129879368563200
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693903568713348}
+  m_GameObject: {fileID: 142166962378238380}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textToDisplay: 'Urgh, that AI is guarding the Door,
-
-    Maybe something here could serve as a distraction'
+  textToDisplay: Maybe this Kiosk can do the trick
+--- !u!1 &3448159046767914528
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1021524143067179036}
+  - component: {fileID: 4626662039808398612}
+  - component: {fileID: 6173431215167241626}
+  m_Layer: 0
+  m_Name: Hint to Control Kiosk
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1021524143067179036
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3448159046767914528}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -5.62, y: 1.85, z: -2.12}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4128693903659913603}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4626662039808398612
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3448159046767914528}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4, y: 4, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6173431215167241626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3448159046767914528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textToDisplay: I need to find some way to lure the AI to opening the door
 --- !u!1 &4128693903659913602
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,15 +145,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4128693903939259607}
-  - {fileID: 4128693904329230947}
-  - {fileID: 4128693903568713349}
-  - {fileID: 4128693905221017677}
-  - {fileID: 4128693904667411974}
-  - {fileID: 4128693903981094648}
-  - {fileID: 4128693904437220048}
-  - {fileID: 4128693904067882788}
-  - {fileID: 4128693904349904383}
   - {fileID: 4128693904013993167}
+  - {fileID: 400574975606176385}
+  - {fileID: 868869030659332508}
+  - {fileID: 1021524143067179036}
+  - {fileID: 4192516512401397837}
   m_Father: {fileID: 4128693903977718791}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -206,67 +258,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4128693903981094655
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4128693903981094648}
-  - component: {fileID: 4128693903981094650}
-  - component: {fileID: 4128693903981094649}
-  m_Layer: 0
-  m_Name: Coloured Door
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4128693903981094648
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693903981094655}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -55.899998, y: 0, z: 28.500015}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4128693903981094650
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693903981094655}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 3, y: 3, z: 3}
-  m_Center: {x: 1.8926291, y: 0.7995393, z: 0.017356873}
---- !u!114 &4128693903981094649
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693903981094655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToDisplay: 'Seems like the Blue Locked Coloured Door can only be opened by the
-    same coloured AI Robot
-
-    I would need to find a Blue AI to unlock it'
 --- !u!1 &4128693904013993166
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,7 +288,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 9
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &4128693904013993160
 BoxCollider:
@@ -324,64 +315,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc523c993cb297f47ae363916eb84ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &4128693904067882811
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4128693904067882788}
-  - component: {fileID: 4128693904067882789}
-  - component: {fileID: 4128693904067882790}
-  m_Layer: 0
-  m_Name: Crouch Tut
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4128693904067882788
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904067882811}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -49.239983, y: 0, z: 56.370026}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4128693904067882789
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904067882811}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.7852583, y: 2.5990787, z: 4.428238}
-  m_Center: {x: 1.8926291, y: 0.7995393, z: 0.017356873}
---- !u!114 &4128693904067882790
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904067882811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToDisplay: CTRL to Crouch
 --- !u!1 &4128693904081838196
 GameObject:
   m_ObjectHideFlags: 0
@@ -1197,194 +1130,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!1 &4128693904329230946
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4128693904329230947}
-  - component: {fileID: 4128693904329230957}
-  - component: {fileID: 4128693904329230956}
-  m_Layer: 0
-  m_Name: Lure Practice
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4128693904329230947
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904329230946}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -99.50001, y: 0, z: 10.429993}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4128693904329230957
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904329230946}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5, y: 5, z: 5}
-  m_Center: {x: 1.8926291, y: 0.7995393, z: 0.017356873}
---- !u!114 &4128693904329230956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904329230946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToDisplay: This Control Kiosk seems like it could do some good distraction
---- !u!1 &4128693904349904382
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4128693904349904383}
-  - component: {fileID: 4128693904349904376}
-  - component: {fileID: 4128693904349904378}
-  - component: {fileID: 4128693904349904377}
-  m_Layer: 0
-  m_Name: After Sneaking Past Obj
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4128693904349904383
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904349904382}
-  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -42.049988, y: 1.0075626, z: 29.730015}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4128693904349904376
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904349904382}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5, y: 2, z: 2}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4128693904349904378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904349904382}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 435b669307082b24e829df0f2adcb181, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4128693904349904377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904349904382}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a9f3dfc411da3640a99aef12198a26b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isCompleted: 0
-  currentGoal: Sneak Past the Security Guard
---- !u!1 &4128693904437220055
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4128693904437220048}
-  - component: {fileID: 4128693904437220050}
-  - component: {fileID: 4128693904437220049}
-  m_Layer: 0
-  m_Name: Crouch Practice
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4128693904437220048
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904437220055}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -40.309967, y: 0, z: 45.720036}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4128693904437220050
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904437220055}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.7852583, y: 2.5990787, z: 4.428238}
-  m_Center: {x: 1.8926291, y: 0.7995393, z: 0.017356873}
---- !u!114 &4128693904437220049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904437220055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToDisplay: That's the Security Room, I need to get past it without being spotted
 --- !u!1 &4128693904513056799
 GameObject:
   m_ObjectHideFlags: 0
@@ -1461,64 +1206,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!1 &4128693904667411973
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4128693904667411974}
-  - component: {fileID: 4128693904667411968}
-  - component: {fileID: 4128693904667411975}
-  m_Layer: 0
-  m_Name: 'Hack '
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4128693904667411974
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904667411973}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -56.539993, y: 0, z: 23.379997}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4128693904667411968
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904667411973}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 3, y: 3, z: 3}
-  m_Center: {x: 1.8926291, y: 0.7995393, z: 0.017356873}
---- !u!114 &4128693904667411975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693904667411973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToDisplay: To Hack, Simply look at any AI Robot to gain control of them
 --- !u!1 &4128693904876611586
 GameObject:
   m_ObjectHideFlags: 0
@@ -1562,18 +1249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a3e68731ff5db749b3d095e1578ab82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goals:
-  - {fileID: 4128693904349904382}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  goal: []
   displayCurrentGoal: {fileID: 0}
   mainObjectives:
   - {fileID: 0}
@@ -1724,66 +1400,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaNameText: {fileID: 0}
---- !u!1 &4128693905221017676
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4128693905221017677}
-  - component: {fileID: 4128693905221017679}
-  - component: {fileID: 4128693905221017678}
-  m_Layer: 0
-  m_Name: Shielded AIs
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4128693905221017677
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693905221017676}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -72.95999, y: 0.2, z: 11.129997}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4128693903659913603}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4128693905221017679
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693905221017676}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 1.8926291, y: 0.7995393, z: 0.017356873}
---- !u!114 &4128693905221017678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4128693905221017676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToDisplay: 'Urgh, its those Higher Security Level AI Robots
-
-    I will just have to sneak my way past them for now'
 --- !u!1 &4128693905286668590
 GameObject:
   m_ObjectHideFlags: 0
@@ -1936,3 +1552,119 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!1 &5011775088681529705
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 868869030659332508}
+  - component: {fileID: 494630804764703059}
+  - component: {fileID: 6826738941163210199}
+  m_Layer: 0
+  m_Name: Hacking into AI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &868869030659332508
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5011775088681529705}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -25.61, y: 1.85, z: 12.78}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4128693903659913603}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &494630804764703059
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5011775088681529705}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4, y: 4, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6826738941163210199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5011775088681529705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textToDisplay: Hmm, i think that AI could be of some use
+--- !u!1 &6944051773291374763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 400574975606176385}
+  - component: {fileID: 8608446472923879232}
+  - component: {fileID: 6548993534461945220}
+  m_Layer: 0
+  m_Name: Detected is Bad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &400574975606176385
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6944051773291374763}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -37.74, y: 1.85, z: 26.77}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4128693903659913603}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8608446472923879232
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6944051773291374763}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4, y: 4, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6548993534461945220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6944051773291374763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textToDisplay: Urgh, there is a security room up ahead, i need to stay undetected

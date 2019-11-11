@@ -11,25 +11,43 @@ public class AIDoor : MonoBehaviour
 	[SerializeField] Material[] emissiveMats;
 	Animator animator;
 	NavMeshObstacle obstacle;
+	SoundManager soundManager;
+	bool inRange = false;
 
 	void Start ()
 	{
+		soundManager = SoundManager.inst;
 		animator = GetComponent<Animator> ();
 		obstacle = GetComponent<NavMeshObstacle> ();
 
 		nowForeverOpened = requiredColor == ColorIdentifier.none? true : false;
 		if (nowForeverOpened) SetDoorToUnlocked();
 
+		inRange = false;
+
+		animator.SetFloat ("Speed", -1);
+
 		//Get Materials to Change Emission
 		emissiveMats = MaterialUtils.GetMaterialsFromRenderers(emissiveRs);
 	}
 
+	void Update ()
+	{
+		if (animator.GetCurrentAnimatorStateInfo (0).normalizedTime <= 0 && !inRange)
+			animator.SetFloat ("Speed", 0);
+		if (animator.GetCurrentAnimatorStateInfo (0).normalizedTime >= 1 && inRange)
+			animator.SetFloat ("Speed", 0);
+	}
+
 	void Open ()
 	{
-		SoundManager.inst.PlaySound (SoundManager.inst.slidingDoor);
+		inRange = true;
+		animator.SetFloat ("Speed", 1);
+
+		soundManager.PlaySound (SoundManager.inst.slidingDoor);
 		RespectiveGoals goal = GetComponent<RespectiveGoals>();
 		if (goal) goal.isCompleted = true;
-		float startTime = 0;
+		//float startTime = 0;
 		animator.SetBool("Opened", true);
 		/*if (animator.GetCurrentAnimatorStateInfo(0).IsName("Closed"))
 		{
@@ -41,7 +59,9 @@ public class AIDoor : MonoBehaviour
 
 	void Close ()
 	{
-		SoundManager.inst.PlaySound (SoundManager.inst.slidingDoor);
+		inRange = false;
+		animator.SetFloat ("Speed", -1);
+		soundManager.PlaySound (SoundManager.inst.slidingDoor);
 		animator.SetBool  ("Opened", false);
 	}
 
@@ -52,7 +72,7 @@ public class AIDoor : MonoBehaviour
 		//foreach (Material emissiveMat in emissiveMats) emissiveMat.SetColor("_EmissionColor", emissiveColor);
 	}
 
-	public void SetDoorToUnlocked()
+	void SetDoorToUnlocked()
 	{
 		ChangeEmissionColor();
 		obstacle.enabled = false;
@@ -60,21 +80,31 @@ public class AIDoor : MonoBehaviour
 		animator.SetBool("Unlocked", true);
 	}
 
-	private void OnTriggerEnter(Collider other)
+	void OnTriggerEnter(Collider other)
 	{
 		if (other.tag == "Hackable" && other.GetComponent<IHackable>().color == requiredColor && !nowForeverOpened)
 		{
-			if (!animator.GetCurrentAnimatorStateInfo(1).IsName("Unlock")) animator.SetTrigger("Unlock");
+			if (!animator.GetCurrentAnimatorStateInfo(1).IsName("Unlock"))
+			{
+				animator.SetTrigger("Unlock");
+				inRange = true;
+			}
 		}
 	}
 
 	void OnTriggerStay (Collider other)
 	{
-		if (nowForeverOpened && (other.tag == "Hackable" || other.tag == "Player")) Open();
+		if (nowForeverOpened && (other.tag == "Hackable" || other.tag == "Player"))
+		{
+			Open();
+		}	
 	}
 
 	void OnTriggerExit (Collider other)
 	{
-		if (nowForeverOpened && (other.tag == "Hackable" || other.tag == "Player")) Close();
+		if (nowForeverOpened && (other.tag == "Hackable" || other.tag == "Player"))
+		{
+			Close();
+		}
 	}
 }

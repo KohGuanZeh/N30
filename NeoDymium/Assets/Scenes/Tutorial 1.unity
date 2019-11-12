@@ -256,7 +256,7 @@ Transform:
   - {fileID: 1191100355}
   - {fileID: 842563647}
   - {fileID: 815195905}
-  - {fileID: 510209867}
+  - {fileID: 1143936902}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14767,101 +14767,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 507613071}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &510209866
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 9585416}
-    m_Modifications:
-    - target: {fileID: 6521025678728711680, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_Name
-      value: AI Door Red
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 79.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 58.14
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.000043649874
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.00016572299
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.000003233552
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -0.019000001
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -180.00002
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: -0.0050000004
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8e150a214724b024f999574e937049ec, type: 3}
---- !u!4 &510209867 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 510209866}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &510209868 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6521025678728711680, guid: 8e150a214724b024f999574e937049ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 510209866}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &510209869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 510209868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a9f3dfc411da3640a99aef12198a26b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isCompleted: 0
-  currentGoal: Find your way to the Concourse
 --- !u!1001 &510636585
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26914,6 +26819,101 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 493860d3bc3dd4340a7c355c46570267, type: 3}
+--- !u!1001 &1143936901
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 9585416}
+    m_Modifications:
+    - target: {fileID: 6521025678728711680, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_Name
+      value: AI Door Blue (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 79.219
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.000000009616755
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 58.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ae04b9a88370809409501e35fd2d65eb, type: 3}
+--- !u!4 &1143936902 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6521025678728711684, guid: ae04b9a88370809409501e35fd2d65eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1143936901}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1143936903 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6521025678728711680, guid: ae04b9a88370809409501e35fd2d65eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1143936901}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1143936904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143936903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a9f3dfc411da3640a99aef12198a26b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCompleted: 0
+  currentGoal: Find your way to the Concourse
 --- !u!1001 &1144234761
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -96,7 +96,8 @@ public class PatrollingAI : MonoBehaviour
 	void Invincibility ()
 	{
 		if (//player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
-			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent || findingPlayer || player.GetPlayerCollider ().IsVisibleFrom (ai.camera)) //&&
+			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent || findingPlayer || 
+			(player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && ai.whiteDot.activeSelf)) //&&
 			//!canChase)
 			isInvincible = true;
 		else
@@ -180,6 +181,25 @@ public class PatrollingAI : MonoBehaviour
 		yield return new WaitForSeconds (3);
 
 		idleRotation = false;
+	}
+
+	void OnDrawGizmos ()
+	{
+		Gizmos.color = Color.red;
+		if (patrolPoints.Length > 1)
+		{
+			for (int i = 1; i < patrolPoints.Length + 1; i++)
+			{
+				if (i < patrolPoints.Length)
+					Gizmos.DrawLine (patrolPoints[i].point.position, patrolPoints[i - 1].point.position);
+				else
+					Gizmos.DrawLine (patrolPoints[patrolPoints.Length - 1].point.position, patrolPoints[0].point.position);
+			}
+		}
+		else if (patrolPoints.Length > 0)
+		{
+			Gizmos.DrawWireCube (patrolPoints[0].point.position, Vector3.one);
+		}
 	}
 
 	IEnumerator LookAround ()

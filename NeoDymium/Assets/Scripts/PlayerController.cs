@@ -25,10 +25,10 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] bool isGrounded, onSlope;
 	[SerializeField] public LayerMask groundLayer;
 	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
-	public float groundOffset = 0.1f;
+	public float groundOffset = 0.125f;
 	public float DistFromGround
 	{
-		get { return (controller.height / 2) + groundOffset; } //playerCollider.bounds.extents.y + 0.2f; This is via collider}
+		get { return ((controller.height / 2) + groundOffset); } //playerCollider.bounds.extents.y + 0.2f; This is via collider}
 	}
 
 	[Header ("For Crouching")]
@@ -288,8 +288,11 @@ public class PlayerController : MonoBehaviour
 	void GroundAndSlopeCheck()
 	{
 		RaycastHit hit;
+		Vector3 origin = transform.position + controller.center;
+		Debug.DrawLine(origin, origin + -Vector3.up * DistFromGround, Color.red);
 		if (Physics.Raycast(transform.position + controller.center, -Vector3.up, out hit, DistFromGround, groundLayer))
 		{
+			
 			isGrounded = true;
 			onSlope = hit.normal != Vector3.up ? true : false;
 		}
@@ -317,7 +320,8 @@ public class PlayerController : MonoBehaviour
 	bool StandAvailability()
 	{
 		//Debug.DrawLine(transform.position, transform.position + Vector3.up * (playerStandHeight + 0.2f), Color.red, 5);
-		if (Physics.Raycast(transform.position, Vector3.up, playerStandHeight + 0.1f, groundLayer)) return false;
+		//The Origin should have offset since the Transform.position shift abit due to the Character Controller Collider
+		if (Physics.Raycast(transform.position + (Vector3.up * 0.05f), Vector3.up, playerStandHeight + 0.1f, groundLayer)) return false;
 		else return true;
 	}
 
@@ -384,32 +388,6 @@ public class PlayerController : MonoBehaviour
 				ui.Focus(isFocusing);
 				return;
 			}
-
-			if (aimRayHit.collider.GetComponent<Pass> () && WithinInteractDistance ())
-			{
-				bool passed = true;
-				if (hackedObj != null)
-					if (hackedObj.hackableType == HackableType.CCTV)
-						passed = false;
-
-				if (previousPass == aimRayHit.collider.GetComponent<Pass> ())
-					passed = false;
-				else if (previousPass != null)
-					previousPass.textHolder.gameObject.SetActive (false);
-
-				if (passed)
-				{
-					previousPass = aimRayHit.collider.GetComponent<Pass> ();
-					previousPass.textHolder.gameObject.SetActive (true);
-				}
-			}
-			else
-			{
-				if (previousPass != null)
-					previousPass.textHolder.gameObject.SetActive (false);
-				previousPass = null;
-			}
-
 
 			if (prevCollider == aimRayHit.collider) return;
 			else prevCollider = aimRayHit.collider;

@@ -372,6 +372,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85b02938bf8c8e479bdef137b1affa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  master: {fileID: 24100000, guid: 350de4cd0788409439403471b902ad0c, type: 2}
+  masterSlider: {fileID: 0}
+  bgmSlider: {fileID: 0}
+  sfxSlider: {fileID: 0}
   hack:
     clip: {fileID: 8300000, guid: eaea92f9d1d66e24187d67bafb9c0889, type: 3}
     volume: 1
@@ -383,19 +387,19 @@ MonoBehaviour:
     pitch: 1
     sourceIndex: 0
   playerWalk:
-    clip: {fileID: 8300000, guid: 6e6b38a0b1e285240995027d676dbc42, type: 3}
+    clip: {fileID: 8300000, guid: efab332b97b91df4d8188f520f5775f6, type: 3}
     volume: 1
-    pitch: 0.8
+    pitch: 1
     sourceIndex: 1
   playerCrouch:
     clip: {fileID: 8300000, guid: a1e94c8a43fc9d34f8b1c1bf2c310733, type: 3}
-    volume: 0.3
+    volume: 1
     pitch: 1
     sourceIndex: 0
   playerCrouchWalk:
-    clip: {fileID: 8300000, guid: 5d47c1a4752f9534f806b66162e117ed, type: 3}
-    volume: 0.5
-    pitch: 0.8
+    clip: {fileID: 8300000, guid: a9cda6928bc0cf848b7be743dcf3595c, type: 3}
+    volume: 0.8
+    pitch: 1
     sourceIndex: 1
   aiWalk:
     clip: {fileID: 8300000, guid: cd3354796af20c041918a548b89ce101, type: 3}
@@ -422,7 +426,7 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     sourceIndex: 4
-  bgm:
+  bgmSound:
     clip: {fileID: 0}
     volume: 0
     pitch: 0
@@ -433,43 +437,43 @@ MonoBehaviour:
     pitch: 0
     sourceIndex: 0
   numpad:
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.1
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.2
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.3
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.4
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.5
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.6
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.7
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.8
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 0.9
     sourceIndex: 2
-  - clip: {fileID: 8300000, guid: 090fc15c28611a543b5630253777cb85, type: 3}
+  - clip: {fileID: 8300000, guid: 515153dd10515664aafd5fd4d92ed7b3, type: 3}
     volume: 1
     pitch: 1
     sourceIndex: 2
@@ -795,7 +799,8 @@ AudioSource:
   m_GameObject: {fileID: 4128693904081838196}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1265774836771164933, guid: 350de4cd0788409439403471b902ad0c,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1

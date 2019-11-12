@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Audio;
 
 [System.Serializable]
 public struct Audio
@@ -20,8 +22,16 @@ public class SoundManager : MonoBehaviour
 	// 2: interactables
 	// 3: environment
 	// 4: ui
+	// 5: ambience/bgm
 
-	PlayerController player;	
+	PlayerController player;
+
+	[Header ("Mixers")]
+	public AudioMixer master;
+	[Space (10)]
+	public Slider masterSlider;
+	public Slider bgmSlider;
+	public Slider sfxSlider;
 
 	[Header ("General")]
 	public Audio hack;
@@ -46,7 +56,7 @@ public class SoundManager : MonoBehaviour
 	public Audio playerDetected;
 
 	[Header ("BGM")]
-	public Audio bgm;
+	public Audio bgmSound;
 	public Audio ambientNoise;
 
 	[Header ("Interactable")]
@@ -83,6 +93,10 @@ public class SoundManager : MonoBehaviour
 	void Update ()
 	{
 		transform.position = player.CurrentViewingCamera.transform.position;
+
+		master.SetFloat ("masterVolume", Mathf.Log (masterSlider.value) * 20);
+		master.SetFloat ("bgmVolume", Mathf.Log (bgmSlider.value) * 20);
+		master.SetFloat ("sfxVolume", Mathf.Log (sfxSlider.value) * 20);
 	}
 
 	public bool IsSourcePlaying (int sourceIndex)

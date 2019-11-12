@@ -20,7 +20,6 @@ public class PatrollingAI : MonoBehaviour
 	public bool idleLookAround = true;
 	public bool hacked = false;
 	public bool disable = false;
-	public float idleDuration = 1;
 
 	[HideInInspector] public bool idleRotation = false;
 	[HideInInspector] public bool reachedIdle = false;
@@ -90,7 +89,7 @@ public class PatrollingAI : MonoBehaviour
 		Invincibility ();
 
 		if (idleLookAround && !idleRotation && !patrol && reachedIdle)
-			StartCoroutine ("IdleLookAround");
+			StartCoroutine (IdleLookAround (firstIdle));
 	}
 
 	void Invincibility ()
@@ -146,7 +145,7 @@ public class PatrollingAI : MonoBehaviour
 		}
 	}
 
-	IEnumerator IdleLookAround ()
+	IEnumerator IdleLookAround (bool firstTime, bool patrolIdle = false)
 	{
 		idleRotation = true;
 
@@ -180,6 +179,11 @@ public class PatrollingAI : MonoBehaviour
 		yield return new WaitForSeconds (3);
 
 		idleRotation = false;
+
+		if (patrolIdle)
+		{
+			IdleEnd ();
+		}
 	}
 
 	IEnumerator LookAround ()
@@ -288,15 +292,13 @@ public class PatrollingAI : MonoBehaviour
 		if (passed)
 		{
 			agent.isStopped = true;
-			//ai.anim.SetFloat("Speed", 0);
-			Invoke ("IdleEnd", idleDuration);
+			StartCoroutine (IdleLookAround (true, true));
 		}
 	}
 
 	void IdleEnd ()
 	{
 		agent.isStopped = false;
-		//ai.anim.SetFloat("Speed", 1);
 	}
 
 	void OnTriggerStay (Collider other) 
@@ -331,12 +333,23 @@ public class PatrollingAI : MonoBehaviour
 			Destroy (storedCheckpoint);
 		}
 
-		if (other.tag == "Door" && !invokedDoorChaseCancel && chasingPlayer)
+		if (other.tag == "Door")
 		{
-			if (other.GetComponent<AIDoor> ().requiredColor != ai.color && !other.GetComponent<AIDoor> ().nowForeverOpened)
+			if (!invokedDoorChaseCancel && chasingPlayer)
+			{
+				if (other.GetComponent<AIDoor> ().requiredColor != ai.color && !other.GetComponent<AIDoor> ().nowForeverOpened)
+				{
+					invokedDoorChaseCancel = true;
+					Destroy (storedCheckpoint);
+					TwoSecIdle ();
+				}
+			}
+			
+			if (!invokedDoorChaseCancel && alarmed && other.GetComponent<AIDoor> ().requiredColor != ai.color)
 			{
 				invokedDoorChaseCancel = true;
-				Destroy (storedCheckpoint);
+				alarmed = false;
+				sentBack = false;
 				TwoSecIdle ();
 			}
 		}

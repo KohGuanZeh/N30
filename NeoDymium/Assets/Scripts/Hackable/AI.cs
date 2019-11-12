@@ -55,7 +55,9 @@ public class AI : IHackable
 			Sound ();
 		}
 		else
+		{
 			anim.SetFloat ("Speed", controller.velocity.magnitude);
+		}
 	}
 
 	void Sound ()

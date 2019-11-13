@@ -132,7 +132,6 @@ GameObject:
   m_Component:
   - component: {fileID: 140212}
   - component: {fileID: 140214}
-  - component: {fileID: 140213}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -154,22 +153,6 @@ Transform:
   m_Father: {fileID: 308885011}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -135, z: 0}
---- !u!54 &140213
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 140211}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &140214
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -229,9 +212,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6081146}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -443,9 +426,9 @@ Transform:
   - {fileID: 807931129}
   - {fileID: 1861923228}
   - {fileID: 1596140916}
-  - {fileID: 1357438087}
   - {fileID: 822936874}
   - {fileID: 1530685572}
+  - {fileID: 1357438087}
   m_Father: {fileID: 1565251167}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -564,9 +547,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 28152731}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -1605,9 +1588,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 112238488}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -2362,9 +2345,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 148585386}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -3790,7 +3773,6 @@ GameObject:
   m_Component:
   - component: {fileID: 202189525}
   - component: {fileID: 202189527}
-  - component: {fileID: 202189526}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -3812,22 +3794,6 @@ Transform:
   m_Father: {fileID: 1944964675}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &202189526
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202189524}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &202189527
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4693,9 +4659,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 241347268}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -15083,7 +15049,7 @@ PrefabInstance:
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.254664
+      value: -10.272615
       objectReference: {fileID: 0}
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
@@ -15093,27 +15059,27 @@ PrefabInstance:
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 53.880653
+      value: 53.893406
       objectReference: {fileID: 0}
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.00000003218171
+      value: -0.000000030064584
       objectReference: {fileID: 0}
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.9453645
+      value: 0.98131526
       objectReference: {fileID: 0}
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000013106572
+      value: -0.00000001742313
       objectReference: {fileID: 0}
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.32601538
+      value: -0.19240707
       objectReference: {fileID: 0}
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
@@ -15128,7 +15094,7 @@ PrefabInstance:
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 218.054
+      value: 202.187
       objectReference: {fileID: 0}
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
@@ -22777,7 +22743,6 @@ GameObject:
   m_Component:
   - component: {fileID: 748466543}
   - component: {fileID: 748466545}
-  - component: {fileID: 748466544}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -22799,22 +22764,6 @@ Transform:
   m_Father: {fileID: 653719034}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -135, z: 0}
---- !u!54 &748466544
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748466542}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &748466545
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26079,9 +26028,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945531068}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -26452,7 +26401,6 @@ GameObject:
   m_Component:
   - component: {fileID: 975259343}
   - component: {fileID: 975259345}
-  - component: {fileID: 975259344}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -26474,22 +26422,6 @@ Transform:
   m_Father: {fileID: 395323743}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &975259344
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 975259342}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &975259345
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33528,7 +33460,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1264381200}
   - component: {fileID: 1264381202}
-  - component: {fileID: 1264381201}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -33550,22 +33481,6 @@ Transform:
   m_Father: {fileID: 1169537853}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -135, z: 0}
---- !u!54 &1264381201
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1264381199}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &1264381202
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -34227,7 +34142,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1283192250}
   - component: {fileID: 1283192252}
-  - component: {fileID: 1283192251}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -34249,22 +34163,6 @@ Transform:
   m_Father: {fileID: 1785262871}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -135, z: 0}
---- !u!54 &1283192251
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1283192249}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &1283192252
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -37938,7 +37836,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1479844622}
   - component: {fileID: 1479844624}
-  - component: {fileID: 1479844623}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -37960,22 +37857,6 @@ Transform:
   m_Father: {fileID: 2062010190}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -135, z: 0}
---- !u!54 &1479844623
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1479844621}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &1479844624
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -41545,9 +41426,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1593635144}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -42767,7 +42648,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1663398207}
   - component: {fileID: 1663398209}
-  - component: {fileID: 1663398208}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -42789,22 +42669,6 @@ Transform:
   m_Father: {fileID: 1947087538}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -135, z: 0}
---- !u!54 &1663398208
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1663398206}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &1663398209
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -43818,7 +43682,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1726904228}
   - component: {fileID: 1726904230}
-  - component: {fileID: 1726904229}
   m_Layer: 0
   m_Name: 1
   m_TagString: PatrolPoint
@@ -43840,22 +43703,6 @@ Transform:
   m_Father: {fileID: 519598771}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1726904229
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1726904227}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &1726904230
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -49715,9 +49562,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1914552678}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -54183,9 +54030,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1973147231}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -61848,22 +61695,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 591566796895551090, guid: 2397738c107c17c4bb6abe0d863af3f8,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8332417826136480233, guid: 2397738c107c17c4bb6abe0d863af3f8,
         type: 3}
       propertyPath: m_Name
       value: GUI
       objectReference: {fileID: 0}
-    - target: {fileID: 5688920707439141568, guid: 2397738c107c17c4bb6abe0d863af3f8,
+    - target: {fileID: 4876431251602579436, guid: 2397738c107c17c4bb6abe0d863af3f8,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4876431251602579436, guid: 2397738c107c17c4bb6abe0d863af3f8,
+    - target: {fileID: 591566796895551090, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5688920707439141568, guid: 2397738c107c17c4bb6abe0d863af3f8,
         type: 3}
       propertyPath: m_IsActive
       value: 0

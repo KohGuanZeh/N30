@@ -114,8 +114,8 @@ public class PatrollingAI : MonoBehaviour
 
 	void PlayerChase ()
 	{
-		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
-			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent)
+		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera)
+			&& (player.detectionGauge / player.detectionThreshold) >= minStealthPercent)
 			StartPlayerChase ();
 		
 		DuringPlayerChase ();
@@ -194,6 +194,7 @@ public class PatrollingAI : MonoBehaviour
 		{
 			for (int i = 1; i < patrolPoints.Length + 1; i++)
 			{
+				Gizmos.DrawWireCube (patrolPoints[i - 1].point.position, Vector3.one * 0.5f);
 				if (i < patrolPoints.Length)
 					Gizmos.DrawLine (patrolPoints[i].point.position, patrolPoints[i - 1].point.position);
 				else
@@ -365,7 +366,7 @@ public class PatrollingAI : MonoBehaviour
 				}
 			}
 			
-			if (!invokedDoorChaseCancel && alarmed && other.GetComponent<AIDoor> ().requiredColor != ai.color)
+			if (!invokedDoorChaseCancel && alarmed && other.GetComponent<AIDoor> ().requiredColor != ai.color && !other.GetComponent<AIDoor> ().nowForeverOpened)
 			{
 				invokedDoorChaseCancel = true;
 				alarmed = false;

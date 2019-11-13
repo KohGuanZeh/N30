@@ -92,6 +92,7 @@ public class PlayerController : MonoBehaviour
 	private bool areaNameUpdated = false;
 	SoundManager soundManager;
 	bool playedSound;
+	InstructionsManager instructManager;
 
 	/*[Header("For Editor SS")]
 	[SerializeField] bool disablePlayerMove;*/
@@ -156,6 +157,7 @@ public class PlayerController : MonoBehaviour
 		areaNamesManager = AreaNamesManager.inst;
 		areaNames = AreaNames.inst;
 		soundManager = SoundManager.inst;
+		instructManager = InstructionsManager.inst;
 		playerCam = GetComponentInChildren<Camera>();
 		controller = GetComponent<CharacterController>();
 		detectionColl = GetComponent<CapsuleCollider>();
@@ -196,7 +198,7 @@ public class PlayerController : MonoBehaviour
 				{
 					GroundAndSlopeCheck();
 					ToggleCrouch();
-					PlayerRotation();
+					if (!instructManager.lockCameraRotation) PlayerRotation();
 					PlayerMovement();
 				}
 
@@ -738,7 +740,7 @@ public class PlayerController : MonoBehaviour
 		isDetected = true;
 		detectedOutline.enabled = true;
 		detectionGauge = Mathf.Min(detectionGauge + Time.deltaTime * increaseMult, detectionThreshold);
-		//if (detectionGauge >= detectionThreshold) ui.GameOver();
+		if (detectionGauge >= detectionThreshold) ui.GameOver();
 	}
 
 	public void DecreaseDetectionGauge()

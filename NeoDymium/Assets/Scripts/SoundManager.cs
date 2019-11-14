@@ -55,6 +55,7 @@ public class SoundManager : MonoBehaviour
 	[Header ("UI")]
 	public Audio nextObjective;
 	public Audio playerDetected;
+	public Audio click;
 
 	[Header ("BGM")]
 	public Audio bgmSound;

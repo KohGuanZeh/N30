@@ -55,7 +55,6 @@ public class AI : IHackable
 				anim.SetBool ("Moving", true);
 			else
 				anim.SetBool ("Moving", false);
-			//anim.SetFloat ("Speed", ai.agent.velocity.magnitude);
 			Sound ();
 		}
 		else
@@ -64,7 +63,6 @@ public class AI : IHackable
 				anim.SetBool ("Moving", true);
 			else
 				anim.SetBool ("Moving", false);
-			//anim.SetFloat ("Speed", controller.velocity.magnitude);
 		}
 	}
 

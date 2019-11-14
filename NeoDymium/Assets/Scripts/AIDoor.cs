@@ -91,7 +91,7 @@ public class AIDoor : MonoBehaviour
 	void SetDoorToUnlocked()
 	{
 		ChangeEmissionColor();
-		//obstacle.enabled = false;
+		obstacle.enabled = false;
 		nowForeverOpened = true;
 		animator.SetBool("Unlocked", true);
 	}

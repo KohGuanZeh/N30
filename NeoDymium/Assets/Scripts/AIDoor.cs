@@ -13,6 +13,8 @@ public class AIDoor : MonoBehaviour
 	NavMeshObstacle obstacle;
 	SoundManager soundManager;
 	bool inRange = false;
+	bool soundPlayed = false;
+	bool otherClipPlayed = false;
 
 	void Start ()
 	{
@@ -28,6 +30,8 @@ public class AIDoor : MonoBehaviour
 		}
 
 		inRange = false;
+		otherClipPlayed = false;
+		soundPlayed = false;
 
 		animator.SetFloat ("Speed", -1);
 
@@ -46,9 +50,13 @@ public class AIDoor : MonoBehaviour
 	void Open ()
 	{
 		inRange = true;
+		soundPlayed = true;
 		animator.SetFloat ("Speed", 1);
+	
+		if (!otherClipPlayed)
+			soundManager.PlaySound (soundManager.slidingDoor);
 
-		soundManager.PlaySound (SoundManager.inst.slidingDoor);
+		otherClipPlayed = true;
 		RespectiveGoals goal = GetComponent<RespectiveGoals>();
 		if (goal) goal.isCompleted = true;
 		//float startTime = 0;
@@ -64,8 +72,12 @@ public class AIDoor : MonoBehaviour
 	void Close ()
 	{
 		inRange = false;
+		soundPlayed = false;
 		animator.SetFloat ("Speed", -1);
-		soundManager.PlaySound (SoundManager.inst.slidingDoor);
+		if (otherClipPlayed)
+			soundManager.PlaySound (soundManager.slidingDoor);
+
+		otherClipPlayed = false;
 		animator.SetBool  ("Opened", false);
 	}
 
@@ -79,7 +91,7 @@ public class AIDoor : MonoBehaviour
 	void SetDoorToUnlocked()
 	{
 		ChangeEmissionColor();
-		obstacle.enabled = false;
+		//obstacle.enabled = false;
 		nowForeverOpened = true;
 		animator.SetBool("Unlocked", true);
 	}
@@ -91,6 +103,7 @@ public class AIDoor : MonoBehaviour
 			if (!animator.GetCurrentAnimatorStateInfo(1).IsName("Unlock"))
 			{
 				animator.SetTrigger("Unlock");
+				soundManager.PlaySound (soundManager.doorUnlock);
 				inRange = true;
 			}
 		}
@@ -98,7 +111,7 @@ public class AIDoor : MonoBehaviour
 
 	void OnTriggerStay (Collider other)
 	{
-		if (nowForeverOpened && (other.tag == "Hackable" || other.tag == "Player"))
+		if (nowForeverOpened && (other.tag == "Hackable" || other.tag == "Player") && !soundPlayed)
 		{
 			Open();
 		}	

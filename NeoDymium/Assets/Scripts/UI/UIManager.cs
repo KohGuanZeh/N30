@@ -454,7 +454,7 @@ public class UIManager : MonoBehaviour
 		else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
 
 		//Clamping to Edges of Screen
-		print(playerScreenPos.y);
+		//print(playerScreenPos.y);
 		playerScreenPos.x = Mathf.Clamp(playerScreenPos.x, minXY.x, maxXY.x);
 		playerScreenPos.y = Mathf.Clamp(playerScreenPos.y, minXY.y, maxXY.y);
 

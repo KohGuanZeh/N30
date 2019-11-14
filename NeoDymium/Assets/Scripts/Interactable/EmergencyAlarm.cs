@@ -5,7 +5,7 @@ public class EmergencyAlarm : IInteractable
 	public float duration;
 	public Transform alarmPosition;
 	public PatrollingAI[] affectedAis;
-	AudioSource audioSource;
+	AudioSource[] audioSources;
 	UIManager uIManager;
 	bool tutHasFinished;
 
@@ -19,21 +19,28 @@ public class EmergencyAlarm : IInteractable
 	{
 		base.Start ();
 		alarmed = false;
-		audioSource = GetComponent<AudioSource> ();
+		audioSources = GetComponents<AudioSource> ();
 		uIManager = UIManager.inst;
 		screenMats = MaterialUtils.GetMaterialsFromRenderers(screenRs);
 	}
 
 	public override void Interact ()
 	{
-		StartAlarm ();
+		AlarmStartup ();
+	}
+
+	void AlarmStartup ()
+	{
+		if (alarmed || affectedAis[0].alarmed) //cheap check
+			return;
+		alarmed = true;
+		audioSources[1].Play ();
+		Invoke ("StartAlarm", audioSources[1].clip.length);
 	}
 
 	void StartAlarm ()
 	{
-		if (alarmed || affectedAis[0].alarmed) //cheap check
-			return;
-		audioSource.Play ();
+		audioSources[0].Play ();
 		MaterialUtils.ChangeMaterialsEmission(screenMats, new Color(2.118f, 0.519f, 0.476f), 1.9f);
 		if (!tutHasFinished && uIManager.currentHint.gameObject.activeInHierarchy)
 		{
@@ -55,7 +62,7 @@ public class EmergencyAlarm : IInteractable
 	public void EndAlarm () 
 	{
 		alarmed = false;
-		audioSource.Stop ();
+		audioSources[0].Stop ();
 		CancelInvoke ();
 		MaterialUtils.ChangeMaterialsEmission(screenMats, new Color(0.47f, 2.00f, 2.11f), 1f);
 		foreach (PatrollingAI ai in affectedAis)

@@ -51,12 +51,20 @@ public class AI : IHackable
 		GroundAndSlopeCheck ();
 		if (!hacked)
 		{
-			anim.SetFloat ("Speed", ai.agent.velocity.magnitude);
+			if (ai.agent.velocity.magnitude > 0.1f || ai.moveAcrossNavMeshesStarted)
+				anim.SetBool ("Moving", true);
+			else
+				anim.SetBool ("Moving", false);
+			//anim.SetFloat ("Speed", ai.agent.velocity.magnitude);
 			Sound ();
 		}
 		else
 		{
-			anim.SetFloat ("Speed", controller.velocity.magnitude);
+			if (controller.velocity.magnitude > 0.1f)
+				anim.SetBool ("Moving", true);
+			else
+				anim.SetBool ("Moving", false);
+			//anim.SetFloat ("Speed", controller.velocity.magnitude);
 		}
 	}
 
@@ -96,6 +104,7 @@ public class AI : IHackable
 		ai.reachedIdle = false;
 		ai.idleRotation = false;
 		ai.findingPlayer = false;
+		ai.moveAcrossNavMeshesStarted = false;
 		ai.invokedDoorChaseCancel = false;
 		//Destroy (ai.GetComponent<Rigidbody> ());
 	}

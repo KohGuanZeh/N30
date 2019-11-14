@@ -42,6 +42,8 @@ public class PatrollingAI : MonoBehaviour
 	public float minStealthPercent = 0.1f; //0.00 - 1.00
 	public GameObject chaseCheckpoint;
 	GameObject storedCheckpoint;
+
+	[HideInInspector] public bool moveAcrossNavMeshesStarted = false;
 	
 	[HideInInspector] public NavMeshAgent agent;
 
@@ -69,6 +71,7 @@ public class PatrollingAI : MonoBehaviour
 		isInvincible = false;
 		idleRotation = false;
 		reachedIdle = false;
+		moveAcrossNavMeshesStarted = false;
 		firstIdle = true;
 		invokedDoorChaseCancel = false;
 
@@ -89,6 +92,7 @@ public class PatrollingAI : MonoBehaviour
 			PlayerChase ();
 
 		Invincibility ();
+		OffMeshLinkCheck ();
 
 		if (idleLookAround && !idleRotation && !patrol && reachedIdle)
 			StartCoroutine (IdleLookAround (firstIdle));
@@ -329,6 +333,7 @@ public class PatrollingAI : MonoBehaviour
 	void TwoSecIdle ()
 	{
 		agent.SetDestination (transform.position);
+		print ("idling for 2");
 		Invoke ("EndTwoSecIdle", 2);
 	}
 	
@@ -364,6 +369,49 @@ public class PatrollingAI : MonoBehaviour
 	void IdleEnd ()
 	{
 		agent.isStopped = false;
+	}
+
+	void OffMeshLinkCheck ()
+	{
+		if (agent.isOnOffMeshLink && !moveAcrossNavMeshesStarted)
+		{
+   			StartCoroutine (MoveAcrossNavMeshLink ());
+   			moveAcrossNavMeshesStarted = true;
+		}
+	}
+
+	IEnumerator MoveAcrossNavMeshLink ()
+	{
+        OffMeshLinkData data = agent.currentOffMeshLinkData;
+        //agent.updateRotation = false;
+ 
+		bool onStart = true;
+
+		if ((data.endPos - transform.position).sqrMagnitude > (data.startPos - transform.position).sqrMagnitude)
+		{
+			onStart = false;
+		}
+
+        Vector3 endPos = onStart ? agent.transform.position : data.endPos + Vector3.up * agent.baseOffset;
+        Vector3 startPos = onStart ? data.endPos + Vector3.up * agent.baseOffset : agent.transform.position;
+        float duration = (endPos - startPos).magnitude / agent.velocity.magnitude;
+        float t = 0.0f;
+        float tStep = 1.0f / duration;
+        while (t < 1.0f)
+		{
+			Quaternion endRotation = Quaternion.LookRotation (endPos - startPos, Vector3.up);
+			transform.rotation = Quaternion.RotateTowards (transform.rotation, endRotation, 10);
+            transform.position = Vector3.Lerp (startPos, endPos, t);
+            agent.destination = transform.position;
+            t += tStep * Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = endPos;
+        //agent.updateRotation = true;
+        agent.CompleteOffMeshLink ();
+		EndChase ();
+        moveAcrossNavMeshesStarted = false;
 	}
 
 	void OnTriggerStay (Collider other) 

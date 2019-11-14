@@ -601,7 +601,7 @@ public class PlayerController : MonoBehaviour
 		currentViewingCamera = playerCam;
 		currentViewingCamera.depth = 0;
 
-		soundManager.PlaySound (soundManager.hack);
+		soundManager.PlaySound (soundManager.unhack);
 
 		if (forced) return; //If Forced Unhacking, immediately set Previous Viewing Camera to Null
 

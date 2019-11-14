@@ -50,6 +50,7 @@ public class SoundManager : MonoBehaviour
 
 	[Header ("Environment")]
 	public Audio slidingDoor;
+	public Audio doorUnlock;
 
 	[Header ("UI")]
 	public Audio nextObjective;
@@ -68,7 +69,7 @@ public class SoundManager : MonoBehaviour
 	public Audio vipCardSuccess;
 	public Audio vipCardFail;
 
-	//Sounds that use their own audiosources:
+	// Sounds that use their own audiosources:
 	// 1. control panel
 	// 2. server panel
 	// 3. emergency alarm

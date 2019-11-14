@@ -47,6 +47,7 @@ public class PatrollingAI : MonoBehaviour
 
 	PlayerController player;
 	AI ai;
+	UIManager ui;
 
 	[HideInInspector] public bool invokedDoorChaseCancel;
 
@@ -55,6 +56,7 @@ public class PatrollingAI : MonoBehaviour
 		agent = GetComponent<NavMeshAgent> ();
 		ai = GetComponent<AI> ();
 		player = PlayerController.inst;
+		ui = UIManager.inst;
 
 		currentIndex = 0;
 		registered = false;
@@ -189,7 +191,49 @@ public class PatrollingAI : MonoBehaviour
 
 	void OnDrawGizmos ()
 	{
-		Gizmos.color = Color.red;
+		if (ai != null && ui != null)
+		{
+			switch (ai.color)
+			{
+				case ColorIdentifier.red:
+				{
+					Gizmos.color = ui.redColor;
+					break;
+				}
+
+				case ColorIdentifier.blue:
+				{
+					Gizmos.color = ui.blueColor;
+					break;
+				}
+
+				case ColorIdentifier.yellow:
+				{
+					Gizmos.color = ui.yellowColor;
+					break;
+				}
+
+				case ColorIdentifier.green:
+				{
+					Gizmos.color =  ui.greenColor;
+					break;
+				}
+
+				default:
+				{
+					Gizmos.color = Color.white;
+					break;
+				}
+			}
+		}
+		else
+		{
+			if (GetComponent<AI> ())
+				ai = GetComponent<AI> ();
+			if (FindObjectOfType<UIManager> ())
+				ui = FindObjectOfType<UIManager> ();
+		}
+		
 		if (patrolPoints.Length > 1)
 		{
 			for (int i = 1; i < patrolPoints.Length + 1; i++)
@@ -323,7 +367,7 @@ public class PatrollingAI : MonoBehaviour
 	}
 
 	void OnTriggerStay (Collider other) 
-	{
+	{	
 		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed && !ai.isDisabled && !chasingPlayer)
 		{
 			registered = true;
@@ -340,7 +384,8 @@ public class PatrollingAI : MonoBehaviour
 			}
 			else if (!patrol && other == patrolPoints[0].col)
 			{
-				agent.isStopped = true;
+				//agent.isStopped = true;
+				agent.SetDestination (transform.position);
 				agent.velocity = Vector3.zero;
 				reachedIdle = true;
 				transform.eulerAngles = patrolPoints[0].point.eulerAngles;

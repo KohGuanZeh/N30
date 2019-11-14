@@ -10,14 +10,20 @@ public class InstructionsManager : MonoBehaviour
     public Image instructionImage;
     public TextMeshProUGUI instructionText;
     public bool inInstruction = false;
-    public bool lockCameraRotation = false; //Disable Rotation of Camera during Instruction Screen
+    public bool lockCameraRotation = false; //Disable Rotation/Movement/Sound of Camera during Instruction Screen
     public static InstructionsManager inst;
     PlayerController player;
+    UIManager uIManager;
 
     void Awake ()
     {
         inst = this;
+    }
+
+    void Start ()
+    {
         player = PlayerController.inst;
+        uIManager = UIManager.inst;
     }
 
     void Update ()
@@ -26,7 +32,7 @@ public class InstructionsManager : MonoBehaviour
         {
             Time.timeScale = 0;
             lockCameraRotation = true;
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && !uIManager.isPaused)
             {
                 Time.timeScale = 1;
                 lockCameraRotation = false;

@@ -197,9 +197,9 @@ public class PlayerController : MonoBehaviour
 				if (!inHackable)
 				{
 					GroundAndSlopeCheck();
-					ToggleCrouch();
+					if (!instructManager.lockCameraRotation) ToggleCrouch();
 					if (!instructManager.lockCameraRotation) PlayerRotation();
-					PlayerMovement();
+					if (!instructManager.lockCameraRotation) PlayerMovement();
 				}
 
 				Aim();

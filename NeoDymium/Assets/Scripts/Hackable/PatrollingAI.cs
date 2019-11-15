@@ -295,7 +295,7 @@ public class PatrollingAI : MonoBehaviour
 		else
 			ReRoute ();
 	}
-	
+
 	public void ReRoute () 
 	{
 		if (storedCheckpoint != null)
@@ -333,17 +333,17 @@ public class PatrollingAI : MonoBehaviour
 	void TwoSecIdle ()
 	{
 		agent.SetDestination (transform.position);
-		print ("idling for 2");
 		Invoke ("EndTwoSecIdle", 2);
 	}
 	
 	void EndTwoSecIdle ()
 	{
-		EndChase ();
 		chasingPlayer = false;
 		findingPlayer = false;
 		reachedLastSeen = false;
 		invokedDoorChaseCancel = false;
+		sentBack = false;
+		EndChase ();
 	}
 
 	void Idle ()
@@ -410,7 +410,10 @@ public class PatrollingAI : MonoBehaviour
         transform.position = endPos;
         //agent.updateRotation = true;
         agent.CompleteOffMeshLink ();
-		EndChase ();
+		if (chasingPlayer)
+			StartPlayerChase ();
+		else
+			EndChase ();
         moveAcrossNavMeshesStarted = false;
 	}
 
@@ -463,7 +466,6 @@ public class PatrollingAI : MonoBehaviour
 			{
 				invokedDoorChaseCancel = true;
 				alarmed = false;
-				sentBack = false;
 				TwoSecIdle ();
 			}
 		}

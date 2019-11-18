@@ -99,7 +99,7 @@ public class AIDoor : MonoBehaviour
 		MaterialUtils.ToggleUseEmissionHDRP(emissiveMats, true);*/
 	}
 
-	void SetDoorToUnlocked()
+	public void SetDoorToUnlocked()
 	{
 		ChangeEmissionColor();
 		obstacle.enabled = false;

@@ -23,6 +23,8 @@ public class MainMenu : MonoBehaviour
 
 	[SerializeField] Action lerpFunctions;
 
+	AudioSource audioSource;
+
 	void Start () 
 	{
 		Cursor.lockState = CursorLockMode.None;
@@ -34,6 +36,7 @@ public class MainMenu : MonoBehaviour
 		mainMenuOverlay.color = Color.clear;
 
 		mainMenuButtons = buttonParent.GetComponentsInChildren<Button>();
+		audioSource = GetComponent<AudioSource> ();
 	}
 
 	private void Update()
@@ -82,6 +85,7 @@ public class MainMenu : MonoBehaviour
 	{
 		if (isLerping) return;
 		if (newGame) PlayerPrefs.DeleteAll();
+		audioSource.Play ();
 		LoadingScreen.inst.LoadScene("Level 1");
 		//SceneManager.LoadScene ("Office", LoadSceneMode.Single);
 	}
@@ -97,6 +101,7 @@ public class MainMenu : MonoBehaviour
 		isLerping = true;
 
 		lerpFunctions += LerpBackgroundOverlay;
+		audioSource.Play ();
 	}
 
 	public void Credits() 
@@ -109,11 +114,13 @@ public class MainMenu : MonoBehaviour
 		isLerping = true;
 
 		lerpFunctions += LerpBackgroundOverlay;
+		audioSource.Play ();
 	}
 
 	public void Quit() 
 	{
 		if (isLerping) return;
+		audioSource.Play ();
 
 		Application.Quit ();
 	}

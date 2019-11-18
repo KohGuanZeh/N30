@@ -371,7 +371,7 @@ public class UIManager : MonoBehaviour
 			marker.gameObject.SetActive (false);
 			distanceToObj.gameObject.SetActive (false);
 		}
-		else 
+		else
 		{
 			marker.gameObject.SetActive (true);
 			distanceToObj.gameObject.SetActive (true);
@@ -641,7 +641,7 @@ public class UIManager : MonoBehaviour
 			{
 				if ((controls[i].lerpTime >= 1 && controls[i].show && isFocusing) || (controls[i].lerpTime <= 0 && !controls[i].show)) ignoreLerp = true;
 				if ((controls[i].errorLerpTime >= 1 && controls[i].hasError && controls[i].show) || (controls[i].errorLerpTime <= 0 && !controls[i].hasError)) ignoreErrorLerp = true;
-			}	
+			}
 
 			if (!ignoreLerp)
 			{
@@ -765,23 +765,27 @@ public class UIManager : MonoBehaviour
 		Cursor.visible = isPaused ? true : player.inSpInteraction ? true : isPaused;
 		Cursor.lockState = isPaused ?  CursorLockMode.None : player.inSpInteraction ? CursorLockMode.None : CursorLockMode.Locked;
 		Time.timeScale = isPaused ? 0 : 1;
+		soundManager.PlaySound (soundManager.click);
 	}
 
 	public void Options()
 	{
 		optionsScreen.gameObject.SetActive(!optionsScreen.gameObject.activeSelf);
+		soundManager.PlaySound (soundManager.click);
 	}
 
 	public void MainMenu ()
 	{
 		Time.timeScale = 1;
 		LoadingScreen.inst.LoadScene("Main Menu");
+		soundManager.PlaySound (soundManager.click);
 		//SceneManager.LoadScene ("Main Menu", LoadSceneMode.Single);
 	}
 
 	public void LoadCheckpoint()
 	{
 		Time.timeScale = 1;
+		soundManager.PlaySound (soundManager.click);
 		LoadingScreen.inst.LoadScene(SceneManager.GetActiveScene().name);
 		//SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
 	}
@@ -791,6 +795,7 @@ public class UIManager : MonoBehaviour
 		//Need a Proper Respawn
 		Time.timeScale = 1;
 		PlayerPrefs.DeleteKey("Checkpoint");
+		soundManager.PlaySound (soundManager.click);
 		LoadingScreen.inst.LoadScene(SceneManager.GetActiveScene().name);
 		//SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
 	}

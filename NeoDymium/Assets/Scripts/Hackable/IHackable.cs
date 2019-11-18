@@ -54,7 +54,7 @@ public class IHackable : MonoBehaviour
 	public GameObject exclamationMark;
 	public GameObject questionMark;
 	public float whiteDotRaycastHeightOffset = 0.5f;
-	GameObject whiteDot;
+	[HideInInspector] public GameObject whiteDot;
 	private bool areaNameUpdated = false;
 
 	[Header("Tutorial")]

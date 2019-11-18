@@ -20,7 +20,6 @@ public class PatrollingAI : MonoBehaviour
 	public bool idleLookAround = true;
 	public bool hacked = false;
 	public bool disable = false;
-	public float idleDuration = 1;
 
 	[HideInInspector] public bool idleRotation = false;
 	[HideInInspector] public bool reachedIdle = false;
@@ -43,11 +42,14 @@ public class PatrollingAI : MonoBehaviour
 	public float minStealthPercent = 0.1f; //0.00 - 1.00
 	public GameObject chaseCheckpoint;
 	GameObject storedCheckpoint;
+
+	[HideInInspector] public bool moveAcrossNavMeshesStarted = false;
 	
 	[HideInInspector] public NavMeshAgent agent;
 
 	PlayerController player;
 	AI ai;
+	UIManager ui;
 
 	[HideInInspector] public bool invokedDoorChaseCancel;
 
@@ -56,6 +58,7 @@ public class PatrollingAI : MonoBehaviour
 		agent = GetComponent<NavMeshAgent> ();
 		ai = GetComponent<AI> ();
 		player = PlayerController.inst;
+		ui = UIManager.inst;
 
 		currentIndex = 0;
 		registered = false;
@@ -68,6 +71,7 @@ public class PatrollingAI : MonoBehaviour
 		isInvincible = false;
 		idleRotation = false;
 		reachedIdle = false;
+		moveAcrossNavMeshesStarted = false;
 		firstIdle = true;
 		invokedDoorChaseCancel = false;
 
@@ -88,15 +92,17 @@ public class PatrollingAI : MonoBehaviour
 			PlayerChase ();
 
 		Invincibility ();
+		OffMeshLinkCheck ();
 
 		if (idleLookAround && !idleRotation && !patrol && reachedIdle)
-			StartCoroutine ("IdleLookAround");
+			StartCoroutine (IdleLookAround (firstIdle));
 	}
 
 	void Invincibility ()
 	{
 		if (//player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
-			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent || findingPlayer || player.GetPlayerCollider ().IsVisibleFrom (ai.camera)) //&&
+			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent || findingPlayer || 
+			(player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && ai.whiteDot.activeSelf)) //&&
 			//!canChase)
 			isInvincible = true;
 		else
@@ -114,8 +120,8 @@ public class PatrollingAI : MonoBehaviour
 
 	void PlayerChase ()
 	{
-		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
-			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent)
+		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera)
+			&& (player.detectionGauge / player.detectionThreshold) >= minStealthPercent)
 			StartPlayerChase ();
 		
 		DuringPlayerChase ();
@@ -146,7 +152,7 @@ public class PatrollingAI : MonoBehaviour
 		}
 	}
 
-	IEnumerator IdleLookAround ()
+	IEnumerator IdleLookAround (bool firstTime, bool patrolIdle = false)
 	{
 		idleRotation = true;
 
@@ -180,6 +186,73 @@ public class PatrollingAI : MonoBehaviour
 		yield return new WaitForSeconds (3);
 
 		idleRotation = false;
+
+		if (patrolIdle)
+		{
+			IdleEnd ();
+		}
+	}
+
+	void OnDrawGizmos ()
+	{
+		if (ai != null && ui != null)
+		{
+			switch (ai.color)
+			{
+				case ColorIdentifier.red:
+				{
+					Gizmos.color = ui.redColor;
+					break;
+				}
+
+				case ColorIdentifier.blue:
+				{
+					Gizmos.color = ui.blueColor;
+					break;
+				}
+
+				case ColorIdentifier.yellow:
+				{
+					Gizmos.color = ui.yellowColor;
+					break;
+				}
+
+				case ColorIdentifier.green:
+				{
+					Gizmos.color =  ui.greenColor;
+					break;
+				}
+
+				default:
+				{
+					Gizmos.color = Color.white;
+					break;
+				}
+			}
+		}
+		else
+		{
+			if (GetComponent<AI> ())
+				ai = GetComponent<AI> ();
+			if (FindObjectOfType<UIManager> ())
+				ui = FindObjectOfType<UIManager> ();
+		}
+		
+		if (patrolPoints.Length > 1)
+		{
+			for (int i = 1; i < patrolPoints.Length + 1; i++)
+			{
+				Gizmos.DrawWireCube (patrolPoints[i - 1].point.position, Vector3.one * 0.5f);
+				if (i < patrolPoints.Length)
+					Gizmos.DrawLine (patrolPoints[i].point.position, patrolPoints[i - 1].point.position);
+				else
+					Gizmos.DrawLine (patrolPoints[patrolPoints.Length - 1].point.position, patrolPoints[0].point.position);
+			}
+		}
+		else if (patrolPoints.Length > 0)
+		{
+			Gizmos.DrawWireCube (patrolPoints[0].point.position, Vector3.one);
+		}
 	}
 
 	IEnumerator LookAround ()
@@ -222,7 +295,7 @@ public class PatrollingAI : MonoBehaviour
 		else
 			ReRoute ();
 	}
-	
+
 	public void ReRoute () 
 	{
 		if (storedCheckpoint != null)
@@ -265,11 +338,12 @@ public class PatrollingAI : MonoBehaviour
 	
 	void EndTwoSecIdle ()
 	{
-		EndChase ();
 		chasingPlayer = false;
 		findingPlayer = false;
 		reachedLastSeen = false;
 		invokedDoorChaseCancel = false;
+		sentBack = false;
+		EndChase ();
 	}
 
 	void Idle ()
@@ -288,19 +362,63 @@ public class PatrollingAI : MonoBehaviour
 		if (passed)
 		{
 			agent.isStopped = true;
-			//ai.anim.SetFloat("Speed", 0);
-			Invoke ("IdleEnd", idleDuration);
+			StartCoroutine (IdleLookAround (true, true));
 		}
 	}
 
 	void IdleEnd ()
 	{
 		agent.isStopped = false;
-		//ai.anim.SetFloat("Speed", 1);
+	}
+
+	void OffMeshLinkCheck ()
+	{
+		if (agent.isOnOffMeshLink && !moveAcrossNavMeshesStarted)
+		{
+   			StartCoroutine (MoveAcrossNavMeshLink ());
+   			moveAcrossNavMeshesStarted = true;
+		}
+	}
+
+	IEnumerator MoveAcrossNavMeshLink ()
+	{
+        OffMeshLinkData data = agent.currentOffMeshLinkData;
+        //agent.updateRotation = false;
+ 
+		bool onStart = true;
+
+		if ((data.endPos - transform.position).sqrMagnitude > (data.startPos - transform.position).sqrMagnitude)
+		{
+			onStart = false;
+		}
+
+        Vector3 endPos = onStart ? agent.transform.position : data.endPos + Vector3.up * agent.baseOffset;
+        Vector3 startPos = onStart ? data.endPos + Vector3.up * agent.baseOffset : agent.transform.position;
+        float duration = (endPos - startPos).magnitude / agent.velocity.magnitude;
+        float t = 0.0f;
+        float tStep = 1.0f / duration;
+        while (t < 1.0f)
+		{
+			Quaternion endRotation = Quaternion.LookRotation (endPos - startPos, Vector3.up);
+			transform.rotation = Quaternion.RotateTowards (transform.rotation, endRotation, 10);
+            transform.position = Vector3.Lerp (startPos, endPos, t);
+            agent.destination = transform.position;
+            t += tStep * Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = endPos;
+        //agent.updateRotation = true;
+        agent.CompleteOffMeshLink ();
+		if (chasingPlayer)
+			StartPlayerChase ();
+		else
+			EndChase ();
+        moveAcrossNavMeshesStarted = false;
 	}
 
 	void OnTriggerStay (Collider other) 
-	{
+	{	
 		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed && !ai.isDisabled && !chasingPlayer)
 		{
 			registered = true;
@@ -317,7 +435,8 @@ public class PatrollingAI : MonoBehaviour
 			}
 			else if (!patrol && other == patrolPoints[0].col)
 			{
-				agent.isStopped = true;
+				//agent.isStopped = true;
+				agent.SetDestination (transform.position);
 				agent.velocity = Vector3.zero;
 				reachedIdle = true;
 				transform.eulerAngles = patrolPoints[0].point.eulerAngles;
@@ -331,12 +450,22 @@ public class PatrollingAI : MonoBehaviour
 			Destroy (storedCheckpoint);
 		}
 
-		if (other.tag == "Door" && !invokedDoorChaseCancel && chasingPlayer)
+		if (other.tag == "Door")
 		{
-			if (other.GetComponent<AIDoor> ().requiredColor != ai.color && !other.GetComponent<AIDoor> ().nowForeverOpened)
+			if (!invokedDoorChaseCancel && chasingPlayer)
+			{
+				if (other.GetComponent<AIDoor> ().requiredColor != ai.color && !other.GetComponent<AIDoor> ().nowForeverOpened)
+				{
+					invokedDoorChaseCancel = true;
+					Destroy (storedCheckpoint);
+					TwoSecIdle ();
+				}
+			}
+			
+			if (!invokedDoorChaseCancel && alarmed && other.GetComponent<AIDoor> ().requiredColor != ai.color && !other.GetComponent<AIDoor> ().nowForeverOpened)
 			{
 				invokedDoorChaseCancel = true;
-				Destroy (storedCheckpoint);
+				alarmed = false;
 				TwoSecIdle ();
 			}
 		}

@@ -355,7 +355,6 @@ MonoBehaviour:
   idleLookAround: 1
   hacked: 0
   disable: 0
-  idleDuration: 1
   idleRotation: 0
   reachedIdle: 0
   firstIdle: 1
@@ -371,6 +370,7 @@ MonoBehaviour:
   minStealthPercent: 0.2
   chaseCheckpoint: {fileID: 8848630351537148312, guid: 39323e5ceaff50f4fa475edf3a2a3713,
     type: 3}
+  moveAcrossNavMeshesStarted: 0
   agent: {fileID: 0}
   invokedDoorChaseCancel: 0
 --- !u!114 &2805370165156913025
@@ -411,6 +411,7 @@ MonoBehaviour:
   exclamationMark: {fileID: 6165841913683738864}
   questionMark: {fileID: 6488819739669101783}
   whiteDotRaycastHeightOffset: 1
+  whiteDot: {fileID: 0}
   walkSpeed: 5
   groundOffset: 0.02
   camPos: {fileID: 2805370164209681601}
@@ -436,7 +437,7 @@ NavMeshAgent:
   avoidancePriority: 50
   m_AngularSpeed: 360
   m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
+  m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2

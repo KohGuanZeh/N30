@@ -27,6 +27,9 @@ public class ObjectiveManager : MonoBehaviour
 
     void Update() 
     {
+        if (goal.Length == 0)
+            return;
+
 		if (uiManager.objective == Vector3.zero)
 			uiManager.SetNewObjective (goal[0].goal.transform.position + goal[0].offset, true);
 
@@ -35,6 +38,8 @@ public class ObjectiveManager : MonoBehaviour
             currentGoalNumber++;
 			if (currentGoalNumber >= goal.Length)
 				return;
+            else if (currentGoalNumber == 0)
+                return;
 			//currentGoalNumber = Mathf.Min(currentGoalNumber, goal.Length - 1); //To prevent errors!
             uiManager.SetNewObjective (goal[currentGoalNumber].goal.transform.position + goal[currentGoalNumber].offset);
         }

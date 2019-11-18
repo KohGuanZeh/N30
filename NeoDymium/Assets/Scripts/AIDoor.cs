@@ -6,9 +6,10 @@ public class AIDoor : MonoBehaviour
 {
 	public ColorIdentifier requiredColor;
 	public bool nowForeverOpened;
-	[SerializeField] float intensity = 1;
 	[SerializeField] Renderer[] emissiveRs;
 	[SerializeField] Material[] emissiveMats;
+	[SerializeField] Color lockedColor, unlockedColor; //For the Light Bars on Top
+	[SerializeField] float lockedIntensity, unlockedIntensity;
 	Animator animator;
 	NavMeshObstacle obstacle;
 	SoundManager soundManager;
@@ -33,6 +34,9 @@ public class AIDoor : MonoBehaviour
 
 	void Update ()
 	{
+		if (Input.GetKeyDown(KeyCode.Y)) animator.SetTrigger("Unlock");
+		//if (Input.GetKeyDown(KeyCode.U)) MaterialUtils.ToggleUseEmissionHDRP(emissiveMats, true);
+
 		if (animator.GetCurrentAnimatorStateInfo (0).normalizedTime <= 0 && !inRange)
 			animator.SetFloat ("Speed", 0);
 		if (animator.GetCurrentAnimatorStateInfo (0).normalizedTime >= 1 && inRange)
@@ -67,9 +71,15 @@ public class AIDoor : MonoBehaviour
 
 	void ChangeEmissionColor(bool unlocked = true)
 	{
-		Color emissiveColor = unlocked ? new Color(0.62f, 1.28f, 0.65f) : new Color(1.5f, 0.43f, 0.43f, 1);
-		MaterialUtils.ChangeMaterialsEmission(emissiveMats, emissiveColor, intensity);
-		//foreach (Material emissiveMat in emissiveMats) emissiveMat.SetColor("_EmissionColor", emissiveColor);
+		Color emissiveColor = unlocked ? unlockedColor : lockedColor;
+		float intensity = unlocked ? unlockedIntensity : lockedIntensity;
+		MaterialUtils.ChangeMaterialsEmission(emissiveMats, emissiveColor, intensity, "_EmissiveColor");
+		
+		//HDR Does not Work
+		/*MaterialUtils.ChangeMaterialsEmissionHDRP(emissiveMats, emissiveColor);
+		MaterialUtils.ChangeMaterialsIntensityHDRP(emissiveMats, intensity);
+		MaterialUtils.ToggleUseEmissionHDRP(emissiveMats, false);
+		MaterialUtils.ToggleUseEmissionHDRP(emissiveMats, true);*/
 	}
 
 	void SetDoorToUnlocked()

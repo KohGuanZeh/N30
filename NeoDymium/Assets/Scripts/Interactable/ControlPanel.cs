@@ -11,6 +11,8 @@ public class ControlPanel : IInteractable
 	[Header("For Mat Change")]
 	[SerializeField] Renderer[] screenRs;
 	[SerializeField] Material[] screenMats;
+	[SerializeField] Color defaultColor;
+	[SerializeField] float defaultIntensity;
 
 	public override void Start ()
 	{
@@ -40,7 +42,9 @@ public class ControlPanel : IInteractable
 	public void Disable()
 	{
 		activated = true;
-		MaterialUtils.ToggleMaterialsEmission(screenMats, false);
+		MaterialUtils.ChangeMaterialsEmission(screenMats, Color.black, 0, "_EmissiveColor");
+		//MaterialUtils.ChangeMaterialsEmissionHDRP(screenMats, Color.black);
+		//MaterialUtils.ChangeMaterialsIntensityHDRP(screenMats, 0);
 		foreach (IHackable item in affectedItems)
 			item.EnableDisable(false, color);
 	}
@@ -48,7 +52,9 @@ public class ControlPanel : IInteractable
 	public void Restore() //If we adding Circuit Enablers
 	{
 		activated = false;
-		MaterialUtils.ToggleMaterialsEmission(screenMats, true);
+		MaterialUtils.ChangeMaterialsEmission(screenMats, defaultColor, defaultIntensity, "_EmissiveColor");
+		//MaterialUtils.ChangeMaterialsEmissionHDRP(screenMats, new Color(0, 0.2549019f, 0.4509804f));
+		//MaterialUtils.ChangeMaterialsIntensityHDRP(screenMats, 45);
 		foreach (IHackable item in affectedItems)
 			item.EnableDisable(true, color);
 	}

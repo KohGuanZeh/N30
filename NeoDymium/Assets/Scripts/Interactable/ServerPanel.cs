@@ -8,6 +8,8 @@ public class ServerPanel : IInteractable
 	[Header("For Mat Change")]
 	[SerializeField] Renderer[] screenRs;
 	[SerializeField] Material[] screenMats;
+	[SerializeField] Color defaultColor;
+	[SerializeField] float defaultIntensity;
 
 	public override void Start()
 	{
@@ -40,13 +42,15 @@ public class ServerPanel : IInteractable
 	public void Disable()
 	{
 		linkedDoor.locked = false;
-		MaterialUtils.ToggleMaterialsEmission(screenMats, false);
+		MaterialUtils.ChangeMaterialsEmission(screenMats, Color.black, 0, "_EmissiveColor");
+		//MaterialUtils.ToggleMaterialsEmission(screenMats, false);
 	}
 
 	//If there is even a Restore for the Server Panel
 	public void Restore()
 	{
 		linkedDoor.locked = true;
-		MaterialUtils.ToggleMaterialsEmission(screenMats, true);
+		MaterialUtils.ChangeMaterialsEmission(screenMats, defaultColor, defaultIntensity, "_EmissiveColor");
+		//MaterialUtils.ToggleMaterialsEmission(screenMats, true);
 	}
 }

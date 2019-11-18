@@ -32,6 +32,8 @@ public class NumpadDoor : IInteractable
 	[SerializeField] float intensity = 1;
 	[SerializeField] Renderer[] emissiveRs;
 	[SerializeField] Material[] emissiveMats;
+	[SerializeField] Color lockedColor, unlockedColor; //For the Light Bars on Top
+	[SerializeField] float lockedIntensity, unlockedIntensity;
 
 	[Header("For Lerping")]
 	[SerializeField] Transform camPos;
@@ -275,8 +277,8 @@ public class NumpadDoor : IInteractable
 
 	void ChangeEmissionColor(bool unlocked = true)
 	{
-		Color emissiveColor = unlocked ? new Color(0.62f, 1.28f, 0.65f) : new Color(1.5f, 0.43f, 0.43f, 1);
-		MaterialUtils.ChangeMaterialsEmission(emissiveMats, emissiveColor, intensity);
-		//foreach (Material emissiveMat in emissiveMats) emissiveMat.SetColor("_EmissionColor", emissiveColor);
+		Color emissiveColor = unlocked ? unlockedColor : lockedColor;
+		float intensity = unlocked ? unlockedIntensity : lockedIntensity;
+		MaterialUtils.ChangeMaterialsEmission(emissiveMats, emissiveColor, intensity, "_EmissiveColor");
 	}
 }

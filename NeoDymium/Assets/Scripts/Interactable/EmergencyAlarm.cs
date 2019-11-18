@@ -12,6 +12,8 @@ public class EmergencyAlarm : IInteractable
 	[Header ("For Mat Change")]
 	[SerializeField] Renderer[] screenRs;
 	[SerializeField] Material[] screenMats;
+	[SerializeField] Color defaultColor, alertColor;
+	[SerializeField] float defaultIntensity, alertIntensity;
 
 	bool alarmed;
 
@@ -34,7 +36,7 @@ public class EmergencyAlarm : IInteractable
 		if (alarmed || affectedAis[0].alarmed) //cheap check
 			return;
 		audioSource.Play ();
-		MaterialUtils.ChangeMaterialsEmission(screenMats, new Color(2.118f, 0.519f, 0.476f), 1.9f);
+		MaterialUtils.ChangeMaterialsEmission(screenMats, alertColor, alertIntensity, "_EmissiveColor");
 		if (!tutHasFinished && uIManager.currentHint.gameObject.activeInHierarchy)
 		{
 			uIManager.currentHint.text = string.Empty;
@@ -57,7 +59,7 @@ public class EmergencyAlarm : IInteractable
 		alarmed = false;
 		audioSource.Stop ();
 		CancelInvoke ();
-		MaterialUtils.ChangeMaterialsEmission(screenMats, new Color(0.47f, 2.00f, 2.11f), 1f);
+		MaterialUtils.ChangeMaterialsEmission(screenMats, defaultColor, defaultIntensity, "_EmissiveColor");
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = false;

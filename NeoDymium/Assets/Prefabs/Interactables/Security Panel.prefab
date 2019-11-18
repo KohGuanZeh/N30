@@ -65,6 +65,10 @@ MonoBehaviour:
   - {fileID: 7585694633729263787}
   - {fileID: 5275736710755416612}
   screenMats: []
+  defaultColor: {r: 0, g: 0.25490192, b: 0.45098042, a: 1}
+  alertColor: {r: 0.45283014, g: 0, b: 0.0382427, a: 1}
+  defaultIntensity: 45
+  alertIntensity: 45
 --- !u!65 &2379783891743753025
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -269,6 +273,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

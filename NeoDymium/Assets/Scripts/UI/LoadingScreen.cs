@@ -10,11 +10,12 @@ using TMPro;
 
 public class LoadingScreen : MonoBehaviour
 {
-	[Header ("For Loading")]
+	[Header("For Loading")]
 	public static LoadingScreen inst;
 	public bool isLoading;
 	[SerializeField] AsyncOperation async;
 	[SerializeField] string levelToLoad;
+	[SerializeField] int levelIdxToLoad = -1;
 
 	[Header("Loading Screen Items")]
 	[SerializeField] Image bg;
@@ -42,6 +43,9 @@ public class LoadingScreen : MonoBehaviour
 		bg.color = loadingTxt.color = Color.clear;
 		foreach (Image loadingIcon in loadingIcons) loadingIcon.color = Color.clear;
 		bg.gameObject.SetActive(false);
+
+		levelIdxToLoad = -1;
+		levelToLoad = string.Empty;
 	}
 
 	private void Update()
@@ -58,6 +62,13 @@ public class LoadingScreen : MonoBehaviour
 		}
 	}
 
+	//Meant for Transition for Linear Level Progression
+	public void AutoLoadNextScene()
+	{
+		int nextLevelIndex = SceneManager.GetActiveScene().buildIndex;
+		LoadScene(++nextLevelIndex);
+	}
+
 	public void LoadScene(string levelName)
 	{
 		bg.gameObject.SetActive(true);
@@ -67,6 +78,19 @@ public class LoadingScreen : MonoBehaviour
 		fadeIn = true;
 		action += FadeInFadeOut;
 		action += RotateIcon;
+		print("Loading Scene Through String");
+	}
+
+	public void LoadScene(int levelIndex)
+	{
+		bg.gameObject.SetActive(true);
+		levelIdxToLoad = levelIndex;
+
+		isLoading = true;
+		fadeIn = true;
+		action += FadeInFadeOut;
+		action += RotateIcon;
+		print("Loading Scene Through Int");
 	}
 
 	public void OnSceneLoaded()
@@ -112,13 +136,18 @@ public class LoadingScreen : MonoBehaviour
 
 	public void OnFadeIn()
 	{
-		async = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Single);
+		if (!string.IsNullOrEmpty(levelToLoad)) async = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Single);
+		else if (levelIdxToLoad > -1) async = SceneManager.LoadSceneAsync(levelIdxToLoad, LoadSceneMode.Single);
+		else Debug.LogError("Invalid String or Int Loaded");
 	}
 
 	public void OnFadeOut()
 	{
 		isLoading = false;
 		bg.gameObject.SetActive(false);
+
+		levelToLoad = string.Empty;
+		levelIdxToLoad = -1;
 
 		action -= RotateIcon;
 		foreach (Image loadingIcon in loadingIcons) loadingIcon.rectTransform.eulerAngles = Vector3.zero;

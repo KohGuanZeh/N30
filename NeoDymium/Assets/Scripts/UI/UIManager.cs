@@ -55,18 +55,20 @@ public class UIManager : MonoBehaviour
 	[Header("Objective Marker")]
 	[SerializeField] Image marker;
 	public Vector3 objective;
-	[SerializeField] float offset; //Offset for Min Max XY
+	[SerializeField] Vector2 offset = new Vector2(100,100); //Offset for Min Max XY
 	[SerializeField] Vector2 minXY, maxXY;
 	[SerializeField] TextMeshProUGUI distanceToObj;
 
 	[Header("Stealth Gauge")]
 	public RectTransform mainPointer; //Pointer to Instantiate
 	public List<RectTransform> detectedPointers; //To Point to where Player is detected from. Only problem that has not been fixed is instantiating when not enough pointers... (Can be Coded in Optimisation)
-	[SerializeField] RectTransform playerPointer;
+	[SerializeField] RectTransform playerPointer; //Store the Pointer that Points to where the Player is at (When Player is being Detected from AI)
 	[SerializeField] Image[] detectionGauges; //[0] is Player, [1] is for CCTV/AI
 	[SerializeField] Image[] detectionGaugeBackdrops; //[0] is Player, [1] is for CCTV/AI
+	[SerializeField] Image[] flashingGauges; //[0] is Player, [1] is CCTV/AI
 	[SerializeField] Image[] detectedAlerts; //[0] is for Player, [1] is for CCTV/AI
-	[SerializeField] float warningTime;
+	[SerializeField] RectTransform movableDetectionComp;//Parent Holder for CCTV/AI Detection Gauges
+	[SerializeField] float warningTime, gaugeFlashTime;
 	[SerializeField] bool showGaugeBackdrop;
 
 	[Header("Instructions and Error Msgs")]
@@ -113,9 +115,10 @@ public class UIManager : MonoBehaviour
 		}
 
 		//Set Min Max XY for Waypoint Pos
-		offset = offset / 1920 * Screen.width;
-		minXY = new Vector2(marker.GetPixelAdjustedRect().width / 2 + offset, marker.GetPixelAdjustedRect().height / 2 + offset);
-		maxXY = new Vector2(Screen.width - minXY.x, Screen.height - minXY.y);
+		offset = new Vector2(offset.x / 1920 * Screen.width, offset.y / 1080 * Screen.height);
+		//Alternative would be moveableDetectionComp.rect.width / height
+		minXY = new Vector2(marker.GetPixelAdjustedRect().width / 2 + offset.x, offset.y);
+		maxXY = new Vector2(Screen.width - minXY.x, Screen.height - (minXY.y + marker.GetPixelAdjustedRect().height));
 	}
 
 	private void Start()
@@ -123,7 +126,10 @@ public class UIManager : MonoBehaviour
 		player = PlayerController.inst;
 
 		foreach (Image backdrop in detectionGaugeBackdrops) backdrop.gameObject.SetActive(false);
-		foreach (Image warning in detectedAlerts) warning.color = new Color(warning.color.r, warning.color.g, warning.color.b, 0);
+		foreach (Image flashGauge in flashingGauges) flashGauge.gameObject.SetActive(false);
+		foreach (Image warning in detectedAlerts) warning.color = warning.color.ChangeAlpha(0);
+
+		gaugeFlashTime = 0;
 
 		//CCTV UI Start Color and Anchored Positions
 		foreach (Image cctvUIBorder in cctvUIBorders)
@@ -160,9 +166,10 @@ public class UIManager : MonoBehaviour
 		action += LerpInstructions;
 		action += LerpActionAvailability;
 		action += FlashDetectedWarning;
+		action += FlashGaugeOnHighAlert;
 
 		action += PointToObjective;
-		action += PointToPlayer;
+		action += PointDetectionGaugeToPlayer;
 		action += ShowHideGaugeBackdrop;
 
 		soundManager = SoundManager.inst;
@@ -187,7 +194,6 @@ public class UIManager : MonoBehaviour
 		//Closes all other Screens
 		pauseScreen.gameObject.SetActive(false);
 		optionsScreen.gameObject.SetActive(false);
-
 		gameOverScreen.gameObject.SetActive(true);
 	}
 
@@ -277,10 +283,12 @@ public class UIManager : MonoBehaviour
 				cctvUI.SetActive(true);
 				playerUI.SetActive(false);
 				break;
+
 			case HackableType.AI:
 				cctvUI.SetActive(true);
 				playerUI.SetActive(false);
 				break;
+
 			default:
 				playerUI.SetActive(true);
 				cctvUI.SetActive(false);
@@ -321,7 +329,7 @@ public class UIManager : MonoBehaviour
 	public void ShowHideUI(bool show)
 	{
 		if (player.inHackable) cctvUI.gameObject.SetActive(show);
-		else playerUI.gameObject.SetActive(show);
+		//else playerUI.gameObject.SetActive(show); Currently Player UI only have Detection Gauge
 		foreach (Image crosshair in crosshairs) crosshair.gameObject.SetActive(show);
 		marker.gameObject.SetActive(show); //Show Hide Obj Marker
 		controlsGrp.SetActive(show); //Show Hide Controls
@@ -399,17 +407,12 @@ public class UIManager : MonoBehaviour
 	#endregion
 
 	#region Detection Gauge Functions
-	public void ShowHideDetectionGauges(int i = 0, bool show = true)
-	{
-		detectionGauges[i].gameObject.SetActive(show);
-	}
-
 	void ShowHideGaugeBackdrop()
 	{
 		if (player.detectionGauge > 0 && !showGaugeBackdrop)
 		{
 			showGaugeBackdrop = true;
-			foreach (Image backdrop in detectionGaugeBackdrops) backdrop.gameObject.SetActive(true);
+			foreach(Image backdrop in detectionGaugeBackdrops) backdrop.gameObject.SetActive(true);
 		}
 		else if (player.detectionGauge <= 0 && showGaugeBackdrop)
 		{
@@ -418,28 +421,86 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	void PointToPlayer()
+	void FlashDetectedWarning()
 	{
-		if (!detectionGauges[1].gameObject.activeInHierarchy) return;
+		if (warningTime == 0 && !player.isDetected) return;
 
-		Vector3 playerPos = player.transform.position + new Vector3(0, player.DistFromGround, 0);
-		Vector3 currentCamPos = player.CurrentViewingCamera.transform.position;
-		Vector2 playerScreenPos = player.CurrentViewingCamera.WorldToScreenPoint(playerPos);
-		Vector3 dirToPlayer = (playerPos - currentCamPos).normalized;
-
-		if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToPlayer) < 0)
-		{
-			//If Player Body is on the Right side of the Current Cam, Clamp it to the LEFT (Since Player is facing behind) and vice versa
-			if (playerScreenPos.x > Screen.width / 2) playerScreenPos.x = minXY.x;
-			else playerScreenPos.x = maxXY.x;
-		}
-
+		float alpha = 0;
 		if (player.isDetected)
 		{
-			if (playerScreenPos.x < minXY.x || playerScreenPos.x > maxXY.x || playerScreenPos.y < minXY.y || playerScreenPos.y > maxXY.y)
+			warningTime += Time.deltaTime * 3;
+			alpha = Mathf.PingPong(warningTime, 1);
+		}
+		else warningTime = 0;
+
+		foreach (Image alert in detectedAlerts) alert.color = alert.color.ChangeAlpha(alpha);
+	}
+
+	void FlashGaugeOnHighAlert()
+	{
+		bool showFlash = detectionGauges[0].fillAmount >= 0.5f;
+		if (!showFlash && !flashingGauges[0].gameObject.activeSelf) return;
+
+		if (showFlash) gaugeFlashTime = Mathf.Min(gaugeFlashTime + Time.deltaTime * 3, 1);
+		else gaugeFlashTime = 0;
+
+		float alpha = Mathf.Lerp(0.75f, 0, gaugeFlashTime);
+
+		foreach (Image flashGauge in flashingGauges)
+		{
+			flashGauge.gameObject.SetActive(showFlash);
+			flashGauge.rectTransform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.5f, gaugeFlashTime);
+			flashGauge.color = flashGauge.color.ChangeAlpha(alpha);
+		}
+
+		if (gaugeFlashTime >= 1) gaugeFlashTime = 0;
+	}
+
+	//May need to Account for Vertical Direction as well
+	//Sometimes doesnt work. Not sure how to replicate the bug
+	void PointDetectionGaugeToPlayer()
+	{
+		if (!detectionGauges[1].gameObject.activeInHierarchy || detectionGauges[1].fillAmount == 0) return;
+
+		Vector3 playerPos = player.transform.position + new Vector3(0, player.GetPlayerHeight() + 0.1f, 0); //0.1f is the Offset
+		Vector3 currentCamPos = player.CurrentViewingCamera.transform.position;
+		Vector3 screenPos = player.CurrentViewingCamera.WorldToScreenPoint(playerPos);
+		Vector3 dirToPlayer = (playerPos - currentCamPos).normalized;
+
+		if (screenPos.z <= 0 || screenPos.x < minXY.x || screenPos.x > maxXY.x || screenPos.y < minXY.y || screenPos.y > maxXY.y)
+		{
+			//Multiply by -1 if the Object is behind
+			if (screenPos.z < 0) screenPos *= -1;
+
+			//Get Center of the Screen.
+			//Meant for Translation such that Calculations are done whereby the Center is the Pivot
+			Vector3 center = new Vector3(Screen.width, Screen.height, 0) / 2;
+			screenPos -= center;
+
+			//Find Angle from Target Screen Pos to Center of Screen
+			float angle = Mathf.Atan2(screenPos.y, screenPos.x); //
+			angle -= 90 * Mathf.Deg2Rad;
+			float cos = Mathf.Cos(angle);
+			float sin = -Mathf.Sin(angle);
+
+			screenPos = center + new Vector3(sin * 150, cos * 150, 0);
+
+			//y = mx + b format
+			float m = cos / sin;
+
+			//Check up and down first
+			if (cos > 0) screenPos = new Vector3(center.y / m, center.y, 0);
+			else screenPos = new Vector3(-center.y / m, -center.y, 0);
+
+			//If out of Bounds, Get Pointer on Correct Side
+			if (screenPos.x > center.x) screenPos = new Vector3(center.x, center.x * m, 0); //Out of Bounds Right
+			else if (screenPos.x < -center.x) screenPos = new Vector3(-center.x, -center.x * m, 0); //Out of Bounds Left
+
+			screenPos += center;
+
+			if (player.isDetected)
 			{
 				if (!playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(true);
-				print("Player is Off Screen");
 
 				Vector3 horDir = (new Vector3(playerPos.x, 0, playerPos.z) - new Vector3(currentCamPos.x, 0, currentCamPos.z)).normalized;
 				Vector3 forward = player.CurrentViewingCamera.transform.forward;
@@ -452,11 +513,12 @@ public class UIManager : MonoBehaviour
 		else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
 
 		//Clamping to Edges of Screen
-		playerScreenPos.x = Mathf.Clamp(playerScreenPos.x, minXY.x, maxXY.x);
-		playerScreenPos.y = Mathf.Clamp(playerScreenPos.y, minXY.y, maxXY.y);
+		screenPos.x = Mathf.Clamp(screenPos.x, minXY.x, maxXY.x);
+		screenPos.y = Mathf.Clamp(screenPos.y, minXY.y, maxXY.y);
 
-		detectionGauges[1].transform.position = playerScreenPos;
-		detectionGaugeBackdrops[1].transform.position = playerScreenPos;
+		movableDetectionComp.transform.position = screenPos;
+		//detectionGauges[1].transform.position = playerScreenPos;
+		//detectionGaugeBackdrops[1].transform.position = playerScreenPos;
 	}
 	#endregion
 
@@ -485,29 +547,6 @@ public class UIManager : MonoBehaviour
 
 			crosshairIsLerping = false;
 			action -= LerpFocusFeedback;
-		}
-	}
-
-	void FlashDetectedWarning()
-	{
-		if (warningTime == 0 && !player.isDetected) return;
-
-		float alpha = 0;
-
-		Color[] alertColors = new Color[2];
-
-		if (player.isDetected)
-		{
-			warningTime += Time.deltaTime * 3;
-			alpha = Mathf.PingPong(warningTime, 1);
-		}
-		else warningTime = 0;
-
-		for (int i = 0; i < detectedAlerts.Length; i++)
-		{
-			alertColors[i] = detectedAlerts[i].color;
-			alertColors[i].a = alpha;
-			detectedAlerts[i].color = alertColors[i];
 		}
 	}
 

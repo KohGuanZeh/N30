@@ -94,8 +94,8 @@ public class PlayerController : MonoBehaviour
 	bool playedSound;
 	InstructionsManager instructManager;
 
-	/*[Header("For Editor SS")]
-	[SerializeField] bool disablePlayerMove;*/
+	[Header("For Editor SS")]
+	[SerializeField] bool disablePlayerMove;
 
 	//For Getting Private Components. May want to use Properties instead
 	#region Additional Functions To Get Private Vars
@@ -123,15 +123,16 @@ public class PlayerController : MonoBehaviour
 	{
 		return isCrouching ? crouchCamPos : standCamPos;
 	}
+
+	public float GetPlayerHeight()
+	{
+		return controller.height;
+	}
 	#endregion
 
 	void Awake ()
 	{
 		inst = this;
-
-		//For Complex Stealth Detection
-		increaseMult = 1;
-		decreaseMult = 1;
 	}
 
     void Start()
@@ -178,14 +179,14 @@ public class PlayerController : MonoBehaviour
 
 	void Update()
     {
-		/*//For Editor SS
+		//For Editor SS
 		if (Input.GetKeyDown(KeyCode.F))
 		{
 			disablePlayerMove = !disablePlayerMove;
 			Cursor.lockState = disablePlayerMove ? CursorLockMode.None : CursorLockMode.Locked;
 			Cursor.visible = disablePlayerMove;
 		} 
-		if (disablePlayerMove) return;*/
+		if (disablePlayerMove) return;
 
 		if (!ui.isPaused && !ui.isGameOver)
 		{
@@ -540,12 +541,7 @@ public class PlayerController : MonoBehaviour
 
 		if (hackError != string.Empty) return; //Prevent Hacking if Error is produced
 
-		if (!ui.cctvUI.activeSelf)
-		{
-			ui.cctvUI.SetActive(true);
-			ui.playerUI.SetActive(false);
-			print("Player UI is False");
-		}
+		if (!inHackable || hackedObj.hackableType != detectedHackable.hackableType) ui.SwitchUI(detectedHackable.hackableType);
 
 		anim.SetFloat("Speed", 0);
 
@@ -585,11 +581,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!inHackable) return;
 
-		if (!ui.playerUI.activeSelf)
-		{
-			ui.playerUI.SetActive(true);
-			ui.cctvUI.SetActive(false);
-		}
+		ui.SwitchUI(HackableType.none);
 
 		isHacking = true;
 		inHackable = false;
@@ -740,12 +732,12 @@ public class PlayerController : MonoBehaviour
 		isDetected = true;
 		detectedOutline.enabled = true;
 		detectionGauge = Mathf.Min(detectionGauge + Time.deltaTime * increaseMult, detectionThreshold);
-		if (detectionGauge >= detectionThreshold) ui.GameOver();
+		//if (detectionGauge >= detectionThreshold) ui.GameOver();
 	}
 
 	public void DecreaseDetectionGauge()
 	{
-		if (detectionGauge <= 0) return;
+		if (detectionGauge <= 0 || detectionGauge == detectionThreshold) return;
 		detectedOutline.enabled = false;
 		isDetected = false;
 		detectionGauge = Mathf.Max(detectionGauge - Time.deltaTime * decreaseMult, 0);

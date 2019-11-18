@@ -202,8 +202,9 @@ public class IHackable : MonoBehaviour
 			player.IncreaseDetectionGauge();
 			//print("Seen by " + gameObject.name);
 			exclamationMark.SetActive(true);
-			if (!canHaveMemory)
-				return;
+
+			if (!canHaveMemory) return;
+
 			hasPlayerMemory = true;
 			questionMark.SetActive (false);
 			exclamationMark.transform.LookAt(player.CurrentViewingCamera.transform);

@@ -87,4 +87,47 @@ public static class MaterialUtils
 	{
 		foreach (Material mat in mats) mat.SetColor(emissionProperty, color * intensity);
 	}
+
+	#region HDRP Mat Functions
+	public static void ToggleUseEmissionHDRP(Material mat, bool use, string property = "_UseEmissiveIntensity")
+	{
+		if (use) mat.EnableKeyword(property);
+		else mat.DisableKeyword(property);
+	}
+
+	public static void ToggleUseEmissionHDRP(Material[] mats, bool use, string property = "_UseEmissiveIntensity")
+	{
+		foreach (Material mat in mats) mat.SetInt(property, use ? 1 : 0);
+	}
+
+	public static void ChangeMaterialEmissionHDRP(Material mat, Color color, string emissionProperty = "_EmissiveColorLDR")
+	{
+		mat.SetColor(emissionProperty, color);
+	}
+
+	public static void ChangeMaterialsEmissionHDRP(Material[] mats, Color color, string emissionProperty = "_EmissiveColorLDR")
+	{
+		foreach (Material mat in mats) mat.SetColor(emissionProperty, color);
+	}
+
+	public static void ChangeMaterialIntensityHDRP(Material mat, float intensity, string intensityProperty = "_EmissiveIntensity")
+	{
+		mat.SetFloat(intensityProperty, intensity);
+	}
+
+	public static void ChangeMaterialsIntensityHDRP(Material[] mats, float intensity, string intensityProperty = "_EmissiveIntensity")
+	{
+		foreach (Material mat in mats) mat.SetFloat(intensityProperty, intensity);
+	}
+	#endregion
+}
+
+public static class ColorUtils
+{
+	//Mainly used for Image.Color
+	public static Color ChangeAlpha(this Color color, float alpha = 1)
+	{
+		color.a = alpha;
+		return color;
+	}
 }

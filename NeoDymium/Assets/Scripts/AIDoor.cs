@@ -42,7 +42,8 @@ public class AIDoor : MonoBehaviour
 
 	void Update ()
 	{
-		if (Input.GetKeyDown(KeyCode.Y)) animator.SetTrigger("Unlock");
+		//For Testing Purposes
+		//if (Input.GetKeyDown(KeyCode.Y)) animator.SetTrigger("Unlock");
 		//if (Input.GetKeyDown(KeyCode.U)) MaterialUtils.ToggleUseEmissionHDRP(emissiveMats, true);
 
 		if (animator.GetCurrentAnimatorStateInfo (0).normalizedTime <= 0 && !inRange)

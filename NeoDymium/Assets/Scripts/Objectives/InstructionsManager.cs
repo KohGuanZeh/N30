@@ -11,6 +11,8 @@ public class InstructionsManager : MonoBehaviour
     public TextMeshProUGUI instructionText;
     public bool inInstruction = false;
     public bool lockCameraRotation = false; //Disable Rotation/Movement/Sound of Camera during Instruction Screen
+    public bool closeTimerStart;
+    public float closeTimerValue;
     public static InstructionsManager inst;
     PlayerController player;
     UIManager uIManager;
@@ -32,19 +34,29 @@ public class InstructionsManager : MonoBehaviour
         {
             Time.timeScale = 0;
             lockCameraRotation = true;
-            if (Input.GetMouseButton(0) && !uIManager.isPaused)
+            if (Input.GetMouseButton(0) && !uIManager.isPaused && !closeTimerStart)
             {
                 Time.timeScale = 1;
                 lockCameraRotation = false;
                 inInstruction = false;
+                closeTimerValue = 0.0f;
                 if (instructionHolder.activeInHierarchy) instructionHolder.SetActive (false);
             }
         } 
+        if (closeTimerStart)
+        {
+            closeTimerValue += Time.unscaledDeltaTime;
+            if (closeTimerValue >= 3.0f)
+            {
+                closeTimerStart = false;
+            }
+        }
     }
 
     public void WhileInInstructionScreen ()
     {
         inInstruction = true;
+        closeTimerStart = true;
         if (!instructionHolder.activeInHierarchy) instructionHolder.SetActive(true);
     }
 }

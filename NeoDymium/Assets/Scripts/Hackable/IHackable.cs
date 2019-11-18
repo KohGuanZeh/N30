@@ -59,7 +59,13 @@ public class IHackable : MonoBehaviour
 
 	[Header("Tutorial")]
 	bool tutHasFinished;
-
+	bool instructionHasFinished;
+	public bool instructionRobot;
+	public bool lockRotation;
+	InstructionsManager iM;
+	public Sprite instructionImage;
+	[TextArea (5, 20)]
+	public string instructionToDisplay;
 	protected virtual void Start()
 	{
 		//General
@@ -67,6 +73,7 @@ public class IHackable : MonoBehaviour
 		ui = UIManager.inst;
 		areaNamesManager = AreaNamesManager.inst;
 		areaNames = AreaNames.inst;
+		iM = InstructionsManager.inst;
 
 		//Camera
 		camera = GetComponentInChildren<Camera>();
@@ -93,6 +100,15 @@ public class IHackable : MonoBehaviour
 		{
 			if (isDisabled || enabledShields.Count > 0) ForcedUnhack(); //Force Player to Unhack when 
 			else ExecuteHackingFunctionaliy();
+		}
+		if (lockRotation)
+		{
+			iM.WhileInInstructionScreen();
+			if (Input.GetMouseButton(0))
+			{
+				lockRotation = false;
+				instructionHasFinished = true;
+			}
 		}
 	}
 
@@ -176,7 +192,13 @@ public class IHackable : MonoBehaviour
 				}
 			}
 			else ui.LocateHackable(this, pointer);
-
+			
+			if (!instructionHasFinished && instructionRobot)
+			{
+				iM.instructionImage.sprite = instructionImage;
+            	iM.instructionText.text = instructionToDisplay;
+				lockRotation = true;
+			}
 			player.IncreaseDetectionGauge();
 			//print("Seen by " + gameObject.name);
 			exclamationMark.SetActive(true);

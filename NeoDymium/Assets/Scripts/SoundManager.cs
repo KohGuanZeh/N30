@@ -97,17 +97,10 @@ public class SoundManager : MonoBehaviour
 	void Update ()
 	{
 		transform.position = player.CurrentViewingCamera.transform.position;
-<<<<<<< HEAD
 
-		//master.SetFloat ("masterVolume", Mathf.Log (masterSlider.value) * 20);
-		//master.SetFloat ("bgmVolume", Mathf.Log (bgmSlider.value) * 20);
-		//master.SetFloat ("sfxVolume", Mathf.Log (sfxSlider.value) * 20);
-=======
-		
 		// master.SetFloat ("masterVolume", Mathf.Log (masterSlider.value) * 20);
 		master.SetFloat ("bgmVolume", Mathf.Log (bgmSlider.value) * 20);
 		master.SetFloat ("sfxVolume", Mathf.Log (sfxSlider.value) * 20);
->>>>>>> e4283aa2bbbba7d474cef05a49cdacb24f466633
 	}
 
 	public bool IsSourcePlaying (int sourceIndex)

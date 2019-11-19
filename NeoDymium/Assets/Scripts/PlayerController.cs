@@ -144,7 +144,6 @@ public class PlayerController : MonoBehaviour
 
 		if (checkPoints.Length > 0)
 		{
-			for (int i = 0; i < checkPointsPassed + 1; i++) checkPoints[i].GetHackableMemory(i);
 			checkPoints[checkPointsPassed].LoadCheckPoint();
 		}
 
@@ -732,7 +731,7 @@ public class PlayerController : MonoBehaviour
 		isDetected = true;
 		detectedOutline.enabled = true;
 		detectionGauge = Mathf.Min(detectionGauge + Time.deltaTime * increaseMult, detectionThreshold);
-		//if (detectionGauge >= detectionThreshold) ui.GameOver();
+		if (detectionGauge >= detectionThreshold) ui.GameOver();
 	}
 
 	public void DecreaseDetectionGauge()

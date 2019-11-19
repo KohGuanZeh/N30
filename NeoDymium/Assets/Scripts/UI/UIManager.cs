@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -90,6 +91,10 @@ public class UIManager : MonoBehaviour
 	[Header("Tutorial Instructions")]
 	public TextMeshProUGUI currentHint;
 
+	[Header("Checkpoint System")]
+	ObjectiveManager objM;
+	public bool touchedCheckpoint;
+
 	[Header ("Others")]
 	public Color disabledUIColor = new Color(0.8f, 0.8f, 0.8f, 0.75f);
 	public Color playerColor = Color.white;
@@ -173,6 +178,7 @@ public class UIManager : MonoBehaviour
 		action += ShowHideGaugeBackdrop;
 
 		soundManager = SoundManager.inst;
+		objM = ObjectiveManager.inst;
 	}
 
 	void Update()
@@ -186,6 +192,8 @@ public class UIManager : MonoBehaviour
 
 	public void GameOver()
 	{
+		PlayerPrefs.SetInt ("Last Objective Saved", objM.currentGoalNumber);
+
 		isGameOver = true;
 		Time.timeScale = 0;
 		Cursor.lockState = CursorLockMode.None;
@@ -334,6 +342,22 @@ public class UIManager : MonoBehaviour
 		marker.gameObject.SetActive(show); //Show Hide Obj Marker
 		controlsGrp.SetActive(show); //Show Hide Controls
 		whiteDotHolder.gameObject.SetActive(show); //Show Hide White Dots
+	}
+
+	public void ShowSavedAfterCheckpoints ()
+	{
+		if (touchedCheckpoint)
+		{
+			StartCoroutine("ShowSavedIcon");
+		}
+		touchedCheckpoint = !touchedCheckpoint;
+	}	
+
+	IEnumerator ShowSavedIcon ()
+	{	
+		guiAnim.SetBool ("Checkpoint", true);
+		yield return new WaitForSeconds (3.0f);
+		guiAnim.SetBool ("Checkpoint", false);
 	}
 
 	#region Objective Marker Functions

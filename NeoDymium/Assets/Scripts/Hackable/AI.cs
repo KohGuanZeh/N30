@@ -104,6 +104,7 @@ public class AI : IHackable
 		ai.findingPlayer = false;
 		ai.moveAcrossNavMeshesStarted = false;
 		ai.invokedDoorChaseCancel = false;
+		ai.StopAllCoroutines ();
 		//Destroy (ai.GetComponent<Rigidbody> ());
 	}
 

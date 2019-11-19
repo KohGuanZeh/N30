@@ -70,7 +70,7 @@ public class AI : IHackable
 	{
 		if (ai.agent.velocity.sqrMagnitude >= 0 && isGrounded && !audioSource.isPlaying)
 			audioSource.Play ();
-		
+
 		if (ai.agent.velocity.sqrMagnitude == 0)
 			audioSource.Stop ();
 	}
@@ -104,6 +104,7 @@ public class AI : IHackable
 		ai.findingPlayer = false;
 		ai.moveAcrossNavMeshesStarted = false;
 		ai.invokedDoorChaseCancel = false;
+		ai.StopAllCoroutines ();
 		//Destroy (ai.GetComponent<Rigidbody> ());
 	}
 
@@ -114,11 +115,11 @@ public class AI : IHackable
 
 	protected override void ExecuteHackingFunctionaliy ()
 	{
-		PlayerRotation ();
-		PlayerMovement ();
+		if (!lockRotation) PlayerRotation ();
+		if (!lockRotation) PlayerMovement ();
 		ui.ShiftAIArrows(pitch);
 	}
-	
+
 	void PlayerRotation()
 	{
 		//Camera and Player Rotation
@@ -129,7 +130,7 @@ public class AI : IHackable
 		transform.eulerAngles = new Vector3(0, yaw, 0);
 		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
 	}
-	
+
 	void PlayerMovement()
 	{
 		//if (controller.isGrounded)
@@ -139,7 +140,7 @@ public class AI : IHackable
 		Vector3 zMovement = Input.GetAxisRaw("Vertical") * transform.forward;
 		Vector3 horVelocity = (xMovement + zMovement).normalized * walkSpeed;
 
-		if (horVelocity.sqrMagnitude == 0) 
+		if (horVelocity.sqrMagnitude == 0)
 			player.SetBobSpeedAndOffset(0.75f, 0.01f); //Set Bobbing for Idle
 		else
 			player.SetBobSpeedAndOffset(3f, 0.04f);
@@ -149,7 +150,7 @@ public class AI : IHackable
 		//Applying Gravity before moving
 		velocity.y = isGrounded ? onSlope ? -slopeForce : -9.81f * Time.deltaTime : velocity.y - 9.81f * Time.deltaTime;
 
-		controller.Move(velocity * Time.deltaTime);	
+		controller.Move(velocity * Time.deltaTime);
 
 		//sound
 		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.aiWalk.sourceIndex))

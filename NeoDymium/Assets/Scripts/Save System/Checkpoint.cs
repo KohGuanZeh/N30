@@ -10,37 +10,40 @@ public class Checkpoint : MonoBehaviour
 	[SerializeField] PlayerController player;
 	[SerializeField] LayerMask playerLayer;
 	[SerializeField] Collider coll;
-	[SerializeField] GameObject wall;
+	// [SerializeField] GameObject wall;
 	[SerializeField] List<IHackable> hackables;
+	UIManager uIManager;
 
     // Start is called before the first frame update
-    void Awake()
+    void Awake ()
     {
-		if (wall) wall.SetActive(false);
+		// if (wall) wall.SetActive(false);
 		player = FindObjectOfType<PlayerController>(); //Need to Find Object of Type since this has to be initialised together with Player
 		coll = GetComponent<Collider>();
-
-		//System for Setting Hackable Names
     }
+	
+	void Start ()
+	{
+		uIManager = UIManager.inst;
+	}
+
+	void Update ()
+	{
+		if (Input.GetKeyDown (KeyCode.P))
+		{
+			PlayerPrefs.DeleteKey (SceneManager.GetActiveScene().name + " Checkpoint");
+			print ("Checkpoint Position now set at Start Point");
+		}
+	}
 
 	public void LoadCheckPoint()
 	{
-		if (wall) wall.SetActive(true);
+		// if (wall) wall.SetActive(true);
 		coll.enabled = false;
 
 		//Yaw and Pitch of Players are Set in Respawn function
 		player.transform.position = transform.position;
 		player.transform.eulerAngles = transform.eulerAngles;
-	}
-
-	public void SetHackableMemory(int cpIndex)
-	{
-		for (int i = 0; i < hackables.Count; i++) hackables[i].GetSetPlayerMemory(cpIndex, i, false);
-	}
-
-	public void GetHackableMemory(int cpIndex)
-	{
-		if (hackables.Count > 0) for (int i = 0; i < hackables.Count; i++) hackables[i].GetSetPlayerMemory(cpIndex, i);
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -49,8 +52,9 @@ public class Checkpoint : MonoBehaviour
 		if (playerLayer == (playerLayer | (1 << other.gameObject.layer)))
 		{
 			PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + " Checkpoint", ++player.checkPointsPassed);
-			SetHackableMemory(player.checkPointsPassed);
-			if (wall) wall.SetActive(true);
+			uIManager.touchedCheckpoint = true;
+			uIManager.ShowSavedAfterCheckpoints();
+			// if (wall) wall.SetActive(true);
 			coll.enabled = false;
 		}
 	}

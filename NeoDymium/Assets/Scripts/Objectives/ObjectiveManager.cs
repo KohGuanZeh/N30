@@ -17,21 +17,33 @@ public class ObjectiveManager : MonoBehaviour
     public int currentGoalNumber;
 
     UIManager uiManager;
+    public static ObjectiveManager inst;
+
+    void Awake ()
+    {
+        inst = this;
+    }
 
     void Start() 
     {
-        currentGoalNumber = 0;
+        if (PlayerPrefs.HasKey ("Last Objective Saved")) 
+        {
+            currentGoalNumber = PlayerPrefs.GetInt ("Last Objective Saved");
+        }
+        else currentGoalNumber = 0;
         uiManager = UIManager.inst;
-		
     }
 
     void Update() 
     {
-        if (goal.Length == 0)
+        if (Input.GetKeyDown (KeyCode.O))
+            currentGoalNumber = 0;
+
+        if (goal.Length == 0 || currentGoalNumber > goal.Length)
             return;
 
 		if (uiManager.objective == Vector3.zero)
-			uiManager.SetNewObjective (goal[0].goal.transform.position + goal[0].offset, true);
+			uiManager.SetNewObjective (goal[currentGoalNumber].goal.transform.position + goal[currentGoalNumber].offset, true);
 
         if (goal[currentGoalNumber].goal.isCompleted)
 		{

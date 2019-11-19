@@ -25,25 +25,37 @@ public class UIManager : MonoBehaviour
 	[SerializeField] PlayerController player;
 	[SerializeField] ColorIdentifier currentColor = ColorIdentifier.none;
 	[SerializeField] Animator guiAnim; //Stand in for now... Will think about how to better integrate Animations
-	[SerializeField] Vector2 baseResolution, currentResolution;
+	[SerializeField] Vector2 screenSize;
+	[SerializeField] Resolution baseRes, currentRes;
 
 	[Header("Menus")]
 	[SerializeField] RectTransform pauseScreen;
 	[SerializeField] RectTransform optionsScreen;
 	[SerializeField] RectTransform gameOverScreen;
 
+	[Header ("For UI Lerp")]
+	public bool uiFadeIn;
+	[SerializeField] HackableType currentType, prevType;
+	[SerializeField] bool uiFadeInProgress;
+	[SerializeField] float uiLerpTime;
+
 	[Header("UI Templates")]
 	public GameObject playerUI;
 	public GameObject cctvUI;
+	public GameObject aiUI;
+	public GameObject hackableUI; //All Common UI for Hackables
 	public GameObject controlsGrp; //Stores the Graphics for Controls and Errors
 
 	[Header("CCTV UI Items")]
-	public bool uiFadeIn;
-	[SerializeField] bool uiFadeInProgress;
-	[SerializeField] float uiLerpTime;
-	[SerializeField] Graphic[] unhackInstructions; //For now Store the Unhack Instructions as a Graphic
-	[SerializeField] Color[] defaultGraphicsColor;
 	[SerializeField] Image[] cctvUIBorders;
+
+	[Header("AI UI Items")]
+	[SerializeField] Image[] aiUIBorders;
+	[SerializeField] Image[] aiArrows;
+
+	[Header("Common UI Elements")]
+	[SerializeField] Graphic[] unhackInstructions; //For now Store the Unhack Instructions as a Graphic
+	[SerializeField] Color[] unhackGraphicsColor; //Store Default Colors for the Unhack Instructions 
 	[SerializeField] TextMeshProUGUI hackableName;
 
 	[Header("Crosshair")]
@@ -55,11 +67,12 @@ public class UIManager : MonoBehaviour
 	[Header("Objective Marker")]
 	[SerializeField] Image marker;
 	public Vector3 objective;
-	[SerializeField] Vector2 offset = new Vector2(100,100); //Offset for Min Max XY
+	[SerializeField] Vector2 baseOffset = new Vector2(100, 100);
+	[SerializeField] Vector2 offset;
 	[SerializeField] Vector2 minXY, maxXY;
 	[SerializeField] TextMeshProUGUI distanceToObj;
 
-	[Header("Stealth Gauge")]
+	[Header("Player Detection Gauge")]
 	public RectTransform mainPointer; //Pointer to Instantiate
 	public List<RectTransform> detectedPointers; //To Point to where Player is detected from. Only problem that has not been fixed is instantiating when not enough pointers... (Can be Coded in Optimisation)
 	[SerializeField] RectTransform playerPointer; //Store the Pointer that Points to where the Player is at (When Player is being Detected from AI)
@@ -103,8 +116,10 @@ public class UIManager : MonoBehaviour
 	private void Awake()
 	{
 		inst = this;
-		baseResolution = new Vector2(1920, 1080);
-		currentResolution = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+
+		screenSize = new Vector2(Screen.width, Screen.height);
+		baseRes = Screen.currentResolution;
+		currentRes = baseRes;
 
 		for (int i = 0; i < 10; i++)
 		{
@@ -114,11 +129,13 @@ public class UIManager : MonoBehaviour
 			detectedPointers[i].gameObject.SetActive(false);
 		}
 
-		//Set Min Max XY for Waypoint Pos
-		offset = new Vector2(offset.x / 1920 * Screen.width, offset.y / 1080 * Screen.height);
-		//Alternative would be moveableDetectionComp.rect.width / height
-		minXY = new Vector2(marker.GetPixelAdjustedRect().width / 2 + offset.x, offset.y);
-		maxXY = new Vector2(Screen.width - minXY.x, Screen.height - (minXY.y + marker.GetPixelAdjustedRect().height));
+		//Set Min Max XY for Waypoint Pos. 1920x1080 is the base size that we are using for our UI Anchoring Positions
+		offset = new Vector2(baseOffset.x / 1920 * screenSize.x, baseOffset.y / 1080 * screenSize.y);
+
+		//minXY = new Vector2(marker.GetPixelAdjustedRect().width / 2 + offset.x, offset.y);
+		//maxXY = new Vector2(Screen.width - minXY.x, Screen.height - (minXY.y + marker.GetPixelAdjustedRect().height));
+		minXY = new Vector2(movableDetectionComp.rect.width / 2 + offset.x, offset.y);
+		maxXY = new Vector2(screenSize.x - minXY.x, screenSize.y - (minXY.y + movableDetectionComp.rect.height));
 	}
 
 	private void Start()
@@ -135,22 +152,30 @@ public class UIManager : MonoBehaviour
 		foreach (Image cctvUIBorder in cctvUIBorders)
 		{
 			cctvUIBorder.rectTransform.anchoredPosition = Vector2.zero;
-			cctvUIBorder.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+			cctvUIBorder.rectTransform.localScale = Vector3.one  * 1.5f;
 			cctvUIBorder.color = Color.clear;
 		}
 
+		for (int i = 0; i < aiUIBorders.Length; i++)
+		{
+			if (i < 4) aiUIBorders[i].rectTransform.anchoredPosition = Vector2.zero;
+			else aiUIBorders[i].rectTransform.anchoredPosition = new Vector2(0, 50);
+
+			aiUIBorders[i].rectTransform.localScale = Vector3.one * 1.25f;
+			aiUIBorders[i].color = Color.clear;
+		}
+
 		hackableName.color = Color.clear;
-
-		crosshairs[1].color = Color.clear;
-		SetUIColors(ColorIdentifier.none); //Set Crosshair and Borders Color to fit player Color
-
-		defaultGraphicsColor = new Color[unhackInstructions.Length];
+		unhackGraphicsColor = new Color[unhackInstructions.Length];
 
 		for (int i = 0; i < unhackInstructions.Length; i++)
 		{
-			defaultGraphicsColor[i] = unhackInstructions[i].color;
+			unhackGraphicsColor[i] = unhackInstructions[i].color;
 			unhackInstructions[i].color = Color.clear;
 		}
+
+		crosshairs[1].color = Color.clear;
+		SetUIColors(ColorIdentifier.none); //Set Crosshair and Borders Color to fit player Color
 
 		//Set Color and Border of Control Infos
 		Color startColor = Color.clear;
@@ -177,6 +202,8 @@ public class UIManager : MonoBehaviour
 
 	void Update()
 	{
+		if (Screen.width != screenSize.x || Screen.height != screenSize.y) OnScreenSizeChange();
+
 		foreach (Image detectionGauge in detectionGauges) detectionGauge.fillAmount = (player.detectionGauge / player.detectionThreshold);
 
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver) PausePlay();
@@ -275,36 +302,51 @@ public class UIManager : MonoBehaviour
 		pointer.eulerAngles = new Vector3(0, 0, -horAngle); //Set Rotation of Player Pointer to Point at Player
 	}
 
-	public void SwitchUI(HackableType type = HackableType.none)
+	public void SwitchUI(HackableType type, HackableType prevType)
 	{
+		currentType = type;
+		this.prevType = prevType;
+
+		if (currentType == this.prevType) return;
+
 		switch (type)
 		{
 			case HackableType.CCTV:
+				hackableUI.SetActive(true);
 				cctvUI.SetActive(true);
+
+				aiUI.SetActive(false);
 				playerUI.SetActive(false);
 				break;
 
 			case HackableType.AI:
-				cctvUI.SetActive(true);
+				hackableUI.SetActive(true);
+				aiUI.SetActive(true);
+
+				cctvUI.SetActive(false);
 				playerUI.SetActive(false);
 				break;
 
 			default:
 				playerUI.SetActive(true);
+
+				playerPointer.gameObject.SetActive(false); //Set Pointer To Inactive whenever Unhack
+				hackableUI.SetActive(false);
 				cctvUI.SetActive(false);
+				aiUI.SetActive(false);
 				break;
 		}
 	}
 
 	public void StartUILerp(bool fadeIn)
 	{
-		action -= LerpUITemplate; //Remove to prevent Errors
+		action -= UITemplatesFadeAnim; //Remove to prevent Errors
 
 		uiFadeIn = fadeIn;
 		uiFadeInProgress = true;
 		//Only Change Name if in Hackable when UI is Fading In
 		if (player.inHackable && fadeIn) ChangeHackableDisplayName(player.hackedObj.roomName, player.hackedObj.hackableName);
-		action += LerpUITemplate;
+		action += UITemplatesFadeAnim;
 	}
 
 	public void ChangeHackableDisplayName(string roomName, string hackableName)
@@ -460,7 +502,11 @@ public class UIManager : MonoBehaviour
 	//Sometimes doesnt work. Not sure how to replicate the bug
 	void PointDetectionGaugeToPlayer()
 	{
-		if (!detectionGauges[1].gameObject.activeInHierarchy || detectionGauges[1].fillAmount == 0) return;
+		if (!detectionGauges[1].gameObject.activeInHierarchy || detectionGauges[1].fillAmount == 0)
+		{
+			if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
+			return;
+		} 
 
 		Vector3 playerPos = player.transform.position + new Vector3(0, player.GetPlayerHeight() + 0.1f, 0); //0.1f is the Offset
 		Vector3 currentCamPos = player.CurrentViewingCamera.transform.position;
@@ -506,7 +552,7 @@ public class UIManager : MonoBehaviour
 				Vector3 forward = player.CurrentViewingCamera.transform.forward;
 
 				float horAngle = Vector3.SignedAngle(new Vector3(forward.x, 0, forward.z).normalized, horDir, Vector3.up); //Not Sure why this Works
-				playerPointer.eulerAngles = new Vector3(0, 0, -horAngle); //Set Rotation of Player Pointer to Point at Player
+				playerPointer.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg); //Set Rotation of Player Pointer to Point at Player
 			}
 			else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
 		}
@@ -569,61 +615,147 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	void LerpUITemplate()
+	void UITemplatesFadeAnim()
 	{
 		uiLerpTime = uiFadeIn ? Mathf.Min(uiLerpTime + Time.deltaTime * 2.5f, 1) : Mathf.Max(uiLerpTime - Time.deltaTime * 4.5f, 0);
-
+		HackableType type = uiFadeIn ? currentType : prevType;
 		Color targetColor = GetCurrentColor(currentColor);
 
-		for (int i = 0; i < cctvUIBorders.Length; i++)
-		{
-			int xMult = cctvUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
-			int yMult = cctvUIBorders[i].rectTransform.pivot.y == 0 ? 1 : -1;
+		bool isPlayer = false;
 
-			cctvUIBorders[i].rectTransform.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2(23.5f * xMult, 26.5f * yMult), Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
-			cctvUIBorders[i].rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
-			cctvUIBorders[i].color = Color.Lerp(Color.clear, targetColor, uiLerpTime);
+		switch (type)
+		{
+			case HackableType.CCTV:
+				for (int i = 0; i < cctvUIBorders.Length; i++)
+				{
+					int xMult = cctvUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
+					int yMult = cctvUIBorders[i].rectTransform.pivot.y == 0 ? 1 : -1;
+
+					cctvUIBorders[i].rectTransform.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2(23.5f * xMult, 26.5f * yMult), Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
+					cctvUIBorders[i].rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
+					cctvUIBorders[i].color = Color.Lerp(Color.clear, targetColor, uiLerpTime);
+				}
+				break;
+
+			case HackableType.AI:
+
+				float outerBorderX = 75;
+				float innerBorderX = 275;
+
+				Color targetColorA = targetColor;
+				targetColorA.a = 1;
+
+				targetColorA = Color.Lerp(Color.clear, targetColorA, uiLerpTime);
+
+				for (int i = 0; i < aiUIBorders.Length; i++)
+				{
+					int xMult = aiUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
+
+					if (i < 4) aiUIBorders[i].rectTransform.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2((i > 1 ? innerBorderX : outerBorderX) * xMult, 0), Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
+					else aiUIBorders[i].rectTransform.anchoredPosition = Vector2.Lerp(new Vector2(0, 50), new Vector2(0, 85), Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
+
+					aiUIBorders[i].rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
+					aiUIBorders[i].color = targetColorA;
+				}
+
+				foreach (Image arrow in aiArrows) arrow.color = targetColorA;
+				break;
+
+			default:
+				isPlayer = true;
+				break;
 		}
 
-		float lerpTimeLate = Mathf.Clamp((uiLerpTime - 0.5f) / 0.5f, 0, 1);
+		if (isPlayer) //Cut Lerping if is Player
+		{
+			uiLerpTime = uiFadeIn ? 1 : 0;
+			uiFadeInProgress = false;
+			action -= UITemplatesFadeAnim;
+			return;
+		}
 
+		//Lerping of Common UI Elements
+		float lerpTimeLate = Mathf.Clamp((uiLerpTime - 0.5f) / 0.5f, 0, 1);
 		hackableName.color = Color.Lerp(Color.clear, targetColor, lerpTimeLate);
-		for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = Color.Lerp(Color.clear, defaultGraphicsColor[i], lerpTimeLate);
+		for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = Color.Lerp(Color.clear, unhackGraphicsColor[i], lerpTimeLate);
 
 		if (uiLerpTime >= 1 && uiFadeIn)
 		{
-			for (int i = 0; i < cctvUIBorders.Length; i++)
+			switch (type)
 			{
-				int xMult = cctvUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
-				int yMult = cctvUIBorders[i].rectTransform.pivot.y == 0 ? 1 : -1;
+				case HackableType.CCTV:
+					for (int i = 0; i < cctvUIBorders.Length; i++)
+					{
+						int xMult = cctvUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
+						int yMult = cctvUIBorders[i].rectTransform.pivot.y == 0 ? 1 : -1;
 
-				cctvUIBorders[i].rectTransform.anchoredPosition = new Vector2(23.5f * xMult, 26.5f * yMult);
-				cctvUIBorders[i].rectTransform.localScale = Vector3.one;
-				cctvUIBorders[i].color = targetColor;
+						cctvUIBorders[i].rectTransform.anchoredPosition = new Vector2(23.5f * xMult, 26.5f * yMult);
+						cctvUIBorders[i].rectTransform.localScale = Vector3.one;
+						cctvUIBorders[i].color = targetColor;
+					}
+					break;
+
+				case HackableType.AI:
+
+					float outerBorderX = 75;
+					float innerBorderX = 275;
+
+					Color targetColorA = targetColor;
+					targetColorA.a = 1;
+
+					for (int i = 0; i < aiUIBorders.Length; i++)
+					{
+						int xMult = aiUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
+
+						if (i < 4) aiUIBorders[i].rectTransform.anchoredPosition = new Vector2((i > 1 ? innerBorderX : outerBorderX) * xMult, 0);
+						else aiUIBorders[i].rectTransform.anchoredPosition = new Vector2(0, 85);
+
+						aiUIBorders[i].rectTransform.localScale = Vector3.one;
+						aiUIBorders[i].color = targetColorA;
+					}
+
+					foreach (Image arrow in aiArrows) arrow.color = targetColorA;
+					break;
 			}
 
 			hackableName.color = targetColor;
-
-			for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = defaultGraphicsColor[i];
+			for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = unhackGraphicsColor[i];
 
 			uiFadeInProgress = false;
-			action -= LerpUITemplate;
+			action -= UITemplatesFadeAnim;
 		}
 		else if (uiLerpTime <= 0 && !uiFadeIn)
 		{
-			foreach (Image cctvUIBorder in cctvUIBorders)
+			switch (type)
 			{
-				cctvUIBorder.rectTransform.anchoredPosition = Vector2.zero;
-				cctvUIBorder.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-				cctvUIBorder.color = Color.clear;
+				case HackableType.CCTV:
+					foreach (Image cctvUIBorder in cctvUIBorders)
+					{
+						cctvUIBorder.rectTransform.anchoredPosition = Vector2.zero;
+						cctvUIBorder.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+						cctvUIBorder.color = Color.clear;
+					}
+					break;
+
+				case HackableType.AI:
+					for (int i = 0; i < aiUIBorders.Length; i++)
+					{
+						if (i < 4) aiUIBorders[i].rectTransform.anchoredPosition = Vector2.zero;
+						else aiUIBorders[i].rectTransform.anchoredPosition = new Vector2(0, 50);
+
+						aiUIBorders[i].rectTransform.localScale = Vector3.one * 1.25f;
+						aiUIBorders[i].color = Color.clear;
+					}
+
+					foreach (Image arrow in aiArrows) arrow.color = Color.clear;
+					break;
 			}
 
 			hackableName.color = Color.clear;
-
 			foreach (Graphic graphic in unhackInstructions) graphic.color = Color.clear;
 
 			uiFadeInProgress = false;
-			action -= LerpUITemplate;
+			action -= UITemplatesFadeAnim;
 		}
 	}
 
@@ -742,6 +874,15 @@ public class UIManager : MonoBehaviour
 			}
 		}
 	}
+
+	public void ShiftAIArrows(float pitch, float minPitch = -90, float maxPitch = 90)
+	{
+		float totalAngle = Mathf.Abs(minPitch) + Mathf.Abs(maxPitch);
+		float ratio = (pitch + Mathf.Abs(minPitch)) / totalAngle;
+		float y = Mathf.Lerp(67.5f, -67.5f, ratio); //-pitch is looking upwards
+
+		foreach (Image arrow in aiArrows) arrow.rectTransform.anchoredPosition = new Vector2(arrow.rectTransform.anchoredPosition.x, y);
+	}
 	#endregion
 
 	#region Animation Events
@@ -858,6 +999,20 @@ public class UIManager : MonoBehaviour
 	public TextMeshProUGUI GetRoomAndHackableName()
 	{
 		return hackableName;
+	}
+
+	//Recalculate if Screen Window Changes
+	public void OnScreenSizeChange()
+	{
+		screenSize = new Vector2(Screen.width, Screen.height);
+
+		//Set Min Max XY for Waypoint Pos
+		offset = new Vector2(baseOffset.x / 1920 * screenSize.x, baseOffset.y / 1080 * screenSize.y);
+
+		//minXY = new Vector2(marker.GetPixelAdjustedRect().width / 2 + offset.x, offset.y);
+		//maxXY = new Vector2(Screen.width - minXY.x, Screen.height - (minXY.y + marker.GetPixelAdjustedRect().height));
+		minXY = new Vector2(movableDetectionComp.rect.width / 2 + offset.x, offset.y);
+		maxXY = new Vector2(screenSize.x - minXY.x, screenSize.y - (minXY.y + movableDetectionComp.rect.height));
 	}
 	#endregion
 }

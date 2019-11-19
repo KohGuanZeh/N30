@@ -116,6 +116,7 @@ public class AI : IHackable
 	{
 		PlayerRotation ();
 		PlayerMovement ();
+		ui.ShiftAIArrows(pitch);
 	}
 	
 	void PlayerRotation()

@@ -51,6 +51,8 @@ public class SoundManager : MonoBehaviour
 	[Header ("Environment")]
 	public Audio slidingDoor;
 	public Audio doorUnlock;
+	public Audio elevatorBell;
+	public Audio elevatorTravel;
 
 	[Header ("UI")]
 	public Audio nextObjective;
@@ -96,9 +98,9 @@ public class SoundManager : MonoBehaviour
 	{
 		transform.position = player.CurrentViewingCamera.transform.position;
 
-		master.SetFloat ("masterVolume", Mathf.Log (masterSlider.value) * 20);
-		master.SetFloat ("bgmVolume", Mathf.Log (bgmSlider.value) * 20);
-		master.SetFloat ("sfxVolume", Mathf.Log (sfxSlider.value) * 20);
+		//master.SetFloat ("masterVolume", Mathf.Log (masterSlider.value) * 20);
+		//master.SetFloat ("bgmVolume", Mathf.Log (bgmSlider.value) * 20);
+		//master.SetFloat ("sfxVolume", Mathf.Log (sfxSlider.value) * 20);
 	}
 
 	public bool IsSourcePlaying (int sourceIndex)

@@ -540,8 +540,8 @@ public class PlayerController : MonoBehaviour
 		ui.DisplayError(hackError);
 
 		if (hackError != string.Empty) return; //Prevent Hacking if Error is produced
-
-		if (!inHackable || hackedObj.hackableType != detectedHackable.hackableType) ui.SwitchUI(detectedHackable.hackableType);
+		
+		ui.SwitchUI(detectedHackable.hackableType, inHackable ? hackedObj.hackableType : HackableType.none);
 
 		anim.SetFloat("Speed", 0);
 
@@ -581,7 +581,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!inHackable) return;
 
-		ui.SwitchUI(HackableType.none);
+		ui.SwitchUI(HackableType.none, hackedObj.hackableType);
 
 		isHacking = true;
 		inHackable = false;

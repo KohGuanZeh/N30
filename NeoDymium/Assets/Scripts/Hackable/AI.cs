@@ -9,7 +9,7 @@ public class AI : IHackable
 	public float groundOffset = 0.02f;
 
 	CharacterController controller;
-	[SerializeField] Transform camPos;
+	[SerializeField] Transform hackCamPos, unhackCamPos;
 	float horLookSpeed = 1, vertLookSpeed = 1;
 	float yaw, pitch;
 	Vector3 velocity;
@@ -43,6 +43,7 @@ public class AI : IHackable
 		hackableType = HackableType.AI;
 
 		base.Start ();
+		camera.transform.position = unhackCamPos.position;
 	}
 
 	protected override void Update ()
@@ -78,7 +79,11 @@ public class AI : IHackable
 	public override void OnHack ()
 	{
 		base.OnHack ();
+		camera.transform.position = hackCamPos.position;
+
+		//Reset Camera Rotations
 		yaw = transform.eulerAngles.y;
+
 		ai.agent.enabled = false;
 		ai.hacked = true;
 		ai.enabled = false;
@@ -92,6 +97,12 @@ public class AI : IHackable
 	public override void OnUnhack ()
 	{
 		base.OnUnhack ();
+		camera.transform.position = unhackCamPos.position;
+
+		//Reset Cam Rotation on Unhack
+		pitch = 0;
+		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
+
 		ai.enabled = true;
 		ai.agent.enabled = true;
 		controller.enabled = false;
@@ -110,7 +121,7 @@ public class AI : IHackable
 
 	public override Transform GetCameraRefPoint()
 	{
-		return camPos;
+		return hackCamPos;
 	}
 
 	protected override void ExecuteHackingFunctionaliy ()

@@ -9,7 +9,8 @@ public class ElevatorDoor : IInteractable
 	public override void Start()
 	{
 		base.Start();
-		doorAnim = GetComponentInChildren<Animator>();
+		col = GetComponentInChildren<Collider>();
+		//doorAnim = GetComponentInChildren<Animator>();
 	}
 
 	//Prevent AI Interaction
@@ -20,13 +21,14 @@ public class ElevatorDoor : IInteractable
 
 	public override void Interact()
 	{
-		soundManager.PlaySound(soundManager.elevatorBell);
-		OpenCloseElevatorDoor();
+		TransitToNextLevel();
+		//soundManager.PlaySound(soundManager.elevatorBell);
+		//OpenCloseElevatorDoor();
 	}
 
 	public void TransitToNextLevel()
 	{
-		OpenCloseElevatorDoor(false);
+		//OpenCloseElevatorDoor(false);
 		LoadingScreen.inst.AutoLoadNextScene();
 	}
 

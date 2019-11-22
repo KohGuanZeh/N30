@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Experimental.Rendering.HDPipeline;
 
 public class AI : IHackable
 {
@@ -26,6 +27,9 @@ public class AI : IHackable
 	SoundManager soundManager;
 	AudioSource audioSource;
 
+	Light lightCone;
+	DensityVolume densityVolume;
+
 	protected override void Start ()
 	{
 		controller = GetComponent<CharacterController>();
@@ -43,6 +47,43 @@ public class AI : IHackable
 		hackableType = HackableType.AI;
 
 		base.Start ();
+
+		lightCone = camera.GetComponentInChildren<Light> ();
+		densityVolume = camera.GetComponentInChildren<DensityVolume> ();
+		lightCone.enabled = true;
+
+		switch (color)
+		{
+			case ColorIdentifier.blue:
+			{
+				lightCone.color = ui.blueColor;
+				break;
+			}
+
+			case ColorIdentifier.red:
+			{
+				lightCone.color = ui.redColor;
+				break;
+			}
+
+			case ColorIdentifier.green:
+			{
+				lightCone.color = ui.greenColor;
+				break;
+			}
+
+			case ColorIdentifier.yellow:
+			{
+				lightCone.color = ui.yellowColor;
+				break;
+			}
+
+			default:
+			{
+				lightCone.color = Color.white;
+				break;
+			}
+		}
 	}
 
 	protected override void Update ()
@@ -56,6 +97,7 @@ public class AI : IHackable
 			else
 				anim.SetBool ("Moving", false);
 			Sound ();
+			AdjustIntensity ();
 		}
 		else
 		{
@@ -63,6 +105,23 @@ public class AI : IHackable
 				anim.SetBool ("Moving", true);
 			else
 				anim.SetBool ("Moving", false);
+		}
+	}
+
+	void AdjustIntensity ()
+	{
+		RaycastHit hit;
+		if (Physics.Raycast (lightCone.transform.position, lightCone.transform.forward, out hit, Mathf.Infinity, player.aimingRaycastLayers))
+		{
+			float distance = (lightCone.transform.position - hit.point).magnitude;
+			densityVolume.transform.localPosition = Vector3.forward * (distance / 2);
+			densityVolume.parameters.size = new Vector3 (distance / 2, 5, distance);
+			lightCone.intensity = distance * 100;
+		}
+		else
+		{
+			densityVolume.parameters.size = new Vector3 (3.75f, 5, 7.5f);
+			lightCone.intensity = 2000;
 		}
 	}
 
@@ -85,6 +144,7 @@ public class AI : IHackable
 		controller.enabled = true;
 		ai.StopAllCoroutines ();
 		audioSource.Stop ();
+		lightCone.enabled = false;
 		//ai.gameObject.AddComponent<Rigidbody> ();
 		//ai.GetComponent<Rigidbody> ().useGravity = false;
 	}
@@ -105,6 +165,7 @@ public class AI : IHackable
 		ai.moveAcrossNavMeshesStarted = false;
 		ai.invokedDoorChaseCancel = false;
 		ai.StopAllCoroutines ();
+		lightCone.enabled = true;
 		//Destroy (ai.GetComponent<Rigidbody> ());
 	}
 

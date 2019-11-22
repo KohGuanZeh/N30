@@ -29,7 +29,6 @@ public class NumpadDoor : IInteractable
 	public string[] possibleJobPositions; //dont include IT guy in array
 
 	[Header("For Emission Change")]
-	[SerializeField] float intensity = 1;
 	[SerializeField] Renderer[] emissiveRs;
 	[SerializeField] Material[] emissiveMats;
 	[SerializeField] Color lockedColor, unlockedColor; //For the Light Bars on Top

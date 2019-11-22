@@ -20,7 +20,7 @@ public class InstructionSection : MonoBehaviour
 
     void OnTriggerEnter (Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player" || other.tag == "Hackable")
         {
             uIManager.currentHint.text = string.Empty;
             iM.instructionImage.sprite = instructionPictureToDisplay;
@@ -31,7 +31,7 @@ public class InstructionSection : MonoBehaviour
 
     void OnTriggerExit (Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player" || other.tag == "Hackable")
         {
             gameObject.SetActive (false);
         }

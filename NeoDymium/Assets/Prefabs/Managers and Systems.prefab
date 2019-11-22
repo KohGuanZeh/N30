@@ -188,6 +188,16 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     sourceIndex: 3
+  elevatorBell:
+    clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    sourceIndex: 0
+  elevatorTravel:
+    clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    sourceIndex: 0
   nextObjective:
     clip: {fileID: 8300000, guid: 6ce49998137a33646ae049dc73cd584a, type: 3}
     volume: 1
@@ -1219,7 +1229,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   coll: {fileID: 0}
-  wall: {fileID: 0}
   hackables: []
 --- !u!65 &4128693904918973287
 BoxCollider:
@@ -1598,4 +1607,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textToDisplay: Urgh, there is a security room up ahead, i need to stay undetected
+  textToDisplay: 'Urgh, there is a security room up ahead, gotta stay out of sight
+
+'

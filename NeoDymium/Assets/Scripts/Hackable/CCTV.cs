@@ -56,14 +56,17 @@ public class CCTV : IHackable
 		vertRot = Mathf.Clamp(vertRot, minVertRot, maxVertRot);
 		transform.localEulerAngles = new Vector3(vertRot, horRot, 0);
 
-		if (prevEulerAngles != transform.localEulerAngles && !soundManager.IsSourcePlaying (soundManager.cctvRotate.sourceIndex))
+		if (!ui.isPaused)
 		{
-			soundManager.PlaySound (soundManager.cctvRotate);
-		}
+			if (prevEulerAngles != transform.localEulerAngles && !soundManager.IsSourcePlaying (soundManager.cctvRotate.sourceIndex))
+			{
+				soundManager.PlaySound (soundManager.cctvRotate);
+			}
 		
-		if (prevEulerAngles == transform.localEulerAngles)
-		{
-			soundManager.StopSound (soundManager.cctvRotate.sourceIndex);
+			if (prevEulerAngles == transform.localEulerAngles)
+			{
+				soundManager.StopSound (soundManager.cctvRotate.sourceIndex);
+			}
 		}
 	}
 }

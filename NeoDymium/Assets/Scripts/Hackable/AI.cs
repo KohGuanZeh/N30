@@ -48,8 +48,8 @@ public class AI : IHackable
 
 		base.Start ();
 
-		lightCone = camera.GetComponentInChildren<Light> ();
-		densityVolume = camera.GetComponentInChildren<DensityVolume> ();
+		lightCone = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0).GetComponentInChildren<Light> ();
+		densityVolume = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0).GetComponentInChildren<DensityVolume> ();
 		lightCone.enabled = true;
 
 		switch (color)
@@ -140,6 +140,8 @@ public class AI : IHackable
 		base.OnHack ();
 		camera.transform.position = hackCamPos.position;
 
+		ai.EndFinding ();
+
 		//Reset Camera Rotations
 		yaw = transform.eulerAngles.y;
 
@@ -160,8 +162,8 @@ public class AI : IHackable
 		camera.transform.position = unhackCamPos.position;
 
 		//Reset Cam Rotation on Unhack
-		pitch = 0;
-		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
+		//pitch = 0;
+		//camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
 
 		ai.enabled = true;
 		ai.agent.enabled = true;
@@ -172,11 +174,15 @@ public class AI : IHackable
 		ai.firstIdle = true;
 		ai.reachedIdle = false;
 		ai.idleRotation = false;
-		ai.findingPlayer = false;
 		ai.moveAcrossNavMeshesStarted = false;
 		ai.invokedDoorChaseCancel = false;
 		ai.StopAllCoroutines ();
 		lightCone.enabled = true;
+
+		ai.findingPlayer = false;
+		ai.spottingPlayer = false;
+
+		ai.EndFinding ();
 		//Destroy (ai.GetComponent<Rigidbody> ());
 	}
 
@@ -261,6 +267,9 @@ public class AI : IHackable
 			ai.enabled = false;
 			controller.enabled = false;
 			ai.sentBack = true;
+
+			lightCone.enabled = false;
+			densityVolume.enabled = false;
 		}
 	}
 }

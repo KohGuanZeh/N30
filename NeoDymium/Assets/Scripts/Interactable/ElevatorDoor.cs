@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ElevatorDoor : IInteractable
 {
@@ -29,6 +30,8 @@ public class ElevatorDoor : IInteractable
 	public void TransitToNextLevel()
 	{
 		//OpenCloseElevatorDoor(false);
+		PlayerPrefs.DeleteKey ("Last Objective Saved");
+		PlayerPrefs.DeleteKey (SceneManager.GetActiveScene().name + " Checkpoint");
 		LoadingScreen.inst.AutoLoadNextScene();
 	}
 

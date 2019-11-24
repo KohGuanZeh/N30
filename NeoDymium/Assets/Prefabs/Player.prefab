@@ -118,7 +118,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 1000
+  far clip plane: 100
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -422,9 +422,10 @@ MonoBehaviour:
   currentHeadBobOffset: {x: 0, y: 0, z: 0}
   headRefPoint: {fileID: 0}
   anim: {fileID: 0}
-  ppp: {fileID: 11400000, guid: ad286ca98ee3dda4db52d97e437473c9, type: 2}
+  ppp: {fileID: 0}
   holdingPass: 0
   vipPass: 0
+  disablePlayerMove: 0
 --- !u!143 &4598359836110636553
 CharacterController:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] AreaNames areaNames;
 
 	[Header("Player Movement")]
+	[SerializeField] bool lockPlayerMove, lockPlayerRot, lockPlayerAction; //To Lock Player Movement, Rotation or Actions (Hack/Interact) at Certain Parts of the Game
 	[SerializeField] CharacterController controller;
 	[SerializeField] Camera playerCam;
 	[SerializeField] float horLookSpeed = 1, vertLookSpeed = 1;
@@ -94,8 +95,8 @@ public class PlayerController : MonoBehaviour
 	bool playedSound;
 	InstructionsManager instructManager;
 
-	[Header("For Editor SS")]
-	[SerializeField] bool disablePlayerMove;
+	[Header("For Developer Use")]
+	bool disableAllActions;
 
 	//For Getting Private Components. May want to use Properties instead
 	#region Additional Functions To Get Private Vars
@@ -170,6 +171,8 @@ public class PlayerController : MonoBehaviour
 		detectedOutline = GetComponentInChildren<Outline>();
 		detectedOutline.enabled = false;
 
+		lockPlayerMove = false;
+		lockPlayerRot = false;
 		yaw = transform.eulerAngles.y;
 		pitch = playerCam.transform.eulerAngles.x;
 		headRefPoint = standCamPos;
@@ -178,30 +181,37 @@ public class PlayerController : MonoBehaviour
 
 	void Update()
     {
-		//For Editor SS
-		if (Input.GetKeyDown(KeyCode.F))
+		//For Developer Use
+		/*if (Input.GetKeyDown(KeyCode.F))
 		{
-			disablePlayerMove = !disablePlayerMove;
-			Cursor.lockState = disablePlayerMove ? CursorLockMode.None : CursorLockMode.Locked;
-			Cursor.visible = disablePlayerMove;
-		} 
-		if (disablePlayerMove) return;
+			disableAllActions = !disableAllActions;
+			LockPlayerMovement(disableAllActions);
+			LockPlayerRotation(disableAllActions);
+			LockPlayerAction(disableAllActions);
+			Cursor.lockState = disableAllActions ? CursorLockMode.None : CursorLockMode.Locked;
+			Cursor.visible = !disableAllActions;
+		}*/
 
 		if (!ui.isPaused && !ui.isGameOver)
 		{
 			if (loadingScreen.isLoading) return;
 
-			//mesh.mesh.RecalculateBounds();
-			if (!inSpInteraction)
+			if (!inHackable)
 			{
-				if (!inHackable)
+				GroundAndSlopeCheck();
+				if (!instructManager.lockCameraRotation)
 				{
-					GroundAndSlopeCheck();
-					if (!instructManager.lockCameraRotation) ToggleCrouch();
-					if (!instructManager.lockCameraRotation) PlayerRotation();
-					if (!instructManager.lockCameraRotation) PlayerMovement();
+					if (!lockPlayerRot) PlayerRotation();
+					if (!lockPlayerMove)
+					{
+						ToggleCrouch();
+						PlayerMovement();
+					}
 				}
+			}
 
+			if (!lockPlayerAction)
+			{
 				Aim();
 				if (detectedHackable || detectedInteractable) UpdateDisplayMessages();
 				if (Input.GetKeyDown(KeyCode.E))
@@ -211,6 +221,14 @@ public class PlayerController : MonoBehaviour
 				}
 				if (Input.GetMouseButtonDown(0) && !isHacking) Hack();
 				if (Input.GetMouseButtonDown(1)) Unhack();
+			}
+			else if (detectedHackable || detectedInteractable)
+			{
+				detectedHackable = null;
+				detectedInteractable = null;
+				isFocusing = false;
+				prevCollider = null;
+				ui.Focus(isFocusing);
 			}
 
 			if (prevDetectionGauge == detectionGauge) DecreaseDetectionGauge();
@@ -233,6 +251,23 @@ public class PlayerController : MonoBehaviour
 			playedSound = false;
 		}
 	}
+
+	#region Lock Functions
+	public void LockPlayerMovement(bool lockMovement)
+	{
+		lockPlayerMove = lockMovement;
+	}
+
+	public void LockPlayerRotation(bool lockRotation)
+	{
+		lockPlayerRot = lockRotation;
+	}
+
+	public void LockPlayerAction(bool lockAction)
+	{
+		lockPlayerAction = lockAction;
+	}
+	#endregion
 
 	#region Player Movement
 	void PlayerRotation()
@@ -594,7 +629,7 @@ public class PlayerController : MonoBehaviour
 
 		soundManager.PlaySound (soundManager.unhack);
 
-		if (forced) return; //If Forced Unhacking, immediately set Previous Viewing Camera to Null
+		if (forced) return; //If Forced Unhacking, immediately do not lerp Camera Animation
 
 		ResetHeadBob(GetHeadRefTransform()); //Need to somehow get Head Bobbing for AI
 		currentViewingCamera.enabled = true;
@@ -670,59 +705,6 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
-
-	void OnTriggerEnter (Collider other)
-	{
-		if (!areaNameUpdated && other.tag == "AreaNames")
-		{
-			areaNamesManager.areaNameText.text = other.gameObject.GetComponent<AreaNames>().currentAreaName;
-			areaNames.fadeNow = true;
-			areaNameUpdated = true;
-		}
-	}
-
-	void OnTriggerExit (Collider other)
-	{
-		if (other.tag == "AreaNames")
-		{
-			areaNameUpdated = false;
-		}
-	}
-
-	#region Old Hacking
-	/*void Hack()
-	{
-		if (!detectedHackable || hackedObj == detectedHackable) return;
-		if (detectedHackable.enabledShields.Count > 0) return;
-
-		if (hackedObj) hackedObj.OnUnhack();
-		inHackable = true;
-		hackedObj = detectedHackable;
-		detectedHackable = null;
-		hackedObj.OnHack();*/
-
-	/*RaycastHit hit;
-	Debug.DrawLine(currentViewingCamera.transform.position, currentViewingCamera.transform.position + currentViewingCamera.transform.forward * 100, Color.green, 5);
-	if (Physics.Raycast(currentViewingCamera.transform.position, currentViewingCamera.transform.forward, out hit, Mathf.Infinity, hackingRaycastLayers, QueryTriggerInteraction.Ignore))
-	{
-		if (hit.collider != null) Debug.Log(hit.collider.name + " is hit");
-
-		if (hackableLayer == (hackableLayer | 1 << hit.transform.gameObject.layer)) //The | is needed if the Layermask Stores multiple layers
-		{
-			IHackable hackable = hit.transform.GetComponent<IHackable>();
-
-			if (!hackable) return;
-			else
-			{
-				ui.StartHacking();
-				if (hackedObj) hackedObj.OnUnhack();
-				inHackable = true;
-				hackedObj = hackable;
-				hackedObj.OnHack();
-			}
-		}
-	}*/
-	#endregion
 	#endregion
 
 	#region Player Detection
@@ -777,4 +759,22 @@ public class PlayerController : MonoBehaviour
 		maxHeadBobOffset = maxOffset;
 	}
 	#endregion
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (!areaNameUpdated && other.tag == "AreaNames")
+		{
+			areaNamesManager.areaNameText.text = other.gameObject.GetComponent<AreaNames>().currentAreaName;
+			areaNames.fadeNow = true;
+			areaNameUpdated = true;
+		}
+	}
+
+	void OnTriggerExit(Collider other)
+	{
+		if (other.tag == "AreaNames")
+		{
+			areaNameUpdated = false;
+		}
+	}
 }

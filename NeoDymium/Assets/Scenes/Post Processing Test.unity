@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1218146172}
-  m_IndirectSpecularColor: {r: 0.4593014, g: 0.40502146, b: 0.4219942, a: 1}
+  m_IndirectSpecularColor: {r: 0.2296507, g: 0.20251073, b: 0.2109971, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1234,7 +1234,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: f8a64d44608a59e47bb91f56fcafcdf0, type: 2}
+      objectReference: {fileID: 2100000, guid: a90edaa677a33594fba75dee0aed0a66, type: 2}
     - target: {fileID: -1504981713932161579, guid: 642418c57dbacb045aeffcf458aede9c,
         type: 3}
       propertyPath: m_LightmapParameters
@@ -1870,7 +1870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: ad286ca98ee3dda4db52d97e437473c9, type: 2}
+  sharedProfile: {fileID: 0}
   isGlobal: 1
   blendDistance: 0
   weight: 1
@@ -2975,7 +2975,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: f8a64d44608a59e47bb91f56fcafcdf0, type: 2}
+      objectReference: {fileID: 2100000, guid: a90edaa677a33594fba75dee0aed0a66, type: 2}
     - target: {fileID: -1504981713932161579, guid: fdd24a70f47c9094e81ff082ddd9aa1f,
         type: 3}
       propertyPath: m_LightmapParameters
@@ -3839,7 +3839,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 26fd183d28a6c444d8dc6a67d3292dd3, type: 2}
+      objectReference: {fileID: 2100000, guid: a90edaa677a33594fba75dee0aed0a66, type: 2}
     - target: {fileID: 1091180584625365799, guid: 3cccbdd74bca7534b87bcba6677d3479,
         type: 3}
       propertyPath: m_LightmapParameters
@@ -5985,55 +5985,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1621612396}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1643168623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 1
-  exposure:
-    m_OverrideState: 0
-    m_Value: 1
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1.9192095
-    min: 0
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 1
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &1702838718
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6379,7 +6330,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: f8a64d44608a59e47bb91f56fcafcdf0, type: 2}
+      objectReference: {fileID: -5243988174349660497, guid: 7c74084e086f03f439887901dc980c40,
+        type: 3}
     - target: {fileID: 7188913819618179464, guid: 973bfea9d778a6c43b1f3edbbc7bb719,
         type: 3}
       propertyPath: m_LightmapParameters
@@ -7095,7 +7047,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: f8a64d44608a59e47bb91f56fcafcdf0, type: 2}
+      objectReference: {fileID: -5243988174349660497, guid: 7c74084e086f03f439887901dc980c40,
+        type: 3}
     - target: {fileID: 7188913819618179464, guid: 973bfea9d778a6c43b1f3edbbc7bb719,
         type: 3}
       propertyPath: m_LightmapParameters
@@ -7571,6 +7524,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2080410633}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2103794426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 1
+  exposure:
+    m_OverrideState: 0
+    m_Value: 1
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1.9192095
+    min: 0
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 0.5
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1 &2108850338
 GameObject:
   m_ObjectHideFlags: 0
@@ -7722,7 +7724,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: f8a64d44608a59e47bb91f56fcafcdf0, type: 2}
+      objectReference: {fileID: 2100000, guid: a90edaa677a33594fba75dee0aed0a66, type: 2}
     - target: {fileID: 5651566636950751964, guid: 842314198a1703d43a5d186376bdd7d6,
         type: 3}
       propertyPath: m_Materials.Array.data[1]
@@ -7837,7 +7839,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: f8a64d44608a59e47bb91f56fcafcdf0, type: 2}
+      objectReference: {fileID: 2100000, guid: a90edaa677a33594fba75dee0aed0a66, type: 2}
     - target: {fileID: -1504981713932161579, guid: 4f8895fefdab85348a0dfb30187cda7d,
         type: 3}
       propertyPath: m_LightmapParameters
@@ -8675,7 +8677,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SkySettings
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2103794426}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a063851b75ad652428e5853a229929c8, type: 3}
 --- !u!4 &4323032950875410155
@@ -9057,11 +9059,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   requiredColor: 0
   nowForeverOpened: 0
-  intensity: 1
   emissiveRs:
   - {fileID: 4344252001632305285}
   - {fileID: 4344252000707613215}
   emissiveMats: []
+  lockedColor: {r: 0, g: 0, b: 0, a: 0}
+  unlockedColor: {r: 0, g: 0, b: 0, a: 0}
+  lockedIntensity: 0
+  unlockedIntensity: 0
 --- !u!65 &7471251963309539100
 BoxCollider:
   m_ObjectHideFlags: 0

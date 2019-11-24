@@ -121,6 +121,11 @@ public class NumpadDoor : IInteractable
 
 		player.headBob = false;
 		player.inSpInteraction = isInteracting = true;
+
+		player.LockPlayerAction(true);
+		player.LockPlayerMovement(true);
+		player.LockPlayerRotation(true);
+
 		if (playerCam == null) playerCam = player.GetPlayerCamera(); //Prevent Null Ref Errors
 		playerCamRot = playerCam.transform.eulerAngles;
 		action += LerpCameraToNumPad;
@@ -156,6 +161,10 @@ public class NumpadDoor : IInteractable
 	{
 		player.headBob = true;
 		player.inSpInteraction = false;
+
+		player.LockPlayerAction(false);
+		player.LockPlayerMovement(false);
+		player.LockPlayerRotation(false);
 	}
 
 	public override string GetError(int key = 0)

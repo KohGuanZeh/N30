@@ -4,13 +4,32 @@ using UnityEngine;
 
 public class ElevatorDoor : IInteractable
 {
-	[SerializeField] Animator doorAnim;
+	[Header("General Elevator Properties")]
+	[SerializeField] Animator anim;
+	[SerializeField] bool isSpawnPoint;
+
+	[Header("For Emissive Mat Change")]
+	[SerializeField] Renderer r;
+	[SerializeField] Material emissiveMat;
+	[SerializeField] Color arrivedColor;
+	[SerializeField] float arrivedIntensity;
 
 	public override void Start()
 	{
 		base.Start();
 		col = GetComponentInChildren<Collider>();
-		//doorAnim = GetComponentInChildren<Animator>();
+		anim = GetComponentInChildren<Animator>();
+		emissiveMat = r.material;
+
+		if (isSpawnPoint)
+		{
+			//To Prevent Interaction
+			gameObject.layer = 0; //Set Layer to Default
+			gameObject.tag = "Untagged";
+
+			soundManager.PlaySound(soundManager.elevatorTravel);
+			StartCoroutine(OpenElevatorDoor());
+		}
 	}
 
 	//Prevent AI Interaction
@@ -19,26 +38,64 @@ public class ElevatorDoor : IInteractable
 		return;
 	}
 
+	//Use a Coroutine if you want to add a Delay between Door Bell and Elevator Door Opening
 	public override void Interact()
 	{
-		TransitToNextLevel();
-		//soundManager.PlaySound(soundManager.elevatorBell);
-		//OpenCloseElevatorDoor();
+		StartCoroutine(OpenElevatorDoor());
 	}
 
-	public void TransitToNextLevel()
+	IEnumerator OpenElevatorDoor()
 	{
-		//OpenCloseElevatorDoor(false);
+		if (isSpawnPoint) yield return new WaitForSeconds(1);
+
+		SetElevatorDoorAsArrived();
+
+		//yield return new WaitUntil(() => soundPlayFinish);
+		yield return new WaitForSeconds(0.5f);
+
+		OpenCloseElevatorDoor();
+	}
+
+	IEnumerator TransitToNextLevel()
+	{
+		player.LockPlayerMovement(true); //Prevent Player from Moving upon hitting Elevator Trigger
+		player.LockPlayerAction(true); //Prevent UI from showing up on what is Interactable etc.
+		soundManager.PlaySound(soundManager.elevatorBell);
+
+		yield return new WaitForSeconds(0.5f);
+
+		OpenCloseElevatorDoor(false);
+
+		//yield return new WaitUntil(() => soundPlayFinish);
+		yield return new WaitForSeconds(1f);
+
+		soundManager.PlaySound(soundManager.elevatorTravel);
+
+		yield return new WaitForSeconds(1.5f);
+
 		LoadingScreen.inst.AutoLoadNextScene();
 	}
 
-	public void OpenCloseElevatorDoor(bool open = true)
+	void SetElevatorDoorAsArrived()
 	{
-		doorAnim.SetBool("Open", open);
+		MaterialUtils.ChangeMaterialEmission(emissiveMat, arrivedColor, arrivedIntensity, "_EmissiveColor");
+		soundManager.PlaySound(soundManager.elevatorBell);
+	}
+
+	void OpenCloseElevatorDoor(bool open = true)
+	{
+		anim.SetBool("Open", open);
+		soundManager.PlaySound(soundManager.slidingDoor);
 	}
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "Player") TransitToNextLevel();
+		if (isSpawnPoint) return;
+
+		if (other.tag == "Player")
+		{
+			print("Working");
+			StartCoroutine(TransitToNextLevel());
+		}
 	}
 }

@@ -44,8 +44,7 @@ public class LightFlicker : MonoBehaviour
 
 		if (startAsLit)
 		{
-			MaterialUtils.ChangeMaterialEmissionHDRP(lightMat, litSettings.emissiveColor);
-			MaterialUtils.ChangeMaterialIntensityHDRP(lightMat, litSettings.emissiveIntensity);
+			MaterialUtils.ChangeMaterialEmission(lightMat, litSettings.emissiveColor, litSettings.emissiveIntensity, "_EmissiveColor");
 			pointLight.intensity = litSettings.lightIntensity;
 			spotLight.intensity = litSettings.lightIntensity;
 			toLit = false;
@@ -53,8 +52,7 @@ public class LightFlicker : MonoBehaviour
 		}
 		else
 		{
-			MaterialUtils.ChangeMaterialEmissionHDRP(lightMat, unlitSettings.emissiveColor);
-			MaterialUtils.ChangeMaterialIntensityHDRP(lightMat, unlitSettings.emissiveIntensity);
+			MaterialUtils.ChangeMaterialEmission(lightMat, unlitSettings.emissiveColor, unlitSettings.emissiveIntensity, "_EmissiveColor");
 			pointLight.intensity = unlitSettings.lightIntensity;
 			spotLight.intensity = litSettings.lightIntensity;
 			toLit = true;
@@ -83,15 +81,13 @@ public class LightFlicker : MonoBehaviour
 			float eIntensity = Mathf.Lerp(unlitSettings.emissiveIntensity, litSettings.emissiveIntensity, flickerTime);
 			float intensity = Mathf.Lerp(unlitSettings.lightIntensity, litSettings.lightIntensity, flickerTime);
 
-			MaterialUtils.ChangeMaterialEmissionHDRP(lightMat, eColor);
-			MaterialUtils.ChangeMaterialIntensityHDRP(lightMat, eIntensity);
+			MaterialUtils.ChangeMaterialEmission(lightMat, eColor, eIntensity, "_EmissiveColor");
 			pointLight.intensity = intensity;
 			spotLight.intensity = intensity;
 
 			if (toLit && flickerTime == 1)
 			{
-				MaterialUtils.ChangeMaterialEmissionHDRP(lightMat, litSettings.emissiveColor);
-				MaterialUtils.ChangeMaterialIntensityHDRP(lightMat, litSettings.emissiveIntensity);
+				MaterialUtils.ChangeMaterialEmission(lightMat, litSettings.emissiveColor, litSettings.emissiveIntensity, "_EmissiveColor");
 				pointLight.intensity = litSettings.lightIntensity;
 				spotLight.intensity = litSettings.lightIntensity;
 				halfCycles++;
@@ -101,8 +97,7 @@ public class LightFlicker : MonoBehaviour
 			}
 			else if (!toLit && flickerTime == 0)
 			{
-				MaterialUtils.ChangeMaterialEmissionHDRP(lightMat, unlitSettings.emissiveColor);
-				MaterialUtils.ChangeMaterialIntensityHDRP(lightMat, unlitSettings.emissiveIntensity);
+				MaterialUtils.ChangeMaterialEmission(lightMat, unlitSettings.emissiveColor, unlitSettings.emissiveIntensity, "_EmissiveColor");
 				pointLight.intensity = unlitSettings.lightIntensity;
 				spotLight.intensity = unlitSettings.lightIntensity;
 				halfCycles++;

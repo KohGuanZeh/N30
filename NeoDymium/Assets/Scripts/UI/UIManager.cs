@@ -917,6 +917,7 @@ public class UIManager : MonoBehaviour
 
 	public void StaticScreenAnimEvent()
 	{
+		player.Unhack(true);
 		player.ForcedUnhackAnimEvent();
 	}
 	#endregion

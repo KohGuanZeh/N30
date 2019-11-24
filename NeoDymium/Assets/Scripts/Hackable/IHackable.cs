@@ -193,12 +193,13 @@ public class IHackable : MonoBehaviour
 			}
 			else ui.LocateHackable(this, pointer);
 			
-			if (!instructionHasFinished && instructionRobot)
+			/*if (!instructionHasFinished && instructionRobot)
 			{
 				iM.instructionImage.sprite = instructionImage;
             	iM.instructionText.text = instructionToDisplay;
 				lockRotation = true;
-			}
+			}*/
+
 			player.IncreaseDetectionGauge();
 			//print("Seen by " + gameObject.name);
 			exclamationMark.SetActive(true);
@@ -233,7 +234,8 @@ public class IHackable : MonoBehaviour
 	public virtual void ForcedUnhack()
 	{
 		//For Animations for Forced Unhack
-		player.Unhack(true);
+		//player.Unhack(true); //Cannot just Force Unhack as it will switch the Cam Position before Static Screen
+		hacked = false;//Set hacked to false to prevent Multiple Calls.
 		ui.ShowStaticScreen();
 	}
 
@@ -259,14 +261,6 @@ public class IHackable : MonoBehaviour
 
 	public virtual void OnUnhack()
 	{
-		#region Using Old Unhacking
-		/*if (camera)
-		{
-			camera.enabled = false;
-			player.ChangeViewCamera(player.GetPlayerCamera(), player.GetHeadRefTransform());
-		}*/
-		#endregion
-
 		hacked = false;
 	}
 

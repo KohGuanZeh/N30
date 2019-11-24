@@ -193,9 +193,6 @@ public class AI : IHackable
 
 		if (isDisabled)
 		{
-			if (hacked)
-				ForcedUnhack ();
-
 			ai.agent.enabled = false;
 			ai.enabled = false;
 			controller.enabled = false;

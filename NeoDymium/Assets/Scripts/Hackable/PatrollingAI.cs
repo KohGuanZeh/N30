@@ -19,7 +19,6 @@ public class PatrollingAI : MonoBehaviour
 	public bool patrol = true;
 	public bool idleLookAround = true;
 	public bool hacked = false;
-	public bool disable = false;
 
 	[HideInInspector] public bool idleRotation = false;
 	[HideInInspector] public bool reachedIdle = false;
@@ -33,15 +32,10 @@ public class PatrollingAI : MonoBehaviour
 	public bool alarmed = false;	
 	public bool sentBack = false;
 
-	bool chasingPlayer = false;
-	[HideInInspector] public bool findingPlayer = false;
 	bool reachedLastSeen = false;
 	public bool isInvincible = false;
-	public bool canChase = true;
 
-	public float minStealthPercent = 0.1f; //0.00 - 1.00
-	public GameObject chaseCheckpoint;
-	GameObject storedCheckpoint;
+	public float minStealthPercent = 0.2f; //0.00 - 1.00
 
 	//[HideInInspector] 
 	public bool moveAcrossNavMeshesStarted = false;
@@ -54,6 +48,12 @@ public class PatrollingAI : MonoBehaviour
 
 	[HideInInspector] public bool invokedDoorChaseCancel;
 
+	Transform head;
+	Vector3 headStartingRotation;
+
+	[HideInInspector] public bool spottingPlayer = false;
+	[HideInInspector] public bool findingPlayer = false;
+
 	void Start ()
 	{
 		agent = GetComponent<NavMeshAgent> ();
@@ -61,17 +61,19 @@ public class PatrollingAI : MonoBehaviour
 		player = PlayerController.inst;
 		ui = UIManager.inst;
 
+		head = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0);
+		headStartingRotation = head.localEulerAngles;
+
 		currentIndex = 0;
 		registered = false;
 		alarmed = false;
 		sentBack = false;
-		disable = false;
-		chasingPlayer = false;
-		findingPlayer = false;
 		reachedLastSeen = false;
 		isInvincible = false;
 		idleRotation = false;
 		reachedIdle = false;
+		spottingPlayer = false;
+		findingPlayer = false;
 		moveAcrossNavMeshesStarted = false;
 		firstIdle = true;
 		invokedDoorChaseCancel = false;
@@ -89,22 +91,20 @@ public class PatrollingAI : MonoBehaviour
 				else
 					agent.SetDestination (alarmPos);
 		
-		if (canChase)
-			PlayerChase ();
+		if (!ai.isDisabled)
+		{
+			SpotPlayer ();
+			Invincibility ();
+			OffMeshLinkCheck ();
 
-		Invincibility ();
-		OffMeshLinkCheck ();
-
-		if (idleLookAround && !idleRotation && !patrol && reachedIdle)
-			StartCoroutine (IdleLookAround ());
+			if (idleLookAround && !idleRotation && !patrol && reachedIdle)
+				StartCoroutine (IdleLookAround ());
+		}
 	}
 
 	void Invincibility ()
 	{
-		if (//player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && 
-			(player.detectionGauge / player.detectionThreshold) >= minStealthPercent || findingPlayer || 
-			(player.GetPlayerCollider ().IsVisibleFrom (ai.camera) && ai.whiteDot.activeSelf)) //&&
-			//!canChase)
+		if ((player.detectionGauge / player.detectionThreshold) >= minStealthPercent)
 			isInvincible = true;
 		else
 			isInvincible = false;
@@ -119,59 +119,55 @@ public class PatrollingAI : MonoBehaviour
 		agent.SetDestination (alarmPos);
 	}
 
-	void PlayerChase ()
+	void SpotPlayer ()
 	{
-		if (player.GetPlayerCollider ().IsVisibleFrom (ai.camera)
-			&& (player.detectionGauge / player.detectionThreshold) >= minStealthPercent)
-			StartPlayerChase ();
-		
-		DuringPlayerChase ();
-	}
-
-	void StartPlayerChase ()
-	{
-		if (!invokedDoorChaseCancel)
+		if ((player.detectionGauge / player.detectionThreshold) >= minStealthPercent && !invokedDoorChaseCancel)
 		{
-			agent.SetDestination (player.transform.position);
-			chasingPlayer = true;
-			findingPlayer = true;
-			isInvincible = true;
-			reachedLastSeen = false;
-			//StopAllCoroutines ();
+			CancelInvoke ("EndTwoSecIdle");	
 			StopCoroutine (IdleLookAround ());
-			StopCoroutine (LookAround ());
-			if (storedCheckpoint != null)
-				Destroy (storedCheckpoint);
-			storedCheckpoint = Instantiate (chaseCheckpoint, player.transform.position, Quaternion.identity);
+			LookAtPlayer ();
+		}
+		else if (findingPlayer && !idleRotation)
+		{
+			StartCoroutine (IdleLookAround ());
 		}
 	}
 
-	void DuringPlayerChase ()
+	void LookAtPlayer ()
 	{
-		if (reachedLastSeen)
-		{
-			reachedLastSeen = false;
-			StartCoroutine (LookAround ());
-		}
+		agent.SetDestination (transform.position);
+		spottingPlayer = true;
+		findingPlayer = true;
+		firstIdle = true;
+		ai.camera.transform.rotation = Quaternion.LookRotation (player.transform.position - ai.camera.transform.position, ai.camera.transform.up);
+		head.rotation = Quaternion.LookRotation (player.transform.position - head.position, head.up);
 	}
 
 	IEnumerator IdleLookAround ()
 	{
 		idleRotation = true;
 
+		float rotatedAmt = 0;
+
 		if (firstIdle) 
 		{
-			for (int i = 0; i < 45; i++)
+			rotatedAmt = 0;
+			while (rotatedAmt < 45)
 			{
-				transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
+				head.RotateAround (head.position, head.up, -45 * Time.deltaTime);
+				ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, -45 * Time.deltaTime);
+				rotatedAmt += 45 * Time.deltaTime;
 				yield return null;
 			}
 		}
 		else
 		{
-			for (int i = 0; i < 90; i++)
+			rotatedAmt = 0;
+			while (rotatedAmt < 90)
 			{
-				transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
+				head.RotateAround (head.position, head.up, -45 * Time.deltaTime);
+				ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, -45 * Time.deltaTime);
+				rotatedAmt += 45 * Time.deltaTime;
 				yield return null;
 			}
 		}
@@ -180,9 +176,12 @@ public class PatrollingAI : MonoBehaviour
 
 		yield return new WaitForSeconds (3);
 
-		for (int i = 0; i < 90; i++)
+		rotatedAmt = 0;
+		while (rotatedAmt < 90)
 		{
-			transform.RotateAround (transform.position, Vector3.up, 45 * Time.deltaTime);
+			head.RotateAround (head.position, head.up, 45 * Time.deltaTime);
+			ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, 45 * Time.deltaTime);
+			rotatedAmt += 45 * Time.deltaTime;
 			yield return null;
 		}
 
@@ -192,6 +191,19 @@ public class PatrollingAI : MonoBehaviour
 
 		if (patrol)
 			IdleEnd ();
+		if (findingPlayer)
+			EndFinding ();
+	}
+	
+	public void EndFinding ()
+	{
+		head.localEulerAngles = headStartingRotation;
+		ai.camera.transform.localEulerAngles = headStartingRotation;
+		findingPlayer = false;
+		if (alarmed)
+			ChaseAlarm ();
+		else
+			ReRoute ();
 	}
 
 	void OnDrawGizmos ()
@@ -256,54 +268,9 @@ public class PatrollingAI : MonoBehaviour
 		}
 	}
 
-	IEnumerator LookAround ()
-	{
-		//Vector3 startRotation = transform.eulerAngles;
-		//Vector3 leftRotation = transform.eulerAngles + new Vector3 (0, 45, 0);
-		//Vector3 rightRotation = transform.eulerAngles - new Vector3 (0, 45, 0);
-
-		for (int i = 0; i < 45; i++)
-		{
-			transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
-			yield return null;
-		}
-		
-		yield return new WaitForSeconds (1);
-
-		for (int i = 0; i < 90; i++)
-		{
-			transform.RotateAround (transform.position, Vector3.up, 45 * Time.deltaTime);
-			yield return null;
-		}
-
-		yield return new WaitForSeconds (1);
-
-		for (int i = 0; i < 45; i++)
-		{
-			transform.RotateAround (transform.position, Vector3.up, -45 * Time.deltaTime);
-			yield return null;
-		}
-
-		yield return new WaitForSeconds (3);
-
-		EndChase ();
-	}
-
-	void EndChase ()
-	{
-		if (alarmed)
-			ChaseAlarm ();
-		else
-			ReRoute ();
-	}
-
 	public void ReRoute () 
 	{
-		if (storedCheckpoint != null)
-			Destroy (storedCheckpoint);
-
 		sentBack = true;
-		findingPlayer = false;
 		registered = false;
 		isInvincible = false;
 
@@ -339,12 +306,11 @@ public class PatrollingAI : MonoBehaviour
 	
 	void EndTwoSecIdle ()
 	{
-		chasingPlayer = false;
-		findingPlayer = false;
 		reachedLastSeen = false;
 		invokedDoorChaseCancel = false;
 		sentBack = false;
-		EndChase ();
+		findingPlayer = false;
+		EndFinding ();
 	}
 
 	void Idle ()
@@ -378,7 +344,6 @@ public class PatrollingAI : MonoBehaviour
 		if (agent.isOnOffMeshLink && !moveAcrossNavMeshesStarted)
 		{
    			StartCoroutine (MoveAcrossNavMeshLink ());
-			print ("breezing");
    			moveAcrossNavMeshesStarted = true;
 		}
 	}
@@ -413,16 +378,13 @@ public class PatrollingAI : MonoBehaviour
         transform.position = endPos;
         //agent.updateRotation = true;
         agent.CompleteOffMeshLink ();
-		if (findingPlayer)
-			StartPlayerChase ();
-		else
-			EndChase ();
+		EndFinding ();
         moveAcrossNavMeshesStarted = false;
 	}
 
 	void OnTriggerStay (Collider other) 
 	{	
-		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed && !ai.isDisabled && !chasingPlayer)
+		if (other.tag == "PatrolPoint" && !hacked && !registered && !alarmed && !ai.isDisabled && !findingPlayer)
 		{
 			registered = true;
 
@@ -445,27 +407,19 @@ public class PatrollingAI : MonoBehaviour
 			}
 		}
 
-		if (other.tag == "ChaseCheckpoint" && !ai.isDisabled && chasingPlayer && other == storedCheckpoint.GetComponent<Collider> ())
-		{
-			reachedLastSeen = true;
-			chasingPlayer = false;
-			Destroy (storedCheckpoint);
-		}
-
 		if (other.tag == "Door")
 		{
 			AIDoor tempDoor = other.GetComponent<AIDoor> ();
-			if (!invokedDoorChaseCancel && chasingPlayer)
+			if (!invokedDoorChaseCancel)
 			{
-				if ((tempDoor.requiredColor != ai.color && tempDoor.requiredColor != ColorIdentifier.none) && !other.GetComponent<AIDoor> ().nowForeverOpened)
+				if ((tempDoor.requiredColor != ai.color && tempDoor.requiredColor != ColorIdentifier.none) && !tempDoor.nowForeverOpened)
 				{
 					invokedDoorChaseCancel = true;
-					Destroy (storedCheckpoint);
 					TwoSecIdle ();
 				}
 			}
 			
-			if (!invokedDoorChaseCancel && alarmed && other.GetComponent<AIDoor> ().requiredColor != ai.color && !other.GetComponent<AIDoor> ().nowForeverOpened)
+			if (!invokedDoorChaseCancel && alarmed && tempDoor.requiredColor != ai.color && !tempDoor.nowForeverOpened)
 			{
 				invokedDoorChaseCancel = true;
 				alarmed = false;

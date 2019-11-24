@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Experimental.Rendering.HDPipeline;
 
 public class AI : IHackable
 {
@@ -26,6 +27,9 @@ public class AI : IHackable
 	SoundManager soundManager;
 	AudioSource audioSource;
 
+	Light lightCone;
+	DensityVolume densityVolume;
+
 	protected override void Start ()
 	{
 		controller = GetComponent<CharacterController>();
@@ -43,6 +47,43 @@ public class AI : IHackable
 		hackableType = HackableType.AI;
 
 		base.Start ();
+
+		lightCone = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0).GetComponentInChildren<Light> ();
+		densityVolume = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0).GetComponentInChildren<DensityVolume> ();
+		lightCone.enabled = true;
+
+		switch (color)
+		{
+			case ColorIdentifier.blue:
+			{
+				lightCone.color = ui.blueColor;
+				break;
+			}
+
+			case ColorIdentifier.red:
+			{
+				lightCone.color = ui.redColor;
+				break;
+			}
+
+			case ColorIdentifier.green:
+			{
+				lightCone.color = ui.greenColor;
+				break;
+			}
+
+			case ColorIdentifier.yellow:
+			{
+				lightCone.color = ui.yellowColor;
+				break;
+			}
+
+			default:
+			{
+				lightCone.color = Color.white;
+				break;
+			}
+		}
 		camera.transform.position = unhackCamPos.position;
 	}
 
@@ -57,6 +98,7 @@ public class AI : IHackable
 			else
 				anim.SetBool ("Moving", false);
 			Sound ();
+			AdjustIntensity ();
 		}
 		else
 		{
@@ -64,6 +106,23 @@ public class AI : IHackable
 				anim.SetBool ("Moving", true);
 			else
 				anim.SetBool ("Moving", false);
+		}
+	}
+
+	void AdjustIntensity ()
+	{
+		RaycastHit hit;
+		if (Physics.Raycast (lightCone.transform.position, lightCone.transform.forward, out hit, Mathf.Infinity, player.aimingRaycastLayers))
+		{
+			float distance = (lightCone.transform.position - hit.point).magnitude;
+			densityVolume.transform.localPosition = Vector3.forward * (distance / 2);
+			densityVolume.parameters.size = new Vector3 (distance / 2, 5, distance);
+			lightCone.intensity = distance * 100;
+		}
+		else
+		{
+			densityVolume.parameters.size = new Vector3 (3.75f, 5, 7.5f);
+			lightCone.intensity = 2000;
 		}
 	}
 
@@ -81,6 +140,8 @@ public class AI : IHackable
 		base.OnHack ();
 		camera.transform.position = hackCamPos.position;
 
+		ai.EndFinding ();
+
 		//Reset Camera Rotations
 		yaw = transform.eulerAngles.y;
 
@@ -90,6 +151,7 @@ public class AI : IHackable
 		controller.enabled = true;
 		ai.StopAllCoroutines ();
 		audioSource.Stop ();
+		lightCone.enabled = false;
 		//ai.gameObject.AddComponent<Rigidbody> ();
 		//ai.GetComponent<Rigidbody> ().useGravity = false;
 	}
@@ -100,8 +162,8 @@ public class AI : IHackable
 		camera.transform.position = unhackCamPos.position;
 
 		//Reset Cam Rotation on Unhack
-		pitch = 0;
-		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
+		//pitch = 0;
+		//camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
 
 		ai.enabled = true;
 		ai.agent.enabled = true;
@@ -112,10 +174,15 @@ public class AI : IHackable
 		ai.firstIdle = true;
 		ai.reachedIdle = false;
 		ai.idleRotation = false;
-		ai.findingPlayer = false;
 		ai.moveAcrossNavMeshesStarted = false;
 		ai.invokedDoorChaseCancel = false;
 		ai.StopAllCoroutines ();
+		lightCone.enabled = true;
+
+		ai.findingPlayer = false;
+		ai.spottingPlayer = false;
+
+		ai.EndFinding ();
 		//Destroy (ai.GetComponent<Rigidbody> ());
 	}
 
@@ -197,6 +264,9 @@ public class AI : IHackable
 			ai.enabled = false;
 			controller.enabled = false;
 			ai.sentBack = true;
+
+			lightCone.enabled = false;
+			densityVolume.enabled = false;
 		}
 	}
 }

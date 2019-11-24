@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ElevatorDoor : IInteractable
 {
@@ -72,6 +73,9 @@ public class ElevatorDoor : IInteractable
 		soundManager.PlaySound(soundManager.elevatorTravel);
 
 		yield return new WaitForSeconds(1.5f);
+
+		PlayerPrefs.DeleteKey ("Last Objective Saved");
+		PlayerPrefs.DeleteKey (SceneManager.GetActiveScene().name + " Checkpoint");
 
 		LoadingScreen.inst.AutoLoadNextScene();
 	}

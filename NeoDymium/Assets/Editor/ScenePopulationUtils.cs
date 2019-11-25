@@ -8,10 +8,15 @@ namespace XellExtraUtils
 {
 	public class ScenePopulationUtils : EditorWindow
 	{
+		//For Random Rotation
 		enum Axis {X = 0, Y = 1, Z = 2};
 		Axis rotationAxis;
 		float minRot, maxRot;
 		bool adjLocalRot;
+
+		//For Object Alignment
+		Axis alignmentAxis;
+		Transform referenceTransform;
 
 		[MenuItem("Window/Scene Utils")]
 		static void ShowWindow()
@@ -21,7 +26,8 @@ namespace XellExtraUtils
 
 		private void OnGUI()
 		{
-			GUILayout.Label("For Randomising Rotation");
+			//For Random Rotation
+			GUILayout.Label("For Randomising Rotation", EditorStyles.boldLabel);
 			rotationAxis = (Axis)EditorGUILayout.EnumPopup("Rotation Axis", rotationAxis);
 			minRot = EditorGUILayout.FloatField("Minimum Rotation", minRot);
 			maxRot = EditorGUILayout.FloatField("Minimum Rotation", maxRot);
@@ -31,6 +37,47 @@ namespace XellExtraUtils
 			{
 				if (adjLocalRot) RandomiseRotationLocal();
 				else RandomiseRotationGlobal();
+			}
+
+			GUILayout.Space(10);
+
+			GUILayout.Label("For Object Alignment", EditorStyles.boldLabel);
+			alignmentAxis = (Axis)EditorGUILayout.EnumPopup("Position Axis", alignmentAxis);
+			referenceTransform = EditorGUILayout.ObjectField("Reference Transform", referenceTransform, typeof(Transform), true) as Transform;
+
+			if (GUILayout.Button("Align To Ref Transform")) AlignToRefTransform();
+		}
+
+		void RandomiseRotationLocal()
+		{
+			foreach (GameObject obj in Selection.objects)
+			{
+				Undo.RecordObject(obj.transform, "Undo Rotation");
+				obj.transform.localEulerAngles = ResetAxisRotation(rotationAxis, obj.transform.localEulerAngles);
+				obj.transform.localEulerAngles += GetAxisVector(rotationAxis) * Random.Range(minRot, maxRot);
+				EditorUtility.SetDirty(obj);
+			}
+		}
+
+		void RandomiseRotationGlobal()
+		{
+			foreach (GameObject obj in Selection.objects)
+			{
+				Undo.RecordObject(obj.transform, "Undo Rotation");
+				obj.transform.eulerAngles = ResetAxisRotation(rotationAxis, obj.transform.eulerAngles);
+				obj.transform.eulerAngles += GetAxisVector(rotationAxis) * Random.Range(minRot, maxRot);
+				EditorUtility.SetDirty(obj);
+			}
+		}
+
+		void AlignToRefTransform()
+		{
+			foreach (GameObject obj in Selection.objects)
+			{
+				Undo.RecordObject(obj.transform, "Undo Object Alignment");
+				float val = GetAxisRefPosition(alignmentAxis, referenceTransform);
+				obj.transform.position = ResetAxisPosition(alignmentAxis, obj.transform.position) + GetAxisVector(alignmentAxis) * val;
+				EditorUtility.SetDirty(obj);
 			}
 		}
 
@@ -69,26 +116,39 @@ namespace XellExtraUtils
 			return newEulerAngle;
 		}
 
-		void RandomiseRotationLocal()
+		float GetAxisRefPosition(Axis axis, Transform refTransform)
 		{
-			foreach (GameObject obj in Selection.objects)
+			switch (axis)
 			{
-				Undo.RecordObject(obj.transform, "Undo Rotation");
-				obj.transform.localEulerAngles = ResetAxisRotation(rotationAxis, obj.transform.localEulerAngles);
-				obj.transform.localEulerAngles += GetAxisVector(rotationAxis) * Random.Range(minRot, maxRot);
-				EditorUtility.SetDirty(obj);
+				case Axis.X:
+					return referenceTransform.position.x;
+				case Axis.Y:
+					return referenceTransform.position.y;
+				case Axis.Z:
+					return referenceTransform.position.z;
+				default:
+					return 0;
 			}
 		}
 
-		void RandomiseRotationGlobal()
+		Vector3 ResetAxisPosition(Axis axis, Vector3 position)
 		{
-			foreach (GameObject obj in Selection.objects)
+			Vector3 newPosition = position;
+
+			switch (axis)
 			{
-				Undo.RecordObject(obj.transform, "Undo Rotation");
-				obj.transform.eulerAngles = ResetAxisRotation(rotationAxis, obj.transform.eulerAngles);
-				obj.transform.eulerAngles += GetAxisVector(rotationAxis) * Random.Range(minRot, maxRot);
-				EditorUtility.SetDirty(obj);
+				case Axis.X:
+					newPosition.x = 0;
+					break;
+				case Axis.Y:
+					newPosition.y = 0;
+					break;
+				case Axis.Z:
+					newPosition.z = 0;
+					break;
 			}
+
+			return newPosition;
 		}
 	}
 }

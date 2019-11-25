@@ -56,7 +56,13 @@ public class EmergencyAlarm : IInteractable
 			ai.agent.isStopped = false;
 			ai.alarmPos = alarmPosition.position;
 			if (!ai.isInvincible)
+			{
 				ai.agent.SetDestination (alarmPosition.position);
+				ai.ResetHeadRotation ();
+				ai.idleRotation = true;
+				ai.StopCoroutine (ai.IdleLookAround ());
+			}
+				
 		}
 		alarmed = true;
 		Invoke ("EndAlarm", duration);

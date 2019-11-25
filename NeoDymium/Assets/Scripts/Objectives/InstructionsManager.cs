@@ -33,11 +33,11 @@ public class InstructionsManager : MonoBehaviour
         if (inInstruction)
         {
             Time.timeScale = 0;
-            lockCameraRotation = true;
+            player.LockPlayer(true);
             if (Input.GetMouseButton(0) && !uIManager.isPaused /*&& !closeTimerStart*/)
             {
                 Time.timeScale = 1;
-                lockCameraRotation = false;
+                player.LockPlayer(false);
                 inInstruction = false;
                 //closeTimerValue = 0.0f;
                 if (instructionHolder.activeInHierarchy) instructionHolder.SetActive (false);

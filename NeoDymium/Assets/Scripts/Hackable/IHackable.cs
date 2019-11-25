@@ -193,12 +193,12 @@ public class IHackable : MonoBehaviour
 			}
 			else ui.LocateHackable(this, pointer);
 			
-			/*if (!instructionHasFinished && instructionRobot)
+			if (!instructionHasFinished && instructionRobot)
 			{
 				iM.instructionImage.sprite = instructionImage;
             	iM.instructionText.text = instructionToDisplay;
 				lockRotation = true;
-			}*/
+			}
 
 			player.IncreaseDetectionGauge();
 			//print("Seen by " + gameObject.name);

@@ -177,6 +177,7 @@ public class PlayerController : MonoBehaviour
 		pitch = playerCam.transform.eulerAngles.x;
 		headRefPoint = standCamPos;
 		action += LerpHeadBob;
+		//print ("Checkpoint" + PlayerPrefs.GetInt (SceneManager.GetActiveScene().name + " Checkpoint"));
 	}
 
 	void Update()
@@ -266,6 +267,13 @@ public class PlayerController : MonoBehaviour
 	public void LockPlayerAction(bool lockAction)
 	{
 		lockPlayerAction = lockAction;
+	}
+
+	public void LockPlayer(bool lockPlayer)
+	{
+		LockPlayerAction(lockPlayer);
+		LockPlayerMovement(lockPlayer);
+		LockPlayerRotation(lockPlayer);
 	}
 	#endregion
 

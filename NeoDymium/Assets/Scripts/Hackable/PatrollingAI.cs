@@ -32,13 +32,11 @@ public class PatrollingAI : MonoBehaviour
 	public bool alarmed = false;	
 	public bool sentBack = false;
 
-	bool reachedLastSeen = false;
 	public bool isInvincible = false;
 
 	public float minStealthPercent = 0.2f; //0.00 - 1.00
 
-	//[HideInInspector] 
-	public bool moveAcrossNavMeshesStarted = false;
+	[HideInInspector] public bool moveAcrossNavMeshesStarted = false;
 	
 	[HideInInspector] public NavMeshAgent agent;
 
@@ -54,6 +52,12 @@ public class PatrollingAI : MonoBehaviour
 	[HideInInspector] public bool spottingPlayer = false;
 	[HideInInspector] public bool findingPlayer = false;
 
+	public float headRotateSpeed = 45;
+	public float headRotateInterval = 3;
+	public float headRotateThreshold = 45;
+
+	bool idleReRoute;
+
 	void Start ()
 	{
 		agent = GetComponent<NavMeshAgent> ();
@@ -68,7 +72,6 @@ public class PatrollingAI : MonoBehaviour
 		registered = false;
 		alarmed = false;
 		sentBack = false;
-		reachedLastSeen = false;
 		isInvincible = false;
 		idleRotation = false;
 		reachedIdle = false;
@@ -77,6 +80,7 @@ public class PatrollingAI : MonoBehaviour
 		moveAcrossNavMeshesStarted = false;
 		firstIdle = true;
 		invokedDoorChaseCancel = false;
+		idleReRoute = false;
 
 		for (int i = 0; i < patrolPoints.Length; i++)
 			patrolPoints[i].col = patrolPoints[i].point.GetComponent<Collider> ();
@@ -87,7 +91,7 @@ public class PatrollingAI : MonoBehaviour
 		if (!sentBack)
 			if (!ai.isDisabled && !isInvincible)
 				if (!alarmed)
-					ReRoute ();
+					ReRoute ();	
 				else
 					agent.SetDestination (alarmPos);
 		
@@ -98,7 +102,10 @@ public class PatrollingAI : MonoBehaviour
 			OffMeshLinkCheck ();
 
 			if (idleLookAround && !idleRotation && !patrol && reachedIdle)
+			{
+				StopCoroutine (IdleLookAround ());
 				StartCoroutine (IdleLookAround ());
+			}
 		}
 	}
 
@@ -121,7 +128,7 @@ public class PatrollingAI : MonoBehaviour
 
 	void SpotPlayer ()
 	{
-		if ((player.detectionGauge / player.detectionThreshold) >= minStealthPercent && !invokedDoorChaseCancel)
+		if ((player.detectionGauge / player.detectionThreshold) >= minStealthPercent && !invokedDoorChaseCancel && player.GetPlayerCollider ().IsVisibleFrom (ai.camera))
 		{
 			CancelInvoke ("EndTwoSecIdle");	
 			StopCoroutine (IdleLookAround ());
@@ -129,6 +136,7 @@ public class PatrollingAI : MonoBehaviour
 		}
 		else if (findingPlayer && !idleRotation)
 		{
+			StopCoroutine (IdleLookAround ());
 			StartCoroutine (IdleLookAround ());
 		}
 	}
@@ -139,53 +147,68 @@ public class PatrollingAI : MonoBehaviour
 		spottingPlayer = true;
 		findingPlayer = true;
 		firstIdle = true;
-		ai.camera.transform.rotation = Quaternion.LookRotation (player.transform.position - ai.camera.transform.position, ai.camera.transform.up);
-		head.rotation = Quaternion.LookRotation (player.transform.position - head.position, head.up);
+		ai.camera.transform.rotation = Quaternion.LookRotation (player.transform.position - ai.camera.transform.position);
+		head.rotation = Quaternion.LookRotation (player.transform.position - head.position);
 	}
 
-	IEnumerator IdleLookAround ()
+	public IEnumerator IdleLookAround ()
 	{
 		idleRotation = true;
 
 		float rotatedAmt = 0;
+		Vector3 expectedAngle = Vector3.zero;
+		Vector3 expectedAngleCam = Vector3.zero;
 
 		if (firstIdle) 
 		{
 			rotatedAmt = 0;
-			while (rotatedAmt < 45)
+			expectedAngle = new Vector3 (0, head.eulerAngles.y - headRotateThreshold, 0);
+			expectedAngleCam = new Vector3 (0, ai.camera.transform.eulerAngles.y - headRotateThreshold, 0);
+			while (rotatedAmt < headRotateThreshold)
 			{
-				head.RotateAround (head.position, head.up, -45 * Time.deltaTime);
-				ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, -45 * Time.deltaTime);
-				rotatedAmt += 45 * Time.deltaTime;
+				head.RotateAround (head.position, head.up, -headRotateSpeed * Time.deltaTime);
+				ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, -headRotateSpeed * Time.deltaTime);
+				rotatedAmt += headRotateSpeed * Time.deltaTime;
 				yield return null;
 			}
+			head.eulerAngles = expectedAngle;
+			ai.camera.transform.eulerAngles = expectedAngleCam;
 		}
 		else
 		{
 			rotatedAmt = 0;
-			while (rotatedAmt < 90)
+			expectedAngle = new Vector3 (0, head.eulerAngles.y - (headRotateThreshold * 2), 0);
+			expectedAngleCam = new Vector3 (0, ai.camera.transform.eulerAngles.y - (headRotateThreshold * 2), 0);
+			while (rotatedAmt < headRotateThreshold * 2)
 			{
-				head.RotateAround (head.position, head.up, -45 * Time.deltaTime);
-				ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, -45 * Time.deltaTime);
-				rotatedAmt += 45 * Time.deltaTime;
+				head.RotateAround (head.position, head.up, -headRotateSpeed * Time.deltaTime);
+				ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, -headRotateSpeed * Time.deltaTime);
+				rotatedAmt += headRotateSpeed * Time.deltaTime;
 				yield return null;
 			}
+			head.eulerAngles = expectedAngle;
+			ai.camera.transform.eulerAngles = expectedAngleCam;
 		}
 
 		firstIdle = false;
 
-		yield return new WaitForSeconds (3);
+		yield return new WaitForSeconds (headRotateInterval);
 
 		rotatedAmt = 0;
-		while (rotatedAmt < 90)
+		expectedAngle = new Vector3 (0, head.eulerAngles.y + (headRotateThreshold * 2), 0);
+		expectedAngleCam = new Vector3 (0, ai.camera.transform.eulerAngles.y + (headRotateThreshold * 2), 0);
+		while (rotatedAmt < headRotateThreshold * 2)
 		{
-			head.RotateAround (head.position, head.up, 45 * Time.deltaTime);
-			ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, 45 * Time.deltaTime);
-			rotatedAmt += 45 * Time.deltaTime;
+			head.RotateAround (head.position, head.up, headRotateSpeed * Time.deltaTime);
+			ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, headRotateSpeed * Time.deltaTime);
+			rotatedAmt += headRotateSpeed * Time.deltaTime;
 			yield return null;
 		}
 
-		yield return new WaitForSeconds (3);
+		head.eulerAngles = expectedAngle;
+		ai.camera.transform.eulerAngles = expectedAngleCam;
+
+		yield return new WaitForSeconds (headRotateInterval);
 
 		idleRotation = false;
 
@@ -197,8 +220,7 @@ public class PatrollingAI : MonoBehaviour
 	
 	public void EndFinding ()
 	{
-		head.localEulerAngles = headStartingRotation;
-		ai.camera.transform.localEulerAngles = headStartingRotation;
+		ResetHeadRotation ();
 		findingPlayer = false;
 		if (alarmed)
 			ChaseAlarm ();
@@ -271,7 +293,11 @@ public class PatrollingAI : MonoBehaviour
 	public void ReRoute () 
 	{
 		sentBack = true;
-		registered = false;
+		if (!idleReRoute)
+			idleReRoute = true;
+		else
+			registered = false;
+			
 		isInvincible = false;
 
 		if (patrol)
@@ -306,10 +332,7 @@ public class PatrollingAI : MonoBehaviour
 	
 	void EndTwoSecIdle ()
 	{
-		reachedLastSeen = false;
-		invokedDoorChaseCancel = false;
 		sentBack = false;
-		findingPlayer = false;
 		EndFinding ();
 	}
 
@@ -346,6 +369,12 @@ public class PatrollingAI : MonoBehaviour
    			StartCoroutine (MoveAcrossNavMeshLink ());
    			moveAcrossNavMeshesStarted = true;
 		}
+	}
+
+	public void ResetHeadRotation ()
+	{
+		head.localEulerAngles = headStartingRotation;
+		ai.camera.transform.localEulerAngles = headStartingRotation;
 	}
 
 	IEnumerator MoveAcrossNavMeshLink ()
@@ -395,6 +424,7 @@ public class PatrollingAI : MonoBehaviour
 					currentIndex = 0;
 
 				agent.SetDestination (patrolPoints[currentIndex].point.position);
+				idleRotation = false;
 				Idle ();
 			}
 			else if (!patrol && other == patrolPoints[0].col)
@@ -403,6 +433,7 @@ public class PatrollingAI : MonoBehaviour
 				agent.SetDestination (transform.position);
 				agent.velocity = Vector3.zero;
 				reachedIdle = true;
+				idleRotation = false;
 				transform.eulerAngles = patrolPoints[0].point.eulerAngles;
 			}
 		}
@@ -415,15 +446,10 @@ public class PatrollingAI : MonoBehaviour
 				if ((tempDoor.requiredColor != ai.color && tempDoor.requiredColor != ColorIdentifier.none) && !tempDoor.nowForeverOpened)
 				{
 					invokedDoorChaseCancel = true;
+					if (alarmed)
+						alarmed = false;
 					TwoSecIdle ();
 				}
-			}
-			
-			if (!invokedDoorChaseCancel && alarmed && tempDoor.requiredColor != ai.color && !tempDoor.nowForeverOpened)
-			{
-				invokedDoorChaseCancel = true;
-				alarmed = false;
-				TwoSecIdle ();
 			}
 		}
 	}
@@ -432,5 +458,12 @@ public class PatrollingAI : MonoBehaviour
 	{
 		if (other.tag == "PatrolPoint" && !hacked)
 			registered = false;	
+		if (other.tag == "Door")
+			invokedDoorChaseCancel = false;
+		if (other.tag == "PatrolPoint" && other == patrolPoints[0].col)
+			reachedIdle = false;
 	}
 }
+// Nigel is a gay man. 
+// He wants to suck dick. 
+// He told the lecturers that if he does not make 20 000 SGD a month, he will kill himself.

@@ -26,7 +26,7 @@ public class Checkpoint : MonoBehaviour
 	{
 		if (PlayerPrefs.HasKey (SceneManager.GetActiveScene().name + " Checkpoint"))
 		{
-			PlayerPrefs.GetInt (SceneManager.GetActiveScene().name + " Checkpoint");
+			PlayerPrefs.GetInt (SceneManager.GetActiveScene().name + " Checkpoint", 0);
 		}
 		else player.checkPointsPassed = 0;
 		uIManager = UIManager.inst;

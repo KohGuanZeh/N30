@@ -104,6 +104,7 @@ public class ElevatorDoor : IInteractable
 		if (other.tag == "Player")
 		{
 			print("Working");
+			elevatorTriggered = true;
 			StartCoroutine(TransitToNextLevel());
 		}
 	}

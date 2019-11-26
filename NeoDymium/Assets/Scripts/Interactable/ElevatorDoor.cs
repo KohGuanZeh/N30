@@ -7,6 +7,7 @@ public class ElevatorDoor : IInteractable
 {
 	[Header("General Elevator Properties")]
 	[SerializeField] Animator anim;
+	bool elevatorTriggered = false; //In case we want to allow Player to move int Elevator
 	[SerializeField] bool isSpawnPoint;
 
 	[Header("For Emissive Mat Change")]
@@ -25,6 +26,7 @@ public class ElevatorDoor : IInteractable
 		if (isSpawnPoint)
 		{
 			//To Prevent Interaction
+			elevatorTriggered = true;
 			gameObject.layer = 0; //Set Layer to Default
 			gameObject.tag = "Untagged";
 
@@ -77,7 +79,10 @@ public class ElevatorDoor : IInteractable
 		PlayerPrefs.DeleteKey ("Last Objective Saved");
 		PlayerPrefs.DeleteKey (SceneManager.GetActiveScene().name + " Checkpoint");
 
-		LoadingScreen.inst.AutoLoadNextScene();
+		//LoadingScreen.inst.AutoLoadNextScene();
+		OpenCloseElevatorDoor(true);
+		player.LockPlayerMovement(false);
+		player.LockPlayerAction(false);
 	}
 
 	void SetElevatorDoorAsArrived()
@@ -94,7 +99,7 @@ public class ElevatorDoor : IInteractable
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (isSpawnPoint) return;
+		if (elevatorTriggered) return;
 
 		if (other.tag == "Player")
 		{

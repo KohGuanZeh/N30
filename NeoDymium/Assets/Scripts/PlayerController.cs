@@ -188,9 +188,9 @@ public class PlayerController : MonoBehaviour
 			disableAllActions = !disableAllActions;
 			LockPlayerMovement(disableAllActions);
 			LockPlayerRotation(disableAllActions);
-			LockPlayerAction(disableAllActions);
+			//LockPlayerAction(disableAllActions);
 			Cursor.lockState = disableAllActions ? CursorLockMode.None : CursorLockMode.Locked;
-			Cursor.visible = !disableAllActions;
+			Cursor.visible = disableAllActions;
 		}*/
 
 		if (!ui.isPaused && !ui.isGameOver)
@@ -254,9 +254,16 @@ public class PlayerController : MonoBehaviour
 	}
 
 	#region Lock Functions
-	public void LockPlayerMovement(bool lockMovement)
+	public void LockPlayerMovement(bool lockMovement, bool disableHeadBob = false)
 	{
 		lockPlayerMove = lockMovement;
+
+		if (lockMovement)
+		{
+			headBob = disableHeadBob;
+			if (headBob) SetBobSpeedAndOffset(0.75f, 0.01f); //Set Bobbing to Idle if Head Bob is wanted
+		}
+		else headBob = true; //Head should Bob when Player is not Locked
 	}
 
 	public void LockPlayerRotation(bool lockRotation)
@@ -269,11 +276,18 @@ public class PlayerController : MonoBehaviour
 		lockPlayerAction = lockAction;
 	}
 
-	public void LockPlayer(bool lockPlayer)
+	public void LockPlayer(bool lockPlayer, bool disableHeadBob = false)
 	{
 		LockPlayerAction(lockPlayer);
 		LockPlayerMovement(lockPlayer);
 		LockPlayerRotation(lockPlayer);
+
+		if (lockPlayer)
+		{
+			headBob = disableHeadBob;
+			if (headBob) SetBobSpeedAndOffset(0.75f, 0.01f); //Set Bobbing for Idle if Head Bob is wanted
+		}
+		else headBob = true; //Head should Bob when Player is not Locked
 	}
 	#endregion
 

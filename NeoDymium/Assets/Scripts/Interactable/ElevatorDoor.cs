@@ -79,10 +79,10 @@ public class ElevatorDoor : IInteractable
 		PlayerPrefs.DeleteKey ("Last Objective Saved");
 		PlayerPrefs.DeleteKey (SceneManager.GetActiveScene().name + " Checkpoint");
 
-		//LoadingScreen.inst.AutoLoadNextScene();
-		OpenCloseElevatorDoor(true);
-		player.LockPlayerMovement(false);
-		player.LockPlayerAction(false);
+		LoadingScreen.inst.AutoLoadNextScene();
+		//OpenCloseElevatorDoor(true);
+		//player.LockPlayerMovement(false);
+		//player.LockPlayerAction(false);
 	}
 
 	void SetElevatorDoorAsArrived()

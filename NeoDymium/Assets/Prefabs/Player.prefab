@@ -156,7 +156,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4598359835795832701}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
   m_Name: 
@@ -363,6 +363,9 @@ MonoBehaviour:
   loadingScreen: {fileID: 0}
   areaNamesManager: {fileID: 0}
   areaNames: {fileID: 0}
+  lockPlayerMove: 0
+  lockPlayerRot: 0
+  lockPlayerAction: 0
   controller: {fileID: 0}
   playerCam: {fileID: 0}
   horLookSpeed: 1
@@ -383,8 +386,8 @@ MonoBehaviour:
   isCrouching: 0
   standCamPos: {fileID: 4598359834968620628}
   crouchCamPos: {fileID: 4598359835734151435}
-  playerStandHeight: 1.6
-  playerCrouchHeight: 0.95
+  playerStandHeight: 1.75
+  playerCrouchHeight: 1.1
   currentViewingCamera: {fileID: 0}
   prevViewingCamera: {fileID: 0}
   hackingLerpTime: 0
@@ -415,6 +418,7 @@ MonoBehaviour:
   checkPoints:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
   headBob: 1
   headBobLerpTime: 0
   maxHeadBobOffset: 0
@@ -425,7 +429,6 @@ MonoBehaviour:
   ppp: {fileID: 0}
   holdingPass: 0
   vipPass: 0
-  disablePlayerMove: 0
 --- !u!143 &4598359836110636553
 CharacterController:
   m_ObjectHideFlags: 0
@@ -440,7 +443,7 @@ CharacterController:
   m_Height: 1.6
   m_Radius: 0.2
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0.1
   m_SkinWidth: 0.1
   m_MinMoveDistance: 0.001
   m_Center: {x: -0.05, y: 0.82, z: 0}

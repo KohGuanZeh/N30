@@ -7,6 +7,7 @@ public class ElevatorDoor : IInteractable
 {
 	[Header("General Elevator Properties")]
 	[SerializeField] Animator anim;
+	[SerializeField] bool opened; //Check if Elevator Door is already opened
 	bool elevatorTriggered = false; //In case we want to allow Player to move int Elevator
 	[SerializeField] bool isSpawnPoint;
 
@@ -57,6 +58,7 @@ public class ElevatorDoor : IInteractable
 		yield return new WaitForSeconds(0.5f);
 
 		OpenCloseElevatorDoor();
+		opened = true;
 	}
 
 	IEnumerator TransitToNextLevel()
@@ -107,5 +109,12 @@ public class ElevatorDoor : IInteractable
 			elevatorTriggered = true;
 			StartCoroutine(TransitToNextLevel());
 		}
+	}
+
+	public override string GetError(int key = 0)
+	{
+		if (player.inHackable) return "AI cannot interact with this Object";
+		else if (opened) return "Elevator Door is already opened";
+		else return string.Empty;
 	}
 }

@@ -793,7 +793,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: 0390d7573f4ace34b9d824ac4e6c15da, type: 2}
   m_StaticLightingSkyUniqueID: 1
-  m_SkySettings: {fileID: 1219649463}
+  m_SkySettings: {fileID: 549041083}
   m_SkySettingsFromProfile: {fileID: -2041297228013281379, guid: 0390d7573f4ace34b9d824ac4e6c15da,
     type: 2}
 --- !u!114 &34969884
@@ -11082,6 +11082,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1788621183}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &549041083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 1
+  exposure:
+    m_OverrideState: 0
+    m_Value: 1
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1.9192116
+    min: 0
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 0.5
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &552087278
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14024,12 +14073,12 @@ PrefabInstance:
     - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.018093877
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 28.8
+      value: 28.75
       objectReference: {fileID: 0}
     - target: {fileID: 6521025678728711684, guid: 8e150a214724b024f999574e937049ec,
         type: 3}
@@ -24417,55 +24466,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1216493038}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1219649463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 1
-  exposure:
-    m_OverrideState: 0
-    m_Value: 1
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1.9192116
-    min: 0
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 0.5
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &1227414864
 PrefabInstance:
   m_ObjectHideFlags: 0

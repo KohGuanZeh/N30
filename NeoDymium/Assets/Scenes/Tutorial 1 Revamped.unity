@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1259148019}
-  m_IndirectSpecularColor: {r: 0.22965023, g: 0.20251073, b: 0.21099707, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11548,7 +11548,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 500289011}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 8.98, y: 0, z: 14.25}
+  m_LocalPosition: {x: 17.62, y: 0, z: 25.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1599327771}
@@ -15352,6 +15352,16 @@ PrefabInstance:
         type: 3}
       propertyPath: currentIndex
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805370165156913027, guid: 72558fc8b5247634daca252f1395f97a,
+        type: 3}
+      propertyPath: headRotateSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805370165156913027, guid: 72558fc8b5247634daca252f1395f97a,
+        type: 3}
+      propertyPath: headRotateThreshold
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 2805370165756873391, guid: 72558fc8b5247634daca252f1395f97a,
         type: 3}
@@ -21907,55 +21917,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1063423244}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1064318507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 1
-  exposure:
-    m_OverrideState: 0
-    m_Value: 1
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1.9192116
-    min: 0
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 0.5
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &1064401919
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23627,6 +23588,86 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1185749326}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1189195553
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1189195554}
+  - component: {fileID: 1189195557}
+  - component: {fileID: 1189195556}
+  - component: {fileID: 1189195555}
+  m_Layer: 0
+  m_Name: Checkpoint 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1189195554
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189195553}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
+  m_LocalPosition: {x: 8.921, y: 0, z: 14.49}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1599327771}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+--- !u!54 &1189195555
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189195553}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
+--- !u!65 &1189195556
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189195553}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &1189195557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189195553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ebecd528f9851d4397bdc040f42c933, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  coll: {fileID: 0}
+  hackables: []
 --- !u!1001 &1189490404
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28077,7 +28118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &1382552780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29591,7 +29632,7 @@ PrefabInstance:
     - target: {fileID: 4598359836110636552, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
       propertyPath: checkPoints.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4598359836110636552, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
@@ -29618,6 +29659,16 @@ PrefabInstance:
       propertyPath: decreaseMult
       value: 1.1
       objectReference: {fileID: 0}
+    - target: {fileID: 4598359836110636552, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
+        type: 3}
+      propertyPath: overwriteCheckpoints
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4598359836110636552, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
+        type: 3}
+      propertyPath: checkPoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 1189195557}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23bb3bd0a75b0fb47955c5e4f455453b, type: 3}
 --- !u!1001 &1410436198
@@ -36361,13 +36412,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1573125070}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: 1, y: 0, z: 7.86}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 8.921, y: 0, z: 14.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1599327771}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!65 &1573125072
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -37721,6 +37772,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1616773992}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1621649996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 1
+  exposure:
+    m_OverrideState: 0
+    m_Value: 1
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1.9192116
+    min: 0
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 0.5
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &1628274174
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -46864,11 +46964,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Managers and Systems
       objectReference: {fileID: 0}
-    - target: {fileID: 4128693904918973285, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4128693903977718791, guid: eccc9edccffc6e5418d9211314190b7b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -47196,6 +47291,36 @@ PrefabInstance:
       propertyPath: hackables.Array.data[5]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 868869030659332508, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -21.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 868869030659332508, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 5792491037919157828, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128693904918973285, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128693904918973287, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6826738941163210199, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: textToDisplay
+      value: I would need an AI of the same colour as the door to open
+      objectReference: {fileID: 0}
     - target: {fileID: 4128693903939259607, guid: eccc9edccffc6e5418d9211314190b7b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -47215,6 +47340,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Crouch
+      objectReference: {fileID: 0}
+    - target: {fileID: 142166962378238380, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4128693903939259601, guid: eccc9edccffc6e5418d9211314190b7b,
         type: 3}
@@ -47250,36 +47380,6 @@ PrefabInstance:
         type: 3}
       propertyPath: textToDisplay
       value: Ctrl to crouch
-      objectReference: {fileID: 0}
-    - target: {fileID: 4128693904918973287, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 868869030659332508, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -21.13
-      objectReference: {fileID: 0}
-    - target: {fileID: 868869030659332508, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 8.73
-      objectReference: {fileID: 0}
-    - target: {fileID: 5792491037919157828, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6826738941163210199, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: textToDisplay
-      value: I would need an AI of the same colour as the door to open
-      objectReference: {fileID: 0}
-    - target: {fileID: 142166962378238380, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eccc9edccffc6e5418d9211314190b7b, type: 3}

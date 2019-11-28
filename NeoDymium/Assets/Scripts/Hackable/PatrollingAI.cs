@@ -104,7 +104,8 @@ public class PatrollingAI : MonoBehaviour
 
 			if (idleLookAround && !idleRotation && !patrol && reachedIdle)
 			{
-				StopCoroutine (IdleLookAround ());
+				StopAllCoroutines ();
+				firstIdle = true;
 				StartCoroutine (IdleLookAround ());
 			}
 		}
@@ -132,7 +133,7 @@ public class PatrollingAI : MonoBehaviour
 		if ((player.detectionGauge / player.detectionThreshold) >= minStealthPercent && !invokedDoorChaseCancel && player.GetPlayerCollider ().IsVisibleFrom (ai.camera))
 		{
 			CancelInvoke ("EndTwoSecIdle");	
-			StopCoroutine (IdleLookAround ());
+			StopAllCoroutines ();
 			idleRotation = false;
 			LookAtPlayer ();
 		}

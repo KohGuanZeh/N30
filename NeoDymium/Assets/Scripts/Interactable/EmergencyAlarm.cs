@@ -16,11 +16,16 @@ public class EmergencyAlarm : IInteractable
 	[SerializeField] float defaultIntensity, alertIntensity;
 
 	bool alarmed;
+	public bool active;
+
+	EmergencyAlarm[] alarms;
 
 	public override void Start ()
 	{
 		base.Start ();
 		alarmed = false;
+		active = false;
+		alarms = FindObjectsOfType<EmergencyAlarm> ();
 		audioSources = GetComponents<AudioSource> ();
 		uIManager = UIManager.inst;
 		screenMats = MaterialUtils.GetMaterialsFromRenderers(screenRs);
@@ -33,8 +38,25 @@ public class EmergencyAlarm : IInteractable
 
 	void AlarmStartup ()
 	{
-		if (alarmed || affectedAis[0].alarmed) //cheap check
+		bool passed = true;
+		
+		foreach (EmergencyAlarm alarm in alarms)
+			if (alarm.active)
+				passed = false;
+
+		if (active)
 			return;
+
+		active = true;
+
+		if (!passed)
+		{
+			active = false;
+			return;
+		}
+			
+		// if (alarmed || affectedAis[0].alarmed) //cheap check
+		// 	return;
 
 		alarmed = true;
 		audioSources[1].Play ();
@@ -71,6 +93,7 @@ public class EmergencyAlarm : IInteractable
 	public void EndAlarm ()
 	{
 		alarmed = false;
+		active = false;
 		audioSources[0].Stop ();
 		CancelInvoke ();
 		MaterialUtils.ChangeMaterialsEmission(screenMats, defaultColor, defaultIntensity, "_EmissiveColor");

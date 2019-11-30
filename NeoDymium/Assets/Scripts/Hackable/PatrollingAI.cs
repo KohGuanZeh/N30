@@ -97,13 +97,15 @@ public class PatrollingAI : MonoBehaviour
 		
 		if (!ai.isDisabled)
 		{
-			SpotPlayer ();
+			if (!moveAcrossNavMeshesStarted)
+				SpotPlayer ();
 			Invincibility ();
 			OffMeshLinkCheck ();
 
 			if (idleLookAround && !idleRotation && !patrol && reachedIdle)
 			{
-				StopCoroutine (IdleLookAround ());
+				StopAllCoroutines ();
+				firstIdle = true;
 				StartCoroutine (IdleLookAround ());
 			}
 		}
@@ -131,12 +133,13 @@ public class PatrollingAI : MonoBehaviour
 		if ((player.detectionGauge / player.detectionThreshold) >= minStealthPercent && !invokedDoorChaseCancel && player.GetPlayerCollider ().IsVisibleFrom (ai.camera))
 		{
 			CancelInvoke ("EndTwoSecIdle");	
-			StopCoroutine (IdleLookAround ());
+			StopAllCoroutines ();
+			idleRotation = false;
 			LookAtPlayer ();
 		}
 		else if (findingPlayer && !idleRotation)
 		{
-			StopCoroutine (IdleLookAround ());
+			StopAllCoroutines ();
 			StartCoroutine (IdleLookAround ());
 		}
 	}
@@ -464,6 +467,3 @@ public class PatrollingAI : MonoBehaviour
 			reachedIdle = false;
 	}
 }
-// Nigel is a gay man. 
-// He wants to suck dick. 
-// He told the lecturers that if he does not make 20 000 SGD a month, he will kill himself.

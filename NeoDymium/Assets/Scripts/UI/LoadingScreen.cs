@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,6 +31,9 @@ public class LoadingScreen : MonoBehaviour
 	[SerializeField] float fadeLerpTime;
 	[SerializeField] Action action;
 
+	[Header("For Any Scripts that require Real Time")]
+	Stopwatch watch;
+
 	private void Awake()
 	{
 		//Singleton
@@ -39,6 +43,9 @@ public class LoadingScreen : MonoBehaviour
 			inst = this;
 			DontDestroyOnLoad(gameObject);
 		}
+
+		watch = new Stopwatch();
+		watch.Start();
 
 		bg.color = loadingTxt.color = Color.clear;
 		foreach (Image loadingIcon in loadingIcons) loadingIcon.color = Color.clear;
@@ -98,6 +105,7 @@ public class LoadingScreen : MonoBehaviour
 		action -= FadeInFadeOut; //Remove first to prevent errors.
 
 		fadeIn = false;
+		watch.Restart();
 		action += FadeInFadeOut;
 	}
 
@@ -138,7 +146,7 @@ public class LoadingScreen : MonoBehaviour
 	{
 		if (!string.IsNullOrEmpty(levelToLoad)) async = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Single);
 		else if (levelIdxToLoad > -1) async = SceneManager.LoadSceneAsync(levelIdxToLoad, LoadSceneMode.Single);
-		else Debug.LogError("Invalid String or Int Loaded");
+		else UnityEngine.Debug.LogError("Invalid String or Int Loaded");
 	}
 
 	public void OnFadeOut()
@@ -151,5 +159,10 @@ public class LoadingScreen : MonoBehaviour
 
 		action -= RotateIcon;
 		foreach (Image loadingIcon in loadingIcons) loadingIcon.rectTransform.eulerAngles = Vector3.zero;
+	}
+
+	public double GetTimeElapsed()
+	{
+		return watch.Elapsed.TotalSeconds;
 	}
 }

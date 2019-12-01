@@ -12,7 +12,7 @@ public class MainMenu : MonoBehaviour
 	[SerializeField] float backgroundOverlayDefaultXSize;
 	[SerializeField] Image mainMenuOverlay;
 	[SerializeField] float overlayLerpTime;
-	[SerializeField] bool isOpened;
+	[SerializeField] bool isOpened; //Check if Settings/Credits Page is opened
 	[SerializeField] bool isLerping;
 	[SerializeField] RectTransform settingsContent;
 	[SerializeField] RectTransform creditsContent;
@@ -60,7 +60,7 @@ public class MainMenu : MonoBehaviour
 		{
 			backgroundOverlay.sizeDelta = new Vector2(backgroundOverlayDefaultXSize, backgroundOverlay.sizeDelta.y);
 			mainMenuOverlay.color = new Color(0, 0, 0, 0.75f);
-			foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = new Color(mainMenuButton.targetGraphic.color.r, mainMenuButton.targetGraphic.color.g, mainMenuButton.targetGraphic.color.b, 0);
+			foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = ColorUtils.ChangeAlpha(mainMenuButton.targetGraphic.color, 0);
 			isLerping = false;
 			lerpFunctions -= LerpBackgroundOverlay;
 		}
@@ -68,7 +68,11 @@ public class MainMenu : MonoBehaviour
 		{
 			backgroundOverlay.sizeDelta = new Vector2(0, backgroundOverlay.sizeDelta.y);
 			mainMenuOverlay.color = Color.clear;
-			foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = new Color(mainMenuButton.targetGraphic.color.r, mainMenuButton.targetGraphic.color.g, mainMenuButton.targetGraphic.color.b, 1);
+			foreach (Button mainMenuButton in mainMenuButtons)
+			{
+				mainMenuButton.interactable = true;
+				mainMenuButton.targetGraphic.color = new Color(mainMenuButton.targetGraphic.color.r, mainMenuButton.targetGraphic.color.g, mainMenuButton.targetGraphic.color.b, 1);
+			} 
 			OnScreenClose();
 			isLerping = false;
 			lerpFunctions -= LerpBackgroundOverlay;
@@ -97,7 +101,11 @@ public class MainMenu : MonoBehaviour
 
 		isOpened = !isOpened;
 
-		if (isOpened) settingsContent.gameObject.SetActive(true);
+		if (isOpened)
+		{
+			settingsContent.gameObject.SetActive(true);
+			foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.interactable = false;
+		}
 		isLerping = true;
 
 		lerpFunctions += LerpBackgroundOverlay;
@@ -110,7 +118,11 @@ public class MainMenu : MonoBehaviour
 
 		isOpened = !isOpened;
 
-		if (isOpened) creditsContent.gameObject.SetActive (true);
+		if (isOpened)
+		{
+			creditsContent.gameObject.SetActive(true);
+			foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.interactable = false;
+		} 
 		isLerping = true;
 
 		lerpFunctions += LerpBackgroundOverlay;

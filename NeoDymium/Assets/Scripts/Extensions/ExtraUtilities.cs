@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Script is Developed by Koh Guan Zeh
+//Last Updated: 2 Dec 2019
 public static class MathFunctions
 {
 	public static float SmoothPingPong(float time, float maxOffset = 1, float speed = 1, float startOffset = 0, bool minIsStartNumber = false)

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.HDPipeline;
 
 public class LightFlicker : MonoBehaviour
 {
@@ -10,14 +13,15 @@ public class LightFlicker : MonoBehaviour
 	{
 		public Color emissiveColor;
 		public float emissiveIntensity;
-		public float lightIntensity;
+		public float pointLightIntensity;
+		public float spotLightIntensity;
 	}
 
 	[Header ("Light Components")]
 	[SerializeField] Renderer lightR;
 	[SerializeField] Material lightMat;
-	[SerializeField] Light pointLight;
-	[SerializeField] Light spotLight;
+	[SerializeField] HDAdditionalLightData pointLight;
+	[SerializeField] HDAdditionalLightData spotLight;
 
 	[Header("Light Flicker Adjustments")]
 	[SerializeField] bool includeDelayBeforeStart;
@@ -27,14 +31,13 @@ public class LightFlicker : MonoBehaviour
 	[Header("Light Flicker Cycle Adjustments")]
 	[SerializeField] float flickerSpeed;
 	[SerializeField] int cyclesBeforeRest;
-	[SerializeField] float cycleInterval;
-	[SerializeField] float restInterval;
+	[SerializeField] double restInterval;
 
 	[Header("Lerp Time Etc")]
 	[SerializeField] bool toLit;
 	[SerializeField] bool atRest;
 	[SerializeField] int halfCycles;
-	[SerializeField] float lastTimeBeforeFlicker;
+	[SerializeField] double lastTimeBeforeFlicker;
 	[SerializeField] float flickerTime;
 	Action action;
 
@@ -45,21 +48,21 @@ public class LightFlicker : MonoBehaviour
 		if (startAsLit)
 		{
 			MaterialUtils.ChangeMaterialEmission(lightMat, litSettings.emissiveColor, litSettings.emissiveIntensity, "_EmissiveColor");
-			pointLight.intensity = litSettings.lightIntensity;
-			spotLight.intensity = litSettings.lightIntensity;
+			pointLight.intensity = litSettings.pointLightIntensity;
+			spotLight.intensity = litSettings.spotLightIntensity;
 			toLit = false;
 			flickerTime = 0;
 		}
 		else
 		{
 			MaterialUtils.ChangeMaterialEmission(lightMat, unlitSettings.emissiveColor, unlitSettings.emissiveIntensity, "_EmissiveColor");
-			pointLight.intensity = unlitSettings.lightIntensity;
-			spotLight.intensity = litSettings.lightIntensity;
+			pointLight.intensity = unlitSettings.pointLightIntensity;
+			spotLight.intensity = litSettings.spotLightIntensity;
 			toLit = true;
 			flickerTime = 1;
 		}
 
-		lastTimeBeforeFlicker = Time.time;
+		lastTimeBeforeFlicker = LoadingScreen.inst.GetTimeElapsed();
 		if (includeDelayBeforeStart) atRest = true;
 		action += RunFlickerCycle;
     }
@@ -79,17 +82,18 @@ public class LightFlicker : MonoBehaviour
 			//Lerping Components
 			Color eColor = Color.Lerp(unlitSettings.emissiveColor, litSettings.emissiveColor, flickerTime);
 			float eIntensity = Mathf.Lerp(unlitSettings.emissiveIntensity, litSettings.emissiveIntensity, flickerTime);
-			float intensity = Mathf.Lerp(unlitSettings.lightIntensity, litSettings.lightIntensity, flickerTime);
+			float pIntensity = Mathf.Lerp(unlitSettings.pointLightIntensity, litSettings.pointLightIntensity, flickerTime);
+			float sIntensity = Mathf.Lerp(unlitSettings.spotLightIntensity, litSettings.spotLightIntensity, flickerTime);
 
 			MaterialUtils.ChangeMaterialEmission(lightMat, eColor, eIntensity, "_EmissiveColor");
-			pointLight.intensity = intensity;
-			spotLight.intensity = intensity;
+			pointLight.intensity = pIntensity;
+			spotLight.intensity = sIntensity;
 
 			if (toLit && flickerTime == 1)
 			{
 				MaterialUtils.ChangeMaterialEmission(lightMat, litSettings.emissiveColor, litSettings.emissiveIntensity, "_EmissiveColor");
-				pointLight.intensity = litSettings.lightIntensity;
-				spotLight.intensity = litSettings.lightIntensity;
+				pointLight.intensity = litSettings.pointLightIntensity;
+				spotLight.intensity = litSettings.spotLightIntensity;
 				halfCycles++;
 				toLit = false;
 
@@ -98,8 +102,8 @@ public class LightFlicker : MonoBehaviour
 			else if (!toLit && flickerTime == 0)
 			{
 				MaterialUtils.ChangeMaterialEmission(lightMat, unlitSettings.emissiveColor, unlitSettings.emissiveIntensity, "_EmissiveColor");
-				pointLight.intensity = unlitSettings.lightIntensity;
-				spotLight.intensity = unlitSettings.lightIntensity;
+				pointLight.intensity = unlitSettings.pointLightIntensity;
+				spotLight.intensity = unlitSettings.spotLightIntensity;
 				halfCycles++;
 				toLit = true;
 
@@ -108,7 +112,7 @@ public class LightFlicker : MonoBehaviour
 		}
 		else
 		{
-			if (Time.time - restInterval > lastTimeBeforeFlicker) ContinueCycle();
+			if (LoadingScreen.inst.GetTimeElapsed() - restInterval > lastTimeBeforeFlicker) ContinueCycle();
 		}
 	}
 

@@ -90,7 +90,7 @@ public class MainMenu : MonoBehaviour
 		if (isLerping) return;
 		if (newGame) PlayerPrefs.DeleteAll();
 		audioSource.Play ();
-		LoadingScreen.inst.LoadScene("Tutorial 1");
+		LoadingScreen.inst.LoadScene("Tutorial 1 Revamped");
 		//SceneManager.LoadScene ("Office", LoadSceneMode.Single);
 	}
 

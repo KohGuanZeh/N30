@@ -17,7 +17,7 @@ public class MainMenu : MonoBehaviour
 	[SerializeField] RectTransform settingsContent;
 	[SerializeField] RectTransform creditsContent;
 
-	[SerializeField] TextMeshProUGUI gameTitle;
+	[SerializeField] Image gameTitle;
 	[SerializeField] RectTransform buttonParent;
 	[SerializeField] Button[] mainMenuButtons;
 

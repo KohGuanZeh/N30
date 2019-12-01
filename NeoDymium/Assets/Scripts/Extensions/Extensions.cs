@@ -53,14 +53,14 @@ public static class Extensions
 				return true;
 			}
 		}
-		if (Physics.Raycast(cameraPos, (boundsCenter + new Vector3(0, -boundsExtents.y + offset, 0) - cameraPos).normalized, out hit, camDist))
+		/*if (Physics.Raycast(cameraPos, (boundsCenter + new Vector3(0, -boundsExtents.y + offset, 0) - cameraPos).normalized, out hit, camDist))
 		{
 			if (hit.collider == collider)
 			{
 				if (debugMode) Debug.Log("Hit by Bottom");
 				return true;
 			}
-		}
+		}*/
 		if (Physics.Raycast(cameraPos, (boundsCenter + new Vector3(boundsExtents.x - offset, 0, 0) - cameraPos).normalized, out hit, camDist))
 		{
 			if (hit.collider == collider)

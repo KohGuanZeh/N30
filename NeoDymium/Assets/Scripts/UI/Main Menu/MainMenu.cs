@@ -37,6 +37,8 @@ public class MainMenu : MonoBehaviour
 
 		mainMenuButtons = buttonParent.GetComponentsInChildren<Button>();
 		audioSource = GetComponent<AudioSource> ();
+
+		mainMenuButtons[1].gameObject.SetActive(PlayerPrefs.HasKey("Scene Index")); //Disable Continue Button if there is no Saved Scene Index
 	}
 
 	private void Update()
@@ -88,9 +90,18 @@ public class MainMenu : MonoBehaviour
     public void Play(bool newGame) 
 	{
 		if (isLerping) return;
-		if (newGame) PlayerPrefs.DeleteAll();
+
+		int index = 1;
+
+		if (newGame)
+		{
+			PlayerPrefs.SetInt("Scene Index", 1);
+			PlayerPrefs.DeleteKey("Last Objective Saved");
+		}
+		else index = PlayerPrefs.GetInt("Scene Index", 1);
+
 		audioSource.Play ();
-		LoadingScreen.inst.LoadScene("Tutorial 1 Revamped");
+		LoadingScreen.inst.LoadScene(index);
 		//SceneManager.LoadScene ("Office", LoadSceneMode.Single);
 	}
 

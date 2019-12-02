@@ -24,21 +24,8 @@ public class Checkpoint : MonoBehaviour
 	
 	void Start ()
 	{
-		if (PlayerPrefs.HasKey (SceneManager.GetActiveScene().name + " Checkpoint"))
-		{
-			PlayerPrefs.GetInt (SceneManager.GetActiveScene().name + " Checkpoint", 0);
-		}
-		else player.checkPointsPassed = 0;
-		uIManager = UIManager.inst;
-	}
 
-	void Update ()
-	{
-		if (Input.GetKeyDown (KeyCode.P))
-		{
-			PlayerPrefs.DeleteKey (SceneManager.GetActiveScene().name + " Checkpoint");
-			print ("Checkpoint Position now set at Start Point");
-		}
+		uIManager = UIManager.inst;
 	}
 
 	public void LoadCheckPoint()
@@ -56,33 +43,10 @@ public class Checkpoint : MonoBehaviour
 		//If detected Player, Considered Check point Registered
 		if (playerLayer == (playerLayer | (1 << other.gameObject.layer)))
 		{
-			PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + " Checkpoint", ++player.checkPointsPassed);
 			uIManager.touchedCheckpoint = true;
 			uIManager.ShowSavedAfterCheckpoints();
 			// if (wall) wall.SetActive(true);
 			coll.enabled = false;
-		}
-	}
-
-	void SetHackableNames()
-	{
-		int cctvIndex = 0;
-		int aiIndex = 0;
-
-		for (int i = 0; i < hackables.Count; i++)
-		{
-			hackables[i].roomName = "RM-001"; //Need to Store a String to indicate Room Name
-
-			if (hackables[i].GetComponent<CCTV>()) //May want to have an Enum to indicate type
-			{
-				++cctvIndex;
-				hackables[i].hackableName = string.Format("CAM{0}", cctvIndex.ToString("000"));
-			}
-			else
-			{
-				++aiIndex;
-				hackables[i].hackableName = string.Format("AI{0}", aiIndex.ToString("000"));
-			}
 		}
 	}
 }

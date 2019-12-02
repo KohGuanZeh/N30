@@ -145,7 +145,10 @@ public class PlayerController : MonoBehaviour
 
 		if (checkPoints.Length > 0)
 		{
-			checkPoints[checkPointsPassed].LoadCheckPoint();
+			if (checkPointsPassed >= checkPoints.Length)
+				checkPoints[checkPoints.Length - 1].LoadCheckPoint(); //Failsafe for Editor mode
+			else
+				checkPoints[checkPointsPassed].LoadCheckPoint();
 		}
 
 		//Lock Cursor in Middle of Screen

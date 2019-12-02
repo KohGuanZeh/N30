@@ -26,6 +26,7 @@ public class InstructionSection : MonoBehaviour
             iM.instructionImage.sprite = instructionPictureToDisplay;
             iM.instructionText.text = instructionToDisplay;
             iM.WhileInInstructionScreen();
+            gameObject.SetActive (false);
         }
     }
 

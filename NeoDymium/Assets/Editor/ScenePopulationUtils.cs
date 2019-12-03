@@ -18,6 +18,10 @@ namespace XellExtraUtils
 		Axis alignmentAxis;
 		Transform referenceTransform;
 
+		//For Object Replacement
+		GameObject replacementPrefab;
+		bool setNewParent;
+
 		[MenuItem("Window/Scene Utils")]
 		static void ShowWindow()
 		{
@@ -46,6 +50,13 @@ namespace XellExtraUtils
 			referenceTransform = EditorGUILayout.ObjectField("Reference Transform", referenceTransform, typeof(Transform), true) as Transform;
 
 			if (GUILayout.Button("Align To Ref Transform")) AlignToRefTransform();
+
+			GUILayout.Space(10);
+
+			GUILayout.Label("For Object to Prefab Replacement", EditorStyles.boldLabel);
+			replacementPrefab = EditorGUILayout.ObjectField("Replacement Prefab", replacementPrefab, typeof(GameObject), false) as GameObject;
+
+			if (GUILayout.Button("Replace Objects to Prefabs")) ReplaceSelectedWithNewObjects();
 		}
 
 		void RandomiseRotationLocal()
@@ -78,6 +89,28 @@ namespace XellExtraUtils
 				float val = GetAxisRefPosition(alignmentAxis, referenceTransform);
 				obj.transform.position = ResetAxisPosition(alignmentAxis, obj.transform.position) + GetAxisVector(alignmentAxis) * val;
 				EditorUtility.SetDirty(obj);
+			}
+		}
+
+		void ReplaceSelectedWithNewObjects()
+		{
+			if (replacementPrefab == null) return;
+			foreach (GameObject obj in Selection.objects)
+			{
+				Transform parent = obj.transform.parent;
+
+				Vector3 position = obj.transform.position;
+				Quaternion rotation = obj.transform.rotation;
+				Vector3 scale = obj.transform.localScale;
+
+				GameObject newObj = (GameObject)PrefabUtility.InstantiatePrefab(replacementPrefab, parent);
+				Undo.RegisterCreatedObjectUndo(newObj, string.Format("Replaced {0} witb {1}", obj.name, replacementPrefab.name));
+				newObj.transform.position = position;
+				newObj.transform.rotation = rotation;
+				newObj.transform.localScale = scale;
+				Undo.DestroyObjectImmediate(obj);
+
+				EditorUtility.SetDirty(newObj);
 			}
 		}
 

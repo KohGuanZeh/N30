@@ -72,12 +72,20 @@ public class LoadingScreen : MonoBehaviour
 	//Meant for Transition for Linear Level Progression
 	public void AutoLoadNextScene()
 	{
-		int nextLevelIndex = SceneManager.GetActiveScene().buildIndex;
-		LoadScene(++nextLevelIndex);
+		int nextLevelIndex = SceneManager.GetActiveScene().buildIndex + 1;
+		if (nextLevelIndex == SceneManager.sceneCountInBuildSettings)
+		{
+			PlayerPrefs.DeleteKey("Scene Index");
+			nextLevelIndex = 0;
+		}
+		else PlayerPrefs.SetInt("Scene Index", nextLevelIndex);
+
+		LoadScene(nextLevelIndex); //If current scene index is the last one. Load main menus
 	}
 
 	public void LoadScene(string levelName)
 	{
+		if (isLoading) return;
 		bg.gameObject.SetActive(true);
 		levelToLoad = levelName;
 
@@ -90,6 +98,7 @@ public class LoadingScreen : MonoBehaviour
 
 	public void LoadScene(int levelIndex)
 	{
+		if (isLoading) return;
 		bg.gameObject.SetActive(true);
 		levelIdxToLoad = levelIndex;
 
@@ -102,6 +111,9 @@ public class LoadingScreen : MonoBehaviour
 
 	public void OnSceneLoaded()
 	{
+		//Save Level Key whenever you switch Levels
+		if (SceneManager.GetActiveScene().buildIndex != 0) 
+
 		action -= FadeInFadeOut; //Remove first to prevent errors.
 
 		fadeIn = false;

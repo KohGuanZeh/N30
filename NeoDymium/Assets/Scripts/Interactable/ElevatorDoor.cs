@@ -79,7 +79,6 @@ public class ElevatorDoor : IInteractable
 		yield return new WaitForSeconds(1.5f);
 
 		PlayerPrefs.DeleteKey ("Last Objective Saved");
-		PlayerPrefs.DeleteKey (SceneManager.GetActiveScene().name + " Checkpoint");
 
 		LoadingScreen.inst.AutoLoadNextScene();
 		//OpenCloseElevatorDoor(true);

@@ -31,6 +31,10 @@ public class ObjectiveManager : MonoBehaviour
             currentGoalNumber = PlayerPrefs.GetInt ("Last Objective Saved");
         }
         else currentGoalNumber = 0;
+
+        if (currentGoalNumber >= goal.Length)
+            currentGoalNumber = 0;
+            
         uiManager = UIManager.inst;
     }
 
@@ -39,7 +43,7 @@ public class ObjectiveManager : MonoBehaviour
         if (Input.GetKeyDown (KeyCode.O))
             currentGoalNumber = 0;
 
-        if (goal.Length == 0 || currentGoalNumber > goal.Length)
+        if (goal.Length == 0 || currentGoalNumber >= goal.Length)
             return;
 
 		if (uiManager.objective == Vector3.zero)

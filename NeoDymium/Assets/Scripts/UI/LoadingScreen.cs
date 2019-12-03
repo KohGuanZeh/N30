@@ -85,6 +85,7 @@ public class LoadingScreen : MonoBehaviour
 
 	public void LoadScene(string levelName)
 	{
+		if (isLoading) return;
 		bg.gameObject.SetActive(true);
 		levelToLoad = levelName;
 
@@ -97,6 +98,7 @@ public class LoadingScreen : MonoBehaviour
 
 	public void LoadScene(int levelIndex)
 	{
+		if (isLoading) return;
 		bg.gameObject.SetActive(true);
 		levelIdxToLoad = levelIndex;
 

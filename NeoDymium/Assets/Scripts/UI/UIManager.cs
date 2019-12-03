@@ -533,9 +533,9 @@ public class UIManager : MonoBehaviour
 		} 
 
 		Vector3 playerPos = player.transform.position + new Vector3(0, player.GetPlayerHeight() + 0.1f, 0); //0.1f is the Offset
-		Vector3 currentCamPos = player.CurrentViewingCamera.transform.position;
 		Vector3 screenPos = player.CurrentViewingCamera.WorldToScreenPoint(playerPos);
-		Vector3 dirToPlayer = (playerPos - currentCamPos).normalized;
+		/*Vector3 currentCamPos = player.CurrentViewingCamera.transform.position;
+		Vector3 dirToPlayer = (playerPos - currentCamPos).normalized;*/
 
 		if (screenPos.z <= 0 || screenPos.x < minXY.x || screenPos.x > maxXY.x || screenPos.y < minXY.y || screenPos.y > maxXY.y)
 		{
@@ -572,10 +572,10 @@ public class UIManager : MonoBehaviour
 			{
 				if (!playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(true);
 
-				Vector3 horDir = (new Vector3(playerPos.x, 0, playerPos.z) - new Vector3(currentCamPos.x, 0, currentCamPos.z)).normalized;
+				/*Vector3 horDir = (new Vector3(playerPos.x, 0, playerPos.z) - new Vector3(currentCamPos.x, 0, currentCamPos.z)).normalized;
 				Vector3 forward = player.CurrentViewingCamera.transform.forward;
+				float horAngle = Vector3.SignedAngle(new Vector3(forward.x, 0, forward.z).normalized, horDir, Vector3.up);*/ //Not really sure of the Math why this works
 
-				float horAngle = Vector3.SignedAngle(new Vector3(forward.x, 0, forward.z).normalized, horDir, Vector3.up); //Not Sure why this Works
 				playerPointer.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg); //Set Rotation of Player Pointer to Point at Player
 			}
 			else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);

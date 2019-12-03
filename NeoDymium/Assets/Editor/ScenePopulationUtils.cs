@@ -21,6 +21,7 @@ namespace XellExtraUtils
 		//For Object Replacement
 		GameObject replacementPrefab;
 		bool setNewParent;
+		Transform refParent;
 
 		[MenuItem("Window/Scene Utils")]
 		static void ShowWindow()
@@ -55,6 +56,8 @@ namespace XellExtraUtils
 
 			GUILayout.Label("For Object to Prefab Replacement", EditorStyles.boldLabel);
 			replacementPrefab = EditorGUILayout.ObjectField("Replacement Prefab", replacementPrefab, typeof(GameObject), false) as GameObject;
+			setNewParent = EditorGUILayout.Toggle("Set New Parent When Replace?", setNewParent);
+			refParent = EditorGUILayout.ObjectField("Replacement Prefab New Parent", refParent, typeof(Transform), true) as Transform;
 
 			if (GUILayout.Button("Replace Objects to Prefabs")) ReplaceSelectedWithNewObjects();
 		}
@@ -97,7 +100,7 @@ namespace XellExtraUtils
 			if (replacementPrefab == null) return;
 			foreach (GameObject obj in Selection.objects)
 			{
-				Transform parent = obj.transform.parent;
+				Transform parent = setNewParent ? refParent : obj.transform.parent;
 
 				Vector3 position = obj.transform.position;
 				Quaternion rotation = obj.transform.rotation;

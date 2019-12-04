@@ -8,9 +8,8 @@ using TMPro;
 public class MainMenu : MonoBehaviour
 {
 	[Header("Menus")] //Using Rect Transform in case there needs to be animation in the Future
-	[SerializeField] RectTransform backgroundOverlay;
-	[SerializeField] float backgroundOverlayDefaultXSize;
-	[SerializeField] Image mainMenuOverlay;
+	[SerializeField] RectTransform menuOverlay;
+	[SerializeField] float overlayFullSize;
 	[SerializeField] float overlayLerpTime;
 	[SerializeField] bool isOpened; //Check if Settings/Credits Page is opened
 	[SerializeField] bool isLerping;
@@ -30,10 +29,9 @@ public class MainMenu : MonoBehaviour
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 
-		backgroundOverlayDefaultXSize = backgroundOverlay.sizeDelta.x;
-		backgroundOverlay.sizeDelta = new Vector2(0, backgroundOverlay.sizeDelta.y);
-
-		mainMenuOverlay.color = Color.clear;
+		overlayFullSize = menuOverlay.sizeDelta.x;
+		menuOverlay.sizeDelta = new Vector2(0, menuOverlay.sizeDelta.y);
+		if (!menuOverlay.gameObject.activeSelf) menuOverlay.gameObject.SetActive(true);
 
 		mainMenuButtons = buttonParent.GetComponentsInChildren<Button>();
 		audioSource = GetComponent<AudioSource> ();
@@ -48,28 +46,28 @@ public class MainMenu : MonoBehaviour
 
 	void LerpBackgroundOverlay()
 	{
-		overlayLerpTime = isOpened ? Mathf.Min(overlayLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(overlayLerpTime - Time.deltaTime * 5, 0);
-		float x = Mathf.Lerp(0, backgroundOverlayDefaultXSize, overlayLerpTime);
-		backgroundOverlay.sizeDelta = new Vector2(x, backgroundOverlay.sizeDelta.y);
+		overlayLerpTime = isOpened ? Mathf.Min(overlayLerpTime + Time.deltaTime * 3.5f, 1) : Mathf.Max(overlayLerpTime - Time.deltaTime * 3.5f, 0);
+		float x = Mathf.Lerp(0, overlayFullSize, overlayLerpTime);
+		menuOverlay.sizeDelta = new Vector2(x, menuOverlay.sizeDelta.y);
 
-		mainMenuOverlay.color = Color.Lerp(Color.clear, new Color(0, 0, 0, 0.75f), overlayLerpTime);
+		//mainMenuOverlay.color = Color.Lerp(Color.clear, new Color(0, 0, 0, 0.75f), overlayLerpTime);
 
 		float alpha = 1 - overlayLerpTime;
 		foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = new Color(mainMenuButton.targetGraphic.color.r, mainMenuButton.targetGraphic.color.g, mainMenuButton.targetGraphic.color.b, alpha);
-		gameTitle.color = new Color(gameTitle.color.r, gameTitle.color.g, gameTitle.color.b, alpha);
+		//gameTitle.color = new Color(gameTitle.color.r, gameTitle.color.g, gameTitle.color.b, alpha);
 
 		if (overlayLerpTime >= 1 && isOpened)
 		{
-			backgroundOverlay.sizeDelta = new Vector2(backgroundOverlayDefaultXSize, backgroundOverlay.sizeDelta.y);
-			mainMenuOverlay.color = new Color(0, 0, 0, 0.75f);
+			menuOverlay.sizeDelta = new Vector2(overlayFullSize, menuOverlay.sizeDelta.y);
+			//mainMenuOverlay.color = new Color(0, 0, 0, 0.75f);
 			foreach (Button mainMenuButton in mainMenuButtons) mainMenuButton.targetGraphic.color = ColorUtils.ChangeAlpha(mainMenuButton.targetGraphic.color, 0);
 			isLerping = false;
 			lerpFunctions -= LerpBackgroundOverlay;
 		}
 		else if (overlayLerpTime <= 0 && !isOpened)
 		{
-			backgroundOverlay.sizeDelta = new Vector2(0, backgroundOverlay.sizeDelta.y);
-			mainMenuOverlay.color = Color.clear;
+			menuOverlay.sizeDelta = new Vector2(0, menuOverlay.sizeDelta.y);
+			//mainMenuOverlay.color = Color.clear;
 			foreach (Button mainMenuButton in mainMenuButtons)
 			{
 				mainMenuButton.interactable = true;

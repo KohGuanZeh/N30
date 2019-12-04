@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -150,8 +149,8 @@ public class PatrollingAI : MonoBehaviour
 		spottingPlayer = true;
 		findingPlayer = true;
 		firstIdle = true;
-		ai.camera.transform.rotation = Quaternion.LookRotation (player.transform.position - ai.camera.transform.position);
-		head.rotation = Quaternion.LookRotation (player.transform.position - head.position);
+		ai.camera.transform.rotation = Quaternion.LookRotation (player.transform.position - ai.camera.transform.position + Vector3.up * 0.75f);
+		head.rotation = Quaternion.LookRotation (player.transform.position - head.position + Vector3.up * 0.75f);
 	}
 
 	public IEnumerator IdleLookAround ()

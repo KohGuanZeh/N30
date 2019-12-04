@@ -960,7 +960,6 @@ public class UIManager : MonoBehaviour
 	{
 		//Need a Proper Respawn
 		Time.timeScale = 1;
-		PlayerPrefs.DeleteKey("Checkpoint");
 		soundManager.PlaySound (soundManager.click);
 		LoadingScreen.inst.LoadScene(SceneManager.GetActiveScene().name);
 		//SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);

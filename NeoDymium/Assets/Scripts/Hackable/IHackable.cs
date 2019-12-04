@@ -25,6 +25,8 @@ public class IHackable : MonoBehaviour
 	public HackableType hackableType; //Hackable Type is Declared in Respective Start Functions
 	public Collider col;
 	public Collider controllerCol;
+	[SerializeField] GameObject hackableMeshParent;
+	[SerializeField] Transform[] hackableMeshes;
 	
 	[Header ("Hacking Related Variables")]
 	public new Camera camera;
@@ -92,6 +94,8 @@ public class IHackable : MonoBehaviour
 		{
 			renderersToChangeMaterial[i].material.SetColor ("_BaseColor", GetHackableMaterialColor (color));
 		}
+
+		hackableMeshes = hackableMeshParent.GetComponentsInChildren<Transform>();
 	}
 
 	public static Color GetHackableMaterialColor (ColorIdentifier color)
@@ -293,11 +297,13 @@ public class IHackable : MonoBehaviour
 
 		hacked = true;
 		areaNameUpdated = false;
+		foreach (Transform mesh in hackableMeshes) mesh.gameObject.layer = LayerMask.NameToLayer("Cull Hackable");
 	}
 
 	public virtual void OnUnhack()
 	{
 		hacked = false;
+		foreach (Transform mesh in hackableMeshes) mesh.gameObject.layer = LayerMask.NameToLayer("Hackable Interactable"); 
 	}
 
 	//For Control Panel's Access

@@ -212,14 +212,14 @@ public class UIManager : MonoBehaviour
 
 		foreach (Image detectionGauge in detectionGauges) detectionGauge.fillAmount = (player.detectionGauge / player.detectionThreshold);
 
-		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver) PausePlay();
+		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver && !LoadingScreen.inst.isLoading) PausePlay();
 
 		if (action != null) action();
 	}
 
 	public void GameOver()
 	{
-		PlayerPrefs.SetInt ("Last Objective Saved", objM.currentGoalNumber);
+		//PlayerPrefs.SetInt ("Last Objective Saved", objM.currentGoalNumber);
 
 		isGameOver = true;
 		Time.timeScale = 0;

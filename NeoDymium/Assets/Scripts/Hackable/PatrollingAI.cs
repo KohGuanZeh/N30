@@ -377,7 +377,7 @@ public class PatrollingAI : MonoBehaviour
 	public void ResetHeadRotation ()
 	{
 		head.localEulerAngles = headStartingRotation;
-		ai.camera.transform.localEulerAngles = headStartingRotation;
+		ai.camera.transform.localEulerAngles = Vector3.zero;
 	}
 
 	IEnumerator MoveAcrossNavMeshLink ()

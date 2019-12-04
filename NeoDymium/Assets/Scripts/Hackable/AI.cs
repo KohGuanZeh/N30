@@ -132,8 +132,10 @@ public class AI : IHackable
 		camera.transform.position = unhackCamPos.position;
 
 		//Reset Cam Rotation on Unhack
-		//pitch = 0;
-		//camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
+		pitch = 0;
+		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
+
+		print(camera.transform.localEulerAngles);
 
 		ai.enabled = true;
 		ai.agent.enabled = true;

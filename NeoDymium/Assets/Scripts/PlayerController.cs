@@ -710,6 +710,7 @@ public class PlayerController : MonoBehaviour
 
 				prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
 				prevViewingCamera.enabled = false;
+				prevViewingCamera.rect = new Rect(pos, size);
 				prevViewingCamera = null;
 
 				ui.StartUILerp(true);
@@ -724,12 +725,12 @@ public class PlayerController : MonoBehaviour
 			{
 				isHacking = false;
 
-				size = new Vector2(1, 0);
+				size = new Vector2(1, 1);
 				pos = Vector2.zero;
-				prevViewingCamera.rect = new Rect(pos, size);
-
+				
 				prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
 				prevViewingCamera.enabled = false;
+				prevViewingCamera.rect = new Rect(pos, size);
 				prevViewingCamera = null;
 
 				action -= HackUnhackAnimation;

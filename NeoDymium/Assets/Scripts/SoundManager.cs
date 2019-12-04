@@ -85,23 +85,34 @@ public class SoundManager : MonoBehaviour
 	void Start ()
 	{
 		audioSources = GetComponents<AudioSource> ();
-		foreach (AudioSource source in audioSources)
-		{
-			source.loop = false;
-			source.playOnAwake = false;
-		}
+		for (int i = 0; i < audioSources.Length - 1; i++)
+		{	
+			audioSources[i].loop = false;
+			audioSources[i].playOnAwake = false;
+		} 
 
-		if (PlayerPrefs.GetInt("Scene Index") <= 0) player = null;
-		else player = PlayerController.inst;
+		master.SetFloat ("masterVolume", PlayerPrefs.GetFloat ("Master", Mathf.Log (0.8f) * 20));
+		master.SetFloat ("bgmVolume", PlayerPrefs.GetFloat ("BGM", Mathf.Log (0.8f) * 20));
+		master.SetFloat ("sfxVolume", PlayerPrefs.GetFloat ("SFX", Mathf.Log (0.8f) * 20));
+
+		if (PlayerPrefs.GetInt("Scene Index") <= 0) 
+			player = null;
+		else 
+			player = PlayerController.inst;
 	}
 
 	void Update ()
 	{
-		if (player) transform.position = player.CurrentViewingCamera.transform.position;
+		if (player) 
+			transform.position = player.CurrentViewingCamera.transform.position;
 
 		master.SetFloat ("masterVolume", Mathf.Log (masterSlider.value) * 20);
 		master.SetFloat ("bgmVolume", Mathf.Log (bgmSlider.value) * 20);
 		master.SetFloat ("sfxVolume", Mathf.Log (sfxSlider.value) * 20);
+
+		PlayerPrefs.SetFloat ("Master", Mathf.Log (masterSlider.value) * 20);
+		PlayerPrefs.SetFloat ("BGM", Mathf.Log (bgmSlider.value) * 20);
+		PlayerPrefs.SetFloat ("SFX", Mathf.Log (sfxSlider.value) * 20);
 	}
 
 	public bool IsSourcePlaying (int sourceIndex)

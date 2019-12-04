@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
     {
 		//Reset Check Point everytime load a New Scene. Mainly for Editor Use
 		if (PlayerPrefs.GetInt("Scene Index", 0) != SceneManager.GetActiveScene().buildIndex) PlayerPrefs.DeleteKey("Last Objective Saved");
-
+		print (PlayerPrefs.GetInt("Last Objective Saved", 0));
 		if (!overwriteCheckpoints)
 			checkPointsPassed = PlayerPrefs.GetInt("Last Objective Saved", 0);
 		else
@@ -198,6 +198,8 @@ public class PlayerController : MonoBehaviour
 			Cursor.lockState = disableAllActions ? CursorLockMode.None : CursorLockMode.Locked;
 			Cursor.visible = disableAllActions;
 		}*/
+
+		print (PlayerPrefs.GetInt("Last Objective Saved", 0));
 
 		if (!ui.isPaused && !ui.isGameOver)
 		{

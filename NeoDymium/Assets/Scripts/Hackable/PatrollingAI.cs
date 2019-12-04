@@ -168,8 +168,8 @@ public class PatrollingAI : MonoBehaviour
 			expectedAngleCam = new Vector3 (0, ai.camera.transform.eulerAngles.y - headRotateThreshold, 0);
 			while (rotatedAmt < headRotateThreshold)
 			{
-				head.RotateAround (head.position, head.up, -headRotateSpeed * Time.deltaTime);
-				ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, -headRotateSpeed * Time.deltaTime);
+				head.RotateAround (head.position, Vector3.up, -headRotateSpeed * Time.deltaTime);
+				ai.camera.transform.RotateAround (ai.camera.transform.position, Vector3.up, -headRotateSpeed * Time.deltaTime);
 				rotatedAmt += headRotateSpeed * Time.deltaTime;
 				yield return null;
 			}
@@ -183,8 +183,8 @@ public class PatrollingAI : MonoBehaviour
 			expectedAngleCam = new Vector3 (0, ai.camera.transform.eulerAngles.y - (headRotateThreshold * 2), 0);
 			while (rotatedAmt < headRotateThreshold * 2)
 			{
-				head.RotateAround (head.position, head.up, -headRotateSpeed * Time.deltaTime);
-				ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, -headRotateSpeed * Time.deltaTime);
+				head.RotateAround (head.position, Vector3.up, -headRotateSpeed * Time.deltaTime);
+				ai.camera.transform.RotateAround (ai.camera.transform.position, Vector3.up, -headRotateSpeed * Time.deltaTime);
 				rotatedAmt += headRotateSpeed * Time.deltaTime;
 				yield return null;
 			}
@@ -201,8 +201,8 @@ public class PatrollingAI : MonoBehaviour
 		expectedAngleCam = new Vector3 (0, ai.camera.transform.eulerAngles.y + (headRotateThreshold * 2), 0);
 		while (rotatedAmt < headRotateThreshold * 2)
 		{
-			head.RotateAround (head.position, head.up, headRotateSpeed * Time.deltaTime);
-			ai.camera.transform.RotateAround (ai.camera.transform.position, ai.camera.transform.up, headRotateSpeed * Time.deltaTime);
+			head.RotateAround (head.position, Vector3.up, headRotateSpeed * Time.deltaTime);
+			ai.camera.transform.RotateAround (ai.camera.transform.position, Vector3.up, headRotateSpeed * Time.deltaTime);
 			rotatedAmt += headRotateSpeed * Time.deltaTime;
 			yield return null;
 		}

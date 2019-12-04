@@ -27,8 +27,8 @@ public class AI : IHackable
 	SoundManager soundManager;
 	AudioSource audioSource;
 
-	Light lightCone;
-	DensityVolume densityVolume;
+	public Light lightCone;
+	public DensityVolume densityVolume;
 
 	protected override void Start ()
 	{
@@ -48,8 +48,8 @@ public class AI : IHackable
 
 		base.Start ();
 
-		lightCone = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0).GetComponentInChildren<Light> ();
-		densityVolume = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0).GetComponentInChildren<DensityVolume> ();
+		//lightCone = transform.GetChild (1).GetChild (20).GetChild (1).GetChild (0).GetComponentInChildren<Light> ();
+		//densityVolume = transform.GetChild (1).GetChild (20).GetChild (1).GetChild (0).GetComponentInChildren<DensityVolume> ();
 		lightCone.enabled = true;
 
 		switch (color)

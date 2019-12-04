@@ -46,7 +46,7 @@ public class PatrollingAI : MonoBehaviour
 
 	[HideInInspector] public bool invokedDoorChaseCancel;
 
-	Transform head;
+	public Transform head;
 	Vector3 headStartingRotation;
 
 	[HideInInspector] public bool spottingPlayer = false;
@@ -65,7 +65,7 @@ public class PatrollingAI : MonoBehaviour
 		player = PlayerController.inst;
 		ui = UIManager.inst;
 
-		head = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0);
+		//head = transform.GetChild (1).GetChild (2).GetChild (2).GetChild (0).GetChild (0).GetChild (1).GetChild (0);
 		headStartingRotation = head.localEulerAngles;
 
 		currentIndex = 0;
@@ -105,7 +105,7 @@ public class PatrollingAI : MonoBehaviour
 			if (idleLookAround && !idleRotation && !patrol && reachedIdle)
 			{
 				StopAllCoroutines ();
-				firstIdle = true;
+				//firstIdle = true;
 				StartCoroutine (IdleLookAround ());
 			}
 		}
@@ -224,6 +224,7 @@ public class PatrollingAI : MonoBehaviour
 	public void EndFinding ()
 	{
 		ResetHeadRotation ();
+		firstIdle = true;
 		findingPlayer = false;
 		if (alarmed)
 			ChaseAlarm ();

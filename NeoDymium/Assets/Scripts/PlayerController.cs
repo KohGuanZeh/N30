@@ -146,10 +146,11 @@ public class PlayerController : MonoBehaviour
 		else
 			checkPointsPassed = forcedCheckPointsPassed;
 
+		print("Checkpoint Passed: " + PlayerPrefs.GetInt("Last Objective Saved", 0));
+
 		if (checkPoints.Length > 0)
 		{
-			if (checkPointsPassed >= checkPoints.Length)
-				checkPoints[checkPoints.Length - 1].LoadCheckPoint(); //Failsafe for Editor mode
+			if (checkPointsPassed >= checkPoints.Length) checkPoints[checkPoints.Length - 1].LoadCheckPoint(); //Failsafe for Editor mode
 			else
 				checkPoints[checkPointsPassed].LoadCheckPoint();
 		}

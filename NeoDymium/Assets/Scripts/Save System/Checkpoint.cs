@@ -28,11 +28,11 @@ public class Checkpoint : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.P))
+		/*if (Input.GetKeyDown(KeyCode.P))
 		{
 			PlayerPrefs.DeleteKey("Last Objective Saved");
 			LoadingScreen.inst.LoadScene(SceneManager.GetActiveScene().name);
-		} 
+		}*/
 	}
 
 	public void LoadCheckPoint()

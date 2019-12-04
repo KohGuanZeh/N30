@@ -22,6 +22,8 @@ public class InstructionSection : MonoBehaviour
     {
         if (other.tag == "Player" || other.tag == "Hackable")
         {
+            if (other.tag == "Hackable")
+                other.GetComponent<IHackable>().lockRotation = true;
             uIManager.currentHint.text = string.Empty;
             iM.instructionImage.sprite = instructionPictureToDisplay;
             iM.instructionText.text = instructionToDisplay;

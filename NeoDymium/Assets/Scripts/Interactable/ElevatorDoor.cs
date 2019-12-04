@@ -31,8 +31,17 @@ public class ElevatorDoor : IInteractable
 			gameObject.layer = 0; //Set Layer to Default
 			gameObject.tag = "Untagged";
 
-			soundManager.PlaySound(soundManager.elevatorTravel);
-			StartCoroutine(OpenElevatorDoor());
+			if (PlayerPrefs.GetInt("Last Objective Saved", 0) == 0)
+			{
+				soundManager.PlaySound(soundManager.elevatorTravel);
+				StartCoroutine(OpenElevatorDoor());
+			}
+			else
+			{
+				SetElevatorDoorAsArrived(false);
+				OpenCloseElevatorDoor(true, false);
+				anim.Play("Elevator Open", 0, 1);
+			}
 		}
 	}
 
@@ -86,16 +95,16 @@ public class ElevatorDoor : IInteractable
 		//player.LockPlayerAction(false);
 	}
 
-	void SetElevatorDoorAsArrived()
+	void SetElevatorDoorAsArrived(bool playSound = true)
 	{
 		MaterialUtils.ChangeMaterialEmission(emissiveMat, arrivedColor, arrivedIntensity, "_EmissiveColor");
-		soundManager.PlaySound(soundManager.elevatorBell);
+		if (playSound) soundManager.PlaySound(soundManager.elevatorBell);
 	}
 
-	void OpenCloseElevatorDoor(bool open = true)
+	void OpenCloseElevatorDoor(bool open = true, bool playSound = true)
 	{
 		anim.SetBool("Open", open);
-		soundManager.PlaySound(soundManager.slidingDoor);
+		if (playSound) soundManager.PlaySound(soundManager.slidingDoor);
 	}
 
 	private void OnTriggerEnter(Collider other)

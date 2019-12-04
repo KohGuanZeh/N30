@@ -1,5 +1,83 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &22539911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 22539912}
+  - component: {fileID: 22539914}
+  - component: {fileID: 22539913}
+  m_Layer: 0
+  m_Name: Decals03 (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &22539912
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22539911}
+  m_LocalRotation: {x: 0.000000026692543, y: 0.7071067, z: -0.00000002669254, w: 0.7071068}
+  m_LocalPosition: {x: 1.671, y: 1.982, z: 0.924}
+  m_LocalScale: {x: -1.4572, y: -1.4572, z: -1.4572}
+  m_Children: []
+  m_Father: {fileID: 3337567588446325115}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &22539914
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22539911}
+  m_Mesh: {fileID: -5264726532974990495, guid: 4747649d25fa0f14fa72711f51ec0190, type: 3}
+--- !u!23 &22539913
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22539911}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: f9582d594262a05479fe437e0ebc4957, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
 --- !u!1 &720078771209305147
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +279,7 @@ Transform:
   - {fileID: 1958428285549126582}
   - {fileID: 5605260850517527146}
   - {fileID: 5788876932607779772}
+  - {fileID: 22539912}
   m_Father: {fileID: 8222615890984129710}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -548,6 +627,7 @@ MonoBehaviour:
   whiteDotRaycastHeightOffset: 1.25
   soundManager: {fileID: 0}
   anim: {fileID: 0}
+  opened: 0
   isSpawnPoint: 0
   r: {fileID: 3787710860978420980}
   emissiveMat: {fileID: 0}
@@ -1060,17 +1140,17 @@ PrefabInstance:
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.03606336
+      value: 0.036
       objectReference: {fileID: 0}
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.4371747
+      value: 0.514
       objectReference: {fileID: 0}
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.27343404
+      value: 0.273
       objectReference: {fileID: 0}
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
@@ -1129,13 +1209,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1493833483808846546, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
+      propertyPath: m_Intensity
+      value: 39.788734
+      objectReference: {fileID: 0}
+    - target: {fileID: 1493833483808846546, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
       propertyPath: m_LightShadowCasterMode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
+      propertyPath: m_InnerSpotPercent
+      value: 43.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
       propertyPath: nonLightmappedOnly
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
+      propertyPath: displayLightIntensity
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909332812720178212, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
+      propertyPath: viewBiasScale
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ebb3c85b58baeef44825d9dcc11dc781, type: 3}
@@ -1157,25 +1257,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Aircon
       objectReference: {fileID: 0}
-    - target: {fileID: 5545223667565011655, guid: 4df149fc94f0f954d98da77e810011db,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 8840511450886426836, guid: 4df149fc94f0f954d98da77e810011db,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.020062588
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 8840511450886426836, guid: 4df149fc94f0f954d98da77e810011db,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7424762
+      value: 1.252
       objectReference: {fileID: 0}
     - target: {fileID: 8840511450886426836, guid: 4df149fc94f0f954d98da77e810011db,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.475034
+      value: 0.475
       objectReference: {fileID: 0}
     - target: {fileID: 8840511450886426836, guid: 4df149fc94f0f954d98da77e810011db,
         type: 3}

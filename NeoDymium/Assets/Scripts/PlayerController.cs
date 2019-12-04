@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
 	public float prevDetectionGauge; //Keeps track of Previous Frame Stealth Gauge Value. If there is no change, it means that Player is no longer Detected
 	public float increaseMult;
 	public float decreaseMult;
-	public Outline detectedOutline; //Player Outline
+	//public Outline detectedOutline; //Player Outline
 
 	[Header("Checkpoint System")]
 	public bool overwriteCheckpoints;
@@ -138,6 +138,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+		//Reset Check Point everytime load a New Scene. Mainly for Editor Use
+		if (PlayerPrefs.GetInt("Scene Index", 0) != SceneManager.GetActiveScene().buildIndex) PlayerPrefs.DeleteKey("Last Objective Saved");
+
 		if (!overwriteCheckpoints)
 			checkPointsPassed = PlayerPrefs.GetInt("Last Objective Saved", 0);
 		else
@@ -171,8 +174,8 @@ public class PlayerController : MonoBehaviour
 		anim = GetComponentInChildren<Animator>();
 		playedSound = false;
 
-		detectedOutline = GetComponentInChildren<Outline>();
-		detectedOutline.enabled = false;
+		//detectedOutline = GetComponentInChildren<Outline>();
+		//detectedOutline.enabled = false;
 
 		lockPlayerMove = false;
 		lockPlayerRot = false;
@@ -736,7 +739,7 @@ public class PlayerController : MonoBehaviour
 	public void IncreaseDetectionGauge()
 	{
 		isDetected = true;
-		detectedOutline.enabled = true;
+		//detectedOutline.enabled = true;
 		detectionGauge = Mathf.Min(detectionGauge + Time.deltaTime * increaseMult, detectionThreshold);
 		if (detectionGauge >= detectionThreshold) ui.GameOver();
 	}
@@ -744,7 +747,7 @@ public class PlayerController : MonoBehaviour
 	public void DecreaseDetectionGauge()
 	{
 		if (detectionGauge <= 0 || detectionGauge == detectionThreshold) return;
-		detectedOutline.enabled = false;
+		//detectedOutline.enabled = false;
 		isDetected = false;
 		detectionGauge = Mathf.Max(detectionGauge - Time.deltaTime * decreaseMult, 0);
 		prevDetectionGauge = detectionGauge;

@@ -173,6 +173,12 @@ public class LoadingScreen : MonoBehaviour
 		foreach (Image loadingIcon in loadingIcons) loadingIcon.rectTransform.eulerAngles = Vector3.zero;
 	}
 
+	public void PausePlayWatch(bool pause)
+	{
+		if (pause) watch.Stop();
+		else watch.Start();
+	}
+
 	public double GetTimeElapsed()
 	{
 		return watch.Elapsed.TotalSeconds;

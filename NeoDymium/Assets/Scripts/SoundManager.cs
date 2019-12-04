@@ -90,15 +90,16 @@ public class SoundManager : MonoBehaviour
 			source.loop = false;
 			source.playOnAwake = false;
 		}
-			
-		player = PlayerController.inst;
+
+		if (PlayerPrefs.GetInt("Scene Index") <= 0) player = null;
+		else player = PlayerController.inst;
 	}
 
 	void Update ()
 	{
-		transform.position = player.CurrentViewingCamera.transform.position;
+		if (player) transform.position = player.CurrentViewingCamera.transform.position;
 
-		// master.SetFloat ("masterVolume", Mathf.Log (masterSlider.value) * 20);
+		master.SetFloat ("masterVolume", Mathf.Log (masterSlider.value) * 20);
 		master.SetFloat ("bgmVolume", Mathf.Log (bgmSlider.value) * 20);
 		master.SetFloat ("sfxVolume", Mathf.Log (sfxSlider.value) * 20);
 	}

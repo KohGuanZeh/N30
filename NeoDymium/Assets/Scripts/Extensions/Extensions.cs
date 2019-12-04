@@ -19,7 +19,7 @@ public static class Extensions
 	}
 
 	//Need to Manually Adjust Player's Bounds as the Player Bounds is still a little Bigger than what its meant to be... hence having some frames where you cant see the Player but still registered as detected
-	public static bool RaycastCheck(Collider collider, Camera camera, float offset = 0.2f, bool debugMode = false)
+	public static bool RaycastCheck(Collider collider, Camera camera, float offset = 0.25f, bool debugMode = false)
 	{
 		RaycastHit hit;
 

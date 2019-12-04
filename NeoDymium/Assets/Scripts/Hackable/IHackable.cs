@@ -25,6 +25,7 @@ public class IHackable : MonoBehaviour
 	public HackableType hackableType; //Hackable Type is Declared in Respective Start Functions
 	public Collider col;
 	public Collider controllerCol;
+	[SerializeField] GameObject hackableMesh;
 	
 	[Header ("Hacking Related Variables")]
 	public new Camera camera;

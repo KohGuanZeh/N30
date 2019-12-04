@@ -87,6 +87,42 @@ public class IHackable : MonoBehaviour
 		col = GetComponent<CapsuleCollider>();
 		exclamationMark.SetActive (false);
 		questionMark.SetActive (false);
+
+		for (int i = 0; i < renderersToChangeMaterial.Length; i++)
+		{
+			renderersToChangeMaterial[i].material.SetColor ("_BaseColor", GetHackableMaterialColor (color));
+		}
+	}
+
+	public static Color GetHackableMaterialColor (ColorIdentifier color)
+	{
+		switch (color)
+		{
+			case (ColorIdentifier.blue):
+			{
+				return FindObjectOfType<UIManager> ().blueColor;
+			}
+
+			case (ColorIdentifier.green):
+			{
+				return FindObjectOfType<UIManager> ().greenColor;
+			}
+
+			case (ColorIdentifier.red):
+			{
+				return FindObjectOfType<UIManager> ().redColor;
+			}
+
+			case (ColorIdentifier.yellow):
+			{
+				return FindObjectOfType<UIManager> ().yellowColor;
+			}
+
+			default:
+			{
+				return Color.white;
+			}
+		}
 	}
 
 	protected virtual void Update()

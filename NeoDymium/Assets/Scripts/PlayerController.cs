@@ -222,6 +222,8 @@ public class PlayerController : MonoBehaviour
 				}
 			}
 
+			DetectionSound ();
+
 			if (!lockPlayerAction)
 			{
 				Aim();
@@ -252,16 +254,17 @@ public class PlayerController : MonoBehaviour
 
 	void DetectionSound ()
 	{	
-		if (isDetected && !playedSound)
+		if (isDetected && !soundManager.IsSourcePlaying (soundManager.playerDetected.sourceIndex)) //&& !playedSound)
 		{
 			soundManager.PlaySound (soundManager.playerDetected);
-			playedSound = true;
+			//playedSound = true;
 		}	
 		
-		if (!isDetected)
-		{
-			playedSound = false;
-		}
+
+		// if (!isDetected)
+		// {
+		// 	playedSound = false;
+		// }
 	}
 
 	#region Lock Functions

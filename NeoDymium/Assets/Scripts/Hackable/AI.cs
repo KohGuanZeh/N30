@@ -25,23 +25,35 @@ public class AI : IHackable
 
 	[HideInInspector] public Animator anim;
 	SoundManager soundManager;
-	AudioSource audioSource;
+	AudioSource walkAudiosource;
+	AudioSource rotateAudiosource;
+
+	Vector3 lastEuler;
 
 	public Light lightCone;
 	public DensityVolume densityVolume;
+
+	bool secondWalk = false;
 
 	protected override void Start ()
 	{
 		controller = GetComponent<CharacterController>();
 		ai = GetComponent<PatrollingAI>();
 		anim = GetComponentInChildren<Animator>();
-		audioSource = GetComponent<AudioSource> ();
+		walkAudiosource = GetComponents<AudioSource> ()[0];
+		rotateAudiosource = GetComponents<AudioSource> ()[1];
 		distFromGround = GetComponentInChildren<Renderer>().bounds.extents.y + 0.02f;
+
 		soundManager = SoundManager.inst;
-		audioSource.loop = false;
-		audioSource.playOnAwake = false;
-		audioSource.volume = soundManager.aiWalk.volume;
-		audioSource.pitch = soundManager.aiWalk.pitch;
+
+		walkAudiosource.loop = false;
+		walkAudiosource.playOnAwake = false;
+
+		rotateAudiosource.loop = false;
+		rotateAudiosource.playOnAwake = false;
+
+		// audioSource.volume = soundManager.aiWalk.volume;
+		// audioSource.pitch = soundManager.aiWalk.pitch;
 		controller.enabled = false;
 		ai.enabled = true;
 		hackableType = HackableType.AI;
@@ -67,11 +79,12 @@ public class AI : IHackable
 				anim.SetBool ("Moving", true);
 			else
 				anim.SetBool ("Moving", false);
-			Sound ();
+			UnhackedSound ();
 			AdjustIntensity ();
 		}
 		else
 		{
+			HackedSound ();
 			if (controller.velocity.magnitude > 0.1f)
 				anim.SetBool ("Moving", true);
 			else
@@ -96,13 +109,63 @@ public class AI : IHackable
 		}
 	}
 
-	void Sound ()
+	void UnhackedSound ()
 	{
-		if (ai.agent.velocity.sqrMagnitude >= 0 && isGrounded && !audioSource.isPlaying)
-			audioSource.Play ();
+		if (ai.agent.velocity.sqrMagnitude >= 0 && isGrounded && !walkAudiosource.isPlaying)
+		{
+			if (secondWalk)
+			{
+				walkAudiosource.clip = soundManager.unHackedAiWalk.clip;
+			}
+			else
+			{
+				walkAudiosource.clip = soundManager.unHackedAiWalk2.clip;
+			}
+			walkAudiosource.Play ();
+		}
+		
+		if (camera.transform.eulerAngles != lastEuler && !rotateAudiosource.isPlaying)
+		{
+			rotateAudiosource.clip = soundManager.unHackedAiLookAround.clip;
+			rotateAudiosource.Play ();
+		}
+		else if (camera.transform.eulerAngles == lastEuler)
+		{
+			rotateAudiosource.Stop ();
+		}
 
-		if (ai.agent.velocity.sqrMagnitude == 0)
-			audioSource.Stop ();
+		lastEuler = camera.transform.eulerAngles;
+
+		// if (ai.agent.velocity.sqrMagnitude == 0)
+		// 	audioSource.Stop ();
+	}
+
+	void HackedSound ()
+	{
+		if (controller.velocity.sqrMagnitude >= 0 && isGrounded && !walkAudiosource.isPlaying)
+		{
+			if (secondWalk)
+			{
+				walkAudiosource.clip = soundManager.hackedAiWalk.clip;
+			}
+			else
+			{
+				walkAudiosource.clip = soundManager.hackedAiWalk2.clip;
+			}
+			walkAudiosource.Play ();
+		}
+		
+		if (camera.transform.eulerAngles != lastEuler && !rotateAudiosource.isPlaying)
+		{
+			rotateAudiosource.clip = soundManager.hackedAiLookAround.clip;
+			rotateAudiosource.Play ();
+		}
+		else if (camera.transform.eulerAngles == lastEuler)
+		{
+			rotateAudiosource.Stop ();
+		}
+
+		lastEuler = camera.transform.eulerAngles;
 	}
 
 	public override void OnHack ()
@@ -120,7 +183,8 @@ public class AI : IHackable
 		ai.enabled = false;
 		controller.enabled = true;
 		ai.StopAllCoroutines ();
-		audioSource.Stop ();
+		walkAudiosource.Stop ();
+		rotateAudiosource.Stop ();
 		lightCone.enabled = false;
 		//ai.gameObject.AddComponent<Rigidbody> ();
 		//ai.GetComponent<Rigidbody> ().useGravity = false;
@@ -149,6 +213,8 @@ public class AI : IHackable
 		ai.moveAcrossNavMeshesStarted = false;
 		ai.invokedDoorChaseCancel = false;
 		ai.StopAllCoroutines ();
+		walkAudiosource.Stop ();
+		rotateAudiosource.Stop ();
 		lightCone.enabled = true;
 
 		ai.findingPlayer = false;
@@ -203,11 +269,14 @@ public class AI : IHackable
 		controller.Move(velocity * Time.deltaTime);
 
 		//sound
-		if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.aiWalk.sourceIndex))
-			soundManager.PlaySound (soundManager.aiWalk);
+		// if ((velocity.x != 0 || velocity.z != 0) && isGrounded && !soundManager.IsSourcePlaying (soundManager.unHackedAiWalk.sourceIndex))
+		// {
+		// 	soundManager.PlaySound (soundManager.unHackedAiWalk);
+		// }
+			
 
-		if (velocity.x == 0 || velocity.z == 0)
-			soundManager.StopSound (soundManager.aiWalk.sourceIndex);
+		// if (velocity.x == 0 || velocity.z == 0)
+		// 	soundManager.StopSound (soundManager.aiWalk.sourceIndex);
 	}
 
 	void GroundAndSlopeCheck()

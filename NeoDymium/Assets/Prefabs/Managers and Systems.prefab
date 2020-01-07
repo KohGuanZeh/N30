@@ -177,11 +177,36 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     sourceIndex: 1
-  aiWalk:
-    clip: {fileID: 8300000, guid: cd3354796af20c041918a548b89ce101, type: 3}
+  unHackedAiWalk:
+    clip: {fileID: 0}
     volume: 0
-    pitch: 3
-    sourceIndex: 1
+    pitch: 0
+    sourceIndex: 0
+  unHackedAiWalk2:
+    clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    sourceIndex: 0
+  unHackedAiLookAround:
+    clip: {fileID: 8300000, guid: 8abb1e203ea8a4643b77fe92a016650e, type: 3}
+    volume: 1
+    pitch: 1
+    sourceIndex: 0
+  hackedAiWalk:
+    clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    sourceIndex: 0
+  hackedAiWalk2:
+    clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    sourceIndex: 0
+  hackedAiLookAround:
+    clip: {fileID: 8300000, guid: 5824f29b0c609a74f8d9b51ce12b7128, type: 3}
+    volume: 1
+    pitch: 1
+    sourceIndex: 0
   cctvRotate:
     clip: {fileID: 8300000, guid: 4c2b082d6a5be1646bc7c15c0b5befaa, type: 3}
     volume: 1
@@ -213,7 +238,7 @@ MonoBehaviour:
     pitch: 1
     sourceIndex: 4
   playerDetected:
-    clip: {fileID: 8300000, guid: 2dbb253c400a1154ba871d2e830a3a75, type: 3}
+    clip: {fileID: 8300000, guid: 960383f5a40f13a4592113c2495fc49f, type: 3}
     volume: 1
     pitch: 1
     sourceIndex: 4

@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
 	public float crouchSpeed = 5, walkSpeed = 10, runSpeed = 20; //Different Move Speed for Different Movement Action
 	[SerializeField] bool isGrounded, onSlope;
 	[SerializeField] public LayerMask groundLayer;
-	[SerializeField] float slopeForce; //For now manually inputting a value to clamp the Player down. Look for Terry to come up with a fix
+	[SerializeField] float slopeForce;
 	public float groundOffset = 0.125f;
 	public float DistFromGround
 	{
@@ -389,7 +389,7 @@ public class PlayerController : MonoBehaviour
 	{
 		//Debug.DrawLine(transform.position, transform.position + Vector3.up * (playerStandHeight + 0.2f), Color.red, 5);
 		//The Origin should have offset since the Transform.position shift abit due to the Character Controller Collider
-		if (Physics.Raycast(transform.position + (Vector3.up * 0.05f), Vector3.up, playerStandHeight + 0.1f, groundLayer)) return false;
+		if (Physics.Raycast(transform.position + (Vector3.up * 0.075f), Vector3.up, playerStandHeight + 0.1f, groundLayer)) return false;
 		else return true;
 	}
 

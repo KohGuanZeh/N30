@@ -15,6 +15,7 @@ public struct ControlsInfo
 	public float lerpTime; //Lerp Time of Current UI Element
 	public float errorLerpTime; //Lerp Time for Showing Error of Current UI (From Full White to Disabled Color)
 	public Image icon; //Icon of the Controls
+	public Image backdrop; //Backdrop for Controls
 	public TextMeshProUGUI text; //Text of the Controls
 	public Image border; //The Line
 }
@@ -189,6 +190,7 @@ public class UIManager : MonoBehaviour
 			controls[i].border.fillAmount = 0;
 			controls[i].text.color = startColor;
 			controls[i].icon.color = startColor;
+			controls[i].backdrop.color = Color.clear;
 		}
 
 		errorMsg.color = Color.clear;
@@ -811,11 +813,14 @@ public class UIManager : MonoBehaviour
 				controls[i].text.color = controlsColor;
 				controls[i].icon.color = controlsColor;
 
+				controls[i].backdrop.color = Color.Lerp(Color.clear, new Color(0, 0, 0, 0.75f), Mathf.Clamp((controls[i].lerpTime - 0.25f) / 0.75f, 0, 1));
+
 				if (controls[i].lerpTime >= 1 && controls[i].show)
 				{
 					controlsColor = controls[i].hasError ? disabledUIColor : Color.white;
 					controls[i].text.color = controlsColor;
 					controls[i].icon.color = controlsColor;
+					controls[i].backdrop.color = new Color(0, 0, 0, 0.75f);
 					controls[i].border.fillAmount = 1;
 					controls[i].isLerping = false;
 				}
@@ -824,6 +829,7 @@ public class UIManager : MonoBehaviour
 					controlsColor = Color.clear;
 					controls[i].text.color = controlsColor;
 					controls[i].icon.color = controlsColor;
+					controls[i].backdrop.color = controlsColor;
 					controls[i].border.fillAmount = 0;
 					controls[i].isLerping = false;
 				}

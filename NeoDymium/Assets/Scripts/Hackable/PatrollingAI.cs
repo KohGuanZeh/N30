@@ -170,11 +170,13 @@ public class PatrollingAI : MonoBehaviour
 			{
 				head.RotateAround (head.position, Vector3.up, -headRotateSpeed * Time.deltaTime);
 				ai.camera.transform.RotateAround (ai.camera.transform.position, Vector3.up, -headRotateSpeed * Time.deltaTime);
+				head.transform.localPosition = Vector3.zero;
 				rotatedAmt += headRotateSpeed * Time.deltaTime;
 				yield return null;
 			}
 			head.eulerAngles = expectedAngle;
 			ai.camera.transform.eulerAngles = expectedAngleCam;
+			head.transform.localPosition = Vector3.zero;
 		}
 		else
 		{
@@ -185,11 +187,13 @@ public class PatrollingAI : MonoBehaviour
 			{
 				head.RotateAround (head.position, Vector3.up, -headRotateSpeed * Time.deltaTime);
 				ai.camera.transform.RotateAround (ai.camera.transform.position, Vector3.up, -headRotateSpeed * Time.deltaTime);
+				head.transform.localPosition = Vector3.zero;
 				rotatedAmt += headRotateSpeed * Time.deltaTime;
 				yield return null;
 			}
 			head.eulerAngles = expectedAngle;
 			ai.camera.transform.eulerAngles = expectedAngleCam;
+			head.transform.localPosition = Vector3.zero;
 		}
 
 		firstIdle = false;
@@ -203,12 +207,14 @@ public class PatrollingAI : MonoBehaviour
 		{
 			head.RotateAround (head.position, Vector3.up, headRotateSpeed * Time.deltaTime);
 			ai.camera.transform.RotateAround (ai.camera.transform.position, Vector3.up, headRotateSpeed * Time.deltaTime);
+			head.transform.localPosition = Vector3.zero;
 			rotatedAmt += headRotateSpeed * Time.deltaTime;
 			yield return null;
 		}
 
 		head.eulerAngles = expectedAngle;
 		ai.camera.transform.eulerAngles = expectedAngleCam;
+		head.transform.localPosition = Vector3.zero;
 
 		yield return new WaitForSeconds (headRotateInterval);
 

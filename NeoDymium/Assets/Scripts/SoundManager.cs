@@ -39,8 +39,10 @@ public class SoundManager : MonoBehaviour
 
 	[Header ("Player")]
 	public Audio playerWalk;
+	public Audio playerWalk2;
 	public Audio playerCrouch; //sourceindex 0
 	public Audio playerCrouchWalk;
+	public Audio playerCrouchWalk2;
 
 	[Header ("AI")]
 	public Audio aiWalk;

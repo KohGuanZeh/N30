@@ -25,6 +25,7 @@ public class IHackable : MonoBehaviour
 	public HackableType hackableType; //Hackable Type is Declared in Respective Start Functions
 	public Collider col;
 	public Collider controllerCol;
+	public bool changeColourAtStart;
 	[SerializeField] GameObject hackableMeshParent;
 	[SerializeField] Transform[] hackableMeshes;
 	
@@ -90,9 +91,12 @@ public class IHackable : MonoBehaviour
 		exclamationMark.SetActive (false);
 		questionMark.SetActive (false);
 
-		for (int i = 0; i < renderersToChangeMaterial.Length; i++)
+		if (changeColourAtStart)
 		{
-			renderersToChangeMaterial[i].material.SetColor ("_BaseColor", GetHackableMaterialColor (color));
+			for (int i = 0; i < renderersToChangeMaterial.Length; i++)
+			{
+				renderersToChangeMaterial[i].material.SetColor ("_BaseColor", GetHackableMaterialColor (color));
+			}
 		}
 
 		hackableMeshes = hackableMeshParent.GetComponentsInChildren<Transform>();

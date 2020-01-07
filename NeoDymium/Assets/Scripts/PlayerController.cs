@@ -92,6 +92,8 @@ public class PlayerController : MonoBehaviour
 	Pass previousPass;
 	private bool areaNameUpdated = false;
 	SoundManager soundManager;
+	bool secondWalkSound = false;
+	bool secondCrouchWalkSound = false;
 	bool playedSound;
 	InstructionsManager instructManager;
 
@@ -339,18 +341,37 @@ public class PlayerController : MonoBehaviour
 		//sound
 		if (horVelocity.sqrMagnitude != 0 && isGrounded && !soundManager.IsSourcePlaying (soundManager.playerWalk.sourceIndex))
 		{
+			//soundManager.StopSound (soundManager.playerWalk.sourceIndex);
 			if (isCrouching)
 			{
-				soundManager.PlaySound (soundManager.playerCrouchWalk);
+				if (!secondCrouchWalkSound)
+				{
+					soundManager.PlaySound (soundManager.playerCrouchWalk);
+					secondCrouchWalkSound = true;
+				}
+				else
+				{
+					soundManager.PlaySound (soundManager.playerCrouchWalk2);
+					secondCrouchWalkSound = false;
+				}
 			}
 			else
 			{
-				soundManager.PlaySound (soundManager.playerWalk);
+				if (!secondWalkSound)
+				{
+					soundManager.PlaySound (soundManager.playerWalk);
+					secondWalkSound = true;
+				}
+				else
+				{
+					soundManager.PlaySound (soundManager.playerWalk2);
+					secondWalkSound = false;
+				}
 			}
 		}
 
-		if (velocity.x == 0 || velocity.z == 0)
-			soundManager.StopSound (soundManager.playerWalk.sourceIndex);
+		// if (velocity.x == 0 || velocity.z == 0)
+		// 	soundManager.StopSound (soundManager.playerWalk.sourceIndex);
 	}
 
 	void GroundAndSlopeCheck()

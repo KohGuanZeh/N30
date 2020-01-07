@@ -87,9 +87,6 @@ public class PlayerController : MonoBehaviour
 	[Header ("Others")]
 	public Action action;
 	public PostProcessProfile ppp;
-	public bool holdingPass;
-	public bool vipPass;
-	Pass previousPass;
 	private bool areaNameUpdated = false;
 	SoundManager soundManager;
 	bool secondWalkSound = false;

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro;
 
 public class EmergencyAlarm : IInteractable
 {
@@ -14,6 +15,9 @@ public class EmergencyAlarm : IInteractable
 	[SerializeField] Material[] screenMats;
 	[SerializeField] Color defaultColor, alertColor;
 	[SerializeField] float defaultIntensity, alertIntensity;
+	[SerializeField] GameObject defaultHud, errorHud, passcodeUI;
+	[SerializeField] Animator anim;
+	[SerializeField] TextMeshProUGUI passcode;
 
 	bool alarmed;
 	public bool active;
@@ -28,7 +32,8 @@ public class EmergencyAlarm : IInteractable
 		alarms = FindObjectsOfType<EmergencyAlarm> ();
 		audioSources = GetComponents<AudioSource> ();
 		uIManager = UIManager.inst;
-		screenMats = MaterialUtils.GetMaterialsFromRenderers(screenRs);
+
+		//screenMats = MaterialUtils.GetMaterialsFromRenderers(screenRs);
 	}
 
 	public override void Interact ()
@@ -60,13 +65,20 @@ public class EmergencyAlarm : IInteractable
 
 		alarmed = true;
 		audioSources[1].Play ();
+		passcodeUI.SetActive(true);
+		anim.SetTrigger("Interact");
 		Invoke ("StartAlarm", audioSources[1].clip.length);
 	}
 
 	void StartAlarm ()
 	{
 		audioSources[0].Play ();
-		MaterialUtils.ChangeMaterialsEmission(screenMats, alertColor, alertIntensity, "_EmissiveColor");
+
+		//MaterialUtils.ChangeMaterialsEmission(screenMats, alertColor, alertIntensity, "_EmissiveColor");
+		defaultHud.SetActive(false);
+		errorHud.SetActive(true);
+		anim.SetBool("Error", true);
+
 		if (!tutHasFinished && uIManager.currentHint.gameObject.activeInHierarchy)
 		{
 			uIManager.currentHint.text = string.Empty;
@@ -96,12 +108,30 @@ public class EmergencyAlarm : IInteractable
 		active = false;
 		audioSources[0].Stop ();
 		CancelInvoke ();
-		MaterialUtils.ChangeMaterialsEmission(screenMats, defaultColor, defaultIntensity, "_EmissiveColor");
+
+		//MaterialUtils.ChangeMaterialsEmission(screenMats, defaultColor, defaultIntensity, "_EmissiveColor");
+
+		defaultHud.SetActive(true);
+		errorHud.SetActive(false);
+		passcodeUI.SetActive(false);
+		passcode.text = string.Empty;
+		anim.SetBool("Error", false);
+
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = false;
 			ai.sentBack = false;
 		}
+	}
+
+	void AddAsterisk()
+	{
+		passcode.text += "*";
+	}
+
+	void FlashError()
+	{
+
 	}
 
 	public override string GetError(int key = 0)

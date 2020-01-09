@@ -45,7 +45,15 @@ public class SoundManager : MonoBehaviour
 	public Audio playerCrouchWalk2;
 
 	[Header ("AI")]
-	public Audio aiWalk;
+	public Audio unHackedAiWalk;
+	public Audio unHackedAiWalk2;
+	//public Audio unHackedAiIdle;
+	public Audio unHackedAiLookAround;
+
+	public Audio hackedAiWalk;
+	public Audio hackedAiWalk2;
+	//public Audio hackedAiIdle;
+	public Audio hackedAiLookAround;
 	
 	[Header ("CCTV")]
 	public Audio cctvRotate; //sourceindex 1

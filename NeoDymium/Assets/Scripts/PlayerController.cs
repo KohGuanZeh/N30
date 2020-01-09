@@ -87,9 +87,6 @@ public class PlayerController : MonoBehaviour
 	[Header ("Others")]
 	public Action action;
 	public PostProcessProfile ppp;
-	public bool holdingPass;
-	public bool vipPass;
-	Pass previousPass;
 	private bool areaNameUpdated = false;
 	SoundManager soundManager;
 	bool secondWalkSound = false;
@@ -222,6 +219,8 @@ public class PlayerController : MonoBehaviour
 				}
 			}
 
+			DetectionSound ();
+
 			if (!lockPlayerAction)
 			{
 				Aim();
@@ -252,16 +251,17 @@ public class PlayerController : MonoBehaviour
 
 	void DetectionSound ()
 	{	
-		if (isDetected && !playedSound)
+		if (isDetected && !soundManager.IsSourcePlaying (soundManager.playerDetected.sourceIndex)) //&& !playedSound)
 		{
 			soundManager.PlaySound (soundManager.playerDetected);
-			playedSound = true;
+			//playedSound = true;
 		}	
 		
-		if (!isDetected)
-		{
-			playedSound = false;
-		}
+
+		// if (!isDetected)
+		// {
+		// 	playedSound = false;
+		// }
 	}
 
 	#region Lock Functions

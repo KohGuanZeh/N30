@@ -111,7 +111,7 @@ public class AI : IHackable
 
 	void UnhackedSound ()
 	{
-		if (ai.agent.velocity.sqrMagnitude >= 0 && isGrounded && !walkAudiosource.isPlaying)
+		if (ai.agent.velocity.sqrMagnitude > 0 && !walkAudiosource.isPlaying)
 		{
 			if (secondWalk)
 			{
@@ -142,7 +142,7 @@ public class AI : IHackable
 
 	void HackedSound ()
 	{
-		if (controller.velocity.sqrMagnitude >= 0 && isGrounded && !walkAudiosource.isPlaying)
+		if (controller.velocity.sqrMagnitude > 0 && isGrounded && !walkAudiosource.isPlaying)
 		{
 			if (secondWalk)
 			{

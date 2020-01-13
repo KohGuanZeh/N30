@@ -233,7 +233,6 @@ public class AI : IHackable
 	{
 		if (!lockRotation) PlayerRotation ();
 		if (!lockRotation) PlayerMovement ();
-		ui.ShiftAIArrows(pitch);
 	}
 
 	void PlayerRotation()

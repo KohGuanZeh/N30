@@ -653,7 +653,7 @@ public class PlayerController : MonoBehaviour
 			hackingLerpTime = 0;
 			ui.ResetInstructionsDisplayOnHack();
 			ui.SetUIColors(hackedObj.color);
-			ui.StartUILerp(false);
+			ui.StartUILerp(true);
 			action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera
 		}
 
@@ -688,7 +688,7 @@ public class PlayerController : MonoBehaviour
 
 		//hackingLerpTime = 1;
 		ui.SetUIColors();
-		ui.StartUILerp(false);
+		ui.StartUILerp(true);
 		action -= HackUnhackAnimation;
 		action += HackUnhackAnimation; //If Hackable has Camera, do Animation with Camera
 	}
@@ -704,7 +704,7 @@ public class PlayerController : MonoBehaviour
 		prevViewingCamera = null;
 
 		ui.SetUIColors();
-		ui.StartUILerp(false);
+		ui.StartUILerp(true);
 
 		isHacking = false;
 	}
@@ -758,7 +758,7 @@ public class PlayerController : MonoBehaviour
 				prevViewingCamera = null;*/
 
 				currentViewingCamera.fieldOfView = 60;
-				ui.StartUILerp(true);
+				//ui.StartUILerp(true);
 				cameraSwapped = false;
 				action -= HackUnhackAnimation;
 			}

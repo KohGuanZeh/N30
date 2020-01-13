@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] Camera prevViewingCamera;
 	[SerializeField] float hackingLerpTime;
 	[SerializeField] bool isHacking = false; //Returns true if Player is undergoing Hacking Animation
+	[SerializeField] bool cameraSwapped;
 	public bool isFocusing = false; //Check if Player is focusing on any Interactable or Hackable. //Passed to UI Manager to check what Info it should Display
 	public bool inSpInteraction = false; //Checks if Player is in Special Interaction. Special Interaction prevents Players from Crouching, Moving and Rotating and Cursor will appear
 	public bool inHackable = false; //Checks if the Player is in a Hackable Object
@@ -643,12 +644,11 @@ public class PlayerController : MonoBehaviour
 			prevViewingCamera = currentViewingCamera;
 			currentViewingCamera = hackedObj.camera;
 
-			currentViewingCamera.rect = new Rect(Vector2.zero, new Vector2(1, 0));
-
 			prevViewingCamera.depth = 1; //If Previous Viewing Camera is Player Camera, Change the Depth to 0 instead of 1
 			currentViewingCamera.depth = 2;
 
-			currentViewingCamera.enabled = true;
+			/*currentViewingCamera.rect = new Rect(Vector2.zero, new Vector2(1, 0));
+			currentViewingCamera.enabled = true;*/
 
 			hackingLerpTime = 0;
 			ui.ResetInstructionsDisplayOnHack();
@@ -684,7 +684,7 @@ public class PlayerController : MonoBehaviour
 		if (forced) return; //If Forced Unhacking, immediately do not lerp Camera Animation
 
 		ResetHeadBob(GetHeadRefTransform()); //Need to somehow get Head Bobbing for AI
-		currentViewingCamera.enabled = true;
+		//currentViewingCamera.enabled = true;
 
 		//hackingLerpTime = 1;
 		ui.SetUIColors();
@@ -714,46 +714,95 @@ public class PlayerController : MonoBehaviour
 		hackingLerpTime =  inHackable ? Mathf.Min(hackingLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(hackingLerpTime - Time.deltaTime * 5, 0);
 		//Since the Camera Size only Clamps from 0 to 1, it is essentailly the same as Hacking Lerp Time.
 		//Therefore the Camera Viewport's size.y = hackingLerpTime
-		Vector2 size = new Vector2(1, hackingLerpTime);
-		Vector2 pos = new Vector2(0, 0.5f - (hackingLerpTime / 2));
+		
+		//Vector2 size = new Vector2(1, hackingLerpTime);
+		//Vector2 pos = new Vector2(0, 0.5f - (hackingLerpTime / 2));
 
 		if (inHackable)
 		{
-			currentViewingCamera.rect = new Rect(pos, size);
+			if (hackingLerpTime > 0.5f)
+			{
+				float fov = Mathf.Lerp(0, 60, hackingLerpTime);
+				currentViewingCamera.fieldOfView = fov;
+
+				if (!cameraSwapped)
+				{
+					currentViewingCamera.enabled = true;
+
+					prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
+					prevViewingCamera.fieldOfView = 60;
+					prevViewingCamera.enabled = false;
+					prevViewingCamera = null;
+
+					cameraSwapped = true;
+				}				
+			}
+			else
+			{
+				float fov = Mathf.Lerp(60, 0, hackingLerpTime);
+				prevViewingCamera.fieldOfView = fov;
+			}
+			
+			//currentViewingCamera.rect = new Rect(pos, size);
 
 			if (hackingLerpTime >= 1)
 			{
 				isHacking = false;
-
-				size = Vector2.one;
+				/*size = Vector2.one;
 				pos = Vector2.zero;
 				currentViewingCamera.rect = new Rect(pos, size);
 
 				prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
 				prevViewingCamera.enabled = false;
 				prevViewingCamera.rect = new Rect(pos, size);
-				prevViewingCamera = null;
+				prevViewingCamera = null;*/
 
+				currentViewingCamera.fieldOfView = 60;
 				ui.StartUILerp(true);
+				cameraSwapped = false;
 				action -= HackUnhackAnimation;
 			}
 		}
 		else //If going back to Player Camera, tweak the Prev Viewing Camera instead
 		{
-			prevViewingCamera.rect = new Rect(pos, size);
+			if (hackingLerpTime < 0.5f)
+			{
+				float fov = Mathf.Lerp(60, 179, hackingLerpTime);
+				currentViewingCamera.fieldOfView = fov;
+
+				if (!cameraSwapped)
+				{
+					currentViewingCamera.enabled = true;
+
+					prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
+					prevViewingCamera.fieldOfView = 60;
+					prevViewingCamera.enabled = false;
+					prevViewingCamera = null;
+
+					cameraSwapped = true;
+				}
+			}
+			else
+			{
+				float fov = Mathf.Lerp(179, 60, hackingLerpTime);
+				prevViewingCamera.fieldOfView = fov;
+			}
+
+			//prevViewingCamera.rect = new Rect(pos, size);
 
 			if (hackingLerpTime <= 0)
 			{
 				isHacking = false;
-
-				size = new Vector2(1, 1);
+				/*size = new Vector2(1, 1);
 				pos = Vector2.zero;
 				
 				prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
 				prevViewingCamera.enabled = false;
 				prevViewingCamera.rect = new Rect(pos, size);
-				prevViewingCamera = null;
+				prevViewingCamera = null;*/
 
+				currentViewingCamera.fieldOfView = 60;
+				cameraSwapped = false;
 				action -= HackUnhackAnimation;
 			}
 		}

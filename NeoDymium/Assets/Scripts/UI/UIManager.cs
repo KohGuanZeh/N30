@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
 	public static UIManager inst;
 	[SerializeField] PlayerController player;
 	[SerializeField] ColorIdentifier currentColor = ColorIdentifier.none;
-	[SerializeField] Animator guiAnim; //Stand in for now... Will think about how to better integrate Animations
+	[SerializeField] Animator guiAnim; 
 	[SerializeField] Vector2 screenSize;
 	[SerializeField] Resolution baseRes, currentRes;
 
@@ -48,12 +48,16 @@ public class UIManager : MonoBehaviour
 	public GameObject hackableUI; //All Common UI for Hackables
 	public GameObject controlsGrp; //Stores the Graphics for Controls and Errors
 
+	[Header("Player UI Items")]
+	[SerializeField] Graphic[] playerUIElements;
+
 	[Header("CCTV UI Items")]
 	[SerializeField] Image[] cctvUIBorders;
 
 	[Header("AI UI Items")]
-	[SerializeField] Image[] aiUIBorders;
-	[SerializeField] Image[] aiArrows;
+	[SerializeField] Image aiUIGrid;
+	[SerializeField] Graphic[] aiUIElements;
+	[SerializeField] GameObject dottedItems;
 
 	[Header("Common UI Elements")]
 	[SerializeField] Graphic[] unhackInstructions; //For now Store the Unhack Instructions as a Graphic
@@ -160,15 +164,6 @@ public class UIManager : MonoBehaviour
 			cctvUIBorder.rectTransform.anchoredPosition = Vector2.zero;
 			cctvUIBorder.rectTransform.localScale = Vector3.one  * 1.5f;
 			cctvUIBorder.color = Color.clear;
-		}
-
-		for (int i = 0; i < aiUIBorders.Length; i++)
-		{
-			if (i < 4) aiUIBorders[i].rectTransform.anchoredPosition = Vector2.zero;
-			else aiUIBorders[i].rectTransform.anchoredPosition = new Vector2(0, 50);
-
-			aiUIBorders[i].rectTransform.localScale = Vector3.one * 1.25f;
-			aiUIBorders[i].color = Color.clear;
 		}
 
 		hackableName.color = Color.clear;
@@ -324,6 +319,7 @@ public class UIManager : MonoBehaviour
 			case HackableType.CCTV:
 				hackableUI.SetActive(true);
 				cctvUI.SetActive(true);
+				guiAnim.SetBool("In Hackable", true);
 
 				aiUI.SetActive(false);
 				playerUI.SetActive(false);
@@ -332,6 +328,7 @@ public class UIManager : MonoBehaviour
 			case HackableType.AI:
 				hackableUI.SetActive(true);
 				aiUI.SetActive(true);
+				guiAnim.SetBool("In Hackable", true);
 
 				cctvUI.SetActive(false);
 				playerUI.SetActive(false);
@@ -339,6 +336,7 @@ public class UIManager : MonoBehaviour
 
 			default:
 				playerUI.SetActive(true);
+				guiAnim.SetBool("In Hackable", false);
 
 				playerPointer.gameObject.SetActive(false); //Set Pointer To Inactive whenever Unhack
 				hackableUI.SetActive(false);
@@ -351,10 +349,12 @@ public class UIManager : MonoBehaviour
 	public void StartUILerp(bool fadeIn)
 	{
 		action -= UITemplatesFadeAnim; //Remove to prevent Errors
+		if (fadeIn) uiLerpTime = 0;
 
 		uiFadeIn = fadeIn;
 		uiFadeInProgress = true;
 		//Only Change Name if in Hackable when UI is Fading In
+		dottedItems.SetActive(false); //Always Set the Dotted Items in AI UI to false whenever the Start of a Transition
 		if (player.inHackable && fadeIn) ChangeHackableDisplayName(player.hackedObj.roomName, player.hackedObj.hackableName);
 		action += UITemplatesFadeAnim;
 	}
@@ -665,123 +665,103 @@ public class UIManager : MonoBehaviour
 
 			case HackableType.AI:
 
-				float outerBorderX = 75;
-				float innerBorderX = 275;
+				foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = ColorUtils.ChangeAlpha(aiUIElement.color, uiLerpTime);
 
 				Color targetColorA = targetColor;
-				targetColorA.a = 1;
-
 				targetColorA = Color.Lerp(Color.clear, targetColorA, uiLerpTime);
 
-				for (int i = 0; i < aiUIBorders.Length; i++)
-				{
-					int xMult = aiUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
-
-					if (i < 4) aiUIBorders[i].rectTransform.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2((i > 1 ? innerBorderX : outerBorderX) * xMult, 0), Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
-					else aiUIBorders[i].rectTransform.anchoredPosition = Vector2.Lerp(new Vector2(0, 50), new Vector2(0, 85), Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
-
-					aiUIBorders[i].rectTransform.localScale = Vector3.Lerp(new Vector3(1.25f, 1.25f, 1.25f), Vector3.one, Mathf.Clamp(uiLerpTime / 0.75f, 0, 1));
-					aiUIBorders[i].color = targetColorA;
-				}
-
-				foreach (Image arrow in aiArrows) arrow.color = targetColorA;
+				aiUIGrid.color = targetColorA;
 				break;
 
 			default:
+
 				isPlayer = true;
+				foreach (Graphic playerUI in playerUIElements) playerUI.color = Color.Lerp(Color.clear, targetColor, uiLerpTime);
+
 				break;
 		}
 
-		if (isPlayer) //Cut Lerping if is Player
+		/*if (isPlayer) //Cut Lerping if is Player
 		{
 			uiLerpTime = uiFadeIn ? 1 : 0;
 			uiFadeInProgress = false;
 			action -= UITemplatesFadeAnim;
 			return;
-		}
+		}*/
 
 		//Lerping of Common UI Elements
 		float lerpTimeLate = Mathf.Clamp((uiLerpTime - 0.5f) / 0.5f, 0, 1);
-		hackableName.color = Color.Lerp(Color.clear, targetColor, lerpTimeLate);
-		for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = Color.Lerp(Color.clear, unhackGraphicsColor[i], lerpTimeLate);
+
+		if (!isPlayer)
+		{
+			hackableName.color = Color.Lerp(Color.clear, targetColor, lerpTimeLate);
+			for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = Color.Lerp(Color.clear, unhackGraphicsColor[i], lerpTimeLate);
+		}
 
 		if (uiLerpTime >= 1 && uiFadeIn)
 		{
-			switch (type)
+			if (isPlayer) foreach (Graphic playerUI in playerUIElements) playerUI.color = targetColor;
+			else
 			{
-				case HackableType.CCTV:
-					for (int i = 0; i < cctvUIBorders.Length; i++)
-					{
-						int xMult = cctvUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
-						int yMult = cctvUIBorders[i].rectTransform.pivot.y == 0 ? 1 : -1;
+				switch (type)
+				{
+					case HackableType.CCTV:
+						for (int i = 0; i < cctvUIBorders.Length; i++)
+						{
+							int xMult = cctvUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
+							int yMult = cctvUIBorders[i].rectTransform.pivot.y == 0 ? 1 : -1;
 
-						cctvUIBorders[i].rectTransform.anchoredPosition = new Vector2(23.5f * xMult, 26.5f * yMult);
-						cctvUIBorders[i].rectTransform.localScale = Vector3.one;
-						cctvUIBorders[i].color = targetColor;
-					}
-					break;
+							cctvUIBorders[i].rectTransform.anchoredPosition = new Vector2(23.5f * xMult, 26.5f * yMult);
+							cctvUIBorders[i].rectTransform.localScale = Vector3.one;
+							cctvUIBorders[i].color = targetColor;
+						}
+						break;
 
-				case HackableType.AI:
+					case HackableType.AI:
 
-					float outerBorderX = 75;
-					float innerBorderX = 275;
+						foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = ColorUtils.ChangeAlpha(aiUIElement.color, 1);
+						aiUIGrid.color = targetColor;
+						dottedItems.SetActive(true);
 
-					Color targetColorA = targetColor;
-					targetColorA.a = 1;
+						break;
+				}
 
-					for (int i = 0; i < aiUIBorders.Length; i++)
-					{
-						int xMult = aiUIBorders[i].rectTransform.pivot.x == 0 ? 1 : -1;
-
-						if (i < 4) aiUIBorders[i].rectTransform.anchoredPosition = new Vector2((i > 1 ? innerBorderX : outerBorderX) * xMult, 0);
-						else aiUIBorders[i].rectTransform.anchoredPosition = new Vector2(0, 85);
-
-						aiUIBorders[i].rectTransform.localScale = Vector3.one;
-						aiUIBorders[i].color = targetColorA;
-					}
-
-					foreach (Image arrow in aiArrows) arrow.color = targetColorA;
-					break;
+				hackableName.color = targetColor;
+				for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = unhackGraphicsColor[i];
 			}
-
-			hackableName.color = targetColor;
-			for (int i = 0; i < unhackInstructions.Length; i++) unhackInstructions[i].color = unhackGraphicsColor[i];
 
 			uiFadeInProgress = false;
 			action -= UITemplatesFadeAnim;
 		}
 		else if (uiLerpTime <= 0 && !uiFadeIn)
 		{
-			switch (type)
+			if (isPlayer) foreach (Graphic playerUI in playerUIElements) playerUI.color = targetColor;
+			else
 			{
-				case HackableType.CCTV:
-					foreach (Image cctvUIBorder in cctvUIBorders)
-					{
-						cctvUIBorder.rectTransform.anchoredPosition = Vector2.zero;
-						cctvUIBorder.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-						cctvUIBorder.color = Color.clear;
-					}
-					break;
+				switch (type)
+				{
+					case HackableType.CCTV:
+						foreach (Image cctvUIBorder in cctvUIBorders)
+						{
+							cctvUIBorder.rectTransform.anchoredPosition = Vector2.zero;
+							cctvUIBorder.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+							cctvUIBorder.color = Color.clear;
+						}
+						break;
 
-				case HackableType.AI:
-					for (int i = 0; i < aiUIBorders.Length; i++)
-					{
-						if (i < 4) aiUIBorders[i].rectTransform.anchoredPosition = Vector2.zero;
-						else aiUIBorders[i].rectTransform.anchoredPosition = new Vector2(0, 50);
+					case HackableType.AI:
+						foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = ColorUtils.ChangeAlpha(aiUIElement.color, 0);
+						aiUIGrid.color = Color.clear;
+						break;
+				}
 
-						aiUIBorders[i].rectTransform.localScale = Vector3.one * 1.25f;
-						aiUIBorders[i].color = Color.clear;
-					}
-
-					foreach (Image arrow in aiArrows) arrow.color = Color.clear;
-					break;
+				hackableName.color = Color.clear;
+				foreach (Graphic graphic in unhackInstructions) graphic.color = Color.clear;
 			}
 
-			hackableName.color = Color.clear;
-			foreach (Graphic graphic in unhackInstructions) graphic.color = Color.clear;
-
-			uiFadeInProgress = false;
-			action -= UITemplatesFadeAnim;
+			//uiFadeInProgress = false;
+			//action -= UITemplatesFadeAnim;
+			uiFadeIn = true;
 		}
 	}
 
@@ -903,15 +883,6 @@ public class UIManager : MonoBehaviour
 				}
 			}
 		}
-	}
-
-	public void ShiftAIArrows(float pitch, float minPitch = -90, float maxPitch = 90)
-	{
-		float totalAngle = Mathf.Abs(minPitch) + Mathf.Abs(maxPitch);
-		float ratio = (pitch + Mathf.Abs(minPitch)) / totalAngle;
-		float y = Mathf.Lerp(67.5f, -67.5f, ratio); //-pitch is looking upwards
-
-		foreach (Image arrow in aiArrows) arrow.rectTransform.anchoredPosition = new Vector2(arrow.rectTransform.anchoredPosition.x, y);
 	}
 	#endregion
 

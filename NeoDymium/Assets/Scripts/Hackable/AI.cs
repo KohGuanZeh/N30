@@ -79,12 +79,15 @@ public class AI : IHackable
 				anim.SetBool ("Moving", true);
 			else
 				anim.SetBool ("Moving", false);
-			UnhackedSound ();
+
+			if (!ui.isPaused)
+				UnhackedSound ();
 			AdjustIntensity ();
 		}
 		else
 		{
-			HackedSound ();
+			if (!ui.isPaused)
+				HackedSound ();
 			if (controller.velocity.magnitude > 0.1f)
 				anim.SetBool ("Moving", true);
 			else

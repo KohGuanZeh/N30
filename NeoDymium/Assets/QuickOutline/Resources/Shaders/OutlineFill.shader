@@ -16,6 +16,7 @@ Shader "Custom/Outline Fill" {
 
   SubShader {
     Tags {
+	  "RenderPipeline" = "HDRenderPipeline"
       "Queue" = "Transparent+110"
       "RenderType" = "Transparent"
       "DisableBatching" = "True"

@@ -27,7 +27,7 @@ public class ScanEffect : MonoBehaviour
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, maxPosition, out hit, hitLayers))
 		{
-			print(hit.collider.gameObject.name);
+			//print(hit.collider.gameObject.name);
 			maxPosition = hit.point;
 		}
 

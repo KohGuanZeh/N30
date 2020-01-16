@@ -97,6 +97,21 @@ public class UIManager : MonoBehaviour
 	[SerializeField] TextMeshProUGUI errorMsg;
 	[SerializeField] float errorLerpTime;
 
+	[Header("Tutorial Pop Up")]
+	[SerializeField] RectTransform tutorialWindow;
+	[SerializeField] Graphic[] tutorialBorders;
+	[SerializeField] TextMeshProUGUI tutorialHeader, tutorialContent;
+	[SerializeField] RectTransform tutorialTxtBox;
+	[SerializeField] bool showTutorial;
+	[SerializeField] float tutorialLerpTime;
+
+	[Header("Error Pop Up")]
+	[SerializeField] RectTransform errorWindow;
+	[SerializeField] Graphic[] errorBorder;
+	[SerializeField] TextMeshProUGUI errorHeader, errorContent;
+	[SerializeField] RectTransform errorTxtBox;
+	[SerializeField] bool showError;
+
 	[Header("Game States")]
 	//May want to use Enum for Game States
 	public bool isGameOver;
@@ -188,6 +203,17 @@ public class UIManager : MonoBehaviour
 			controls[i].backdrop.color = Color.clear;
 		}
 
+		//For Tutorial
+		foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
+		tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 0);
+		tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 0);
+
+		tutorialWindow.anchoredPosition = new Vector2(-10, 80);
+
+		tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-30, 12.5f);
+		tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.25f);
+		tutorialTxtBox.sizeDelta = new Vector2(160, 0);
+
 		errorMsg.color = Color.clear;
 
 		action += LerpInstructions;
@@ -210,6 +236,9 @@ public class UIManager : MonoBehaviour
 		foreach (Image detectionGauge in detectionGauges) detectionGauge.fillAmount = (player.detectionGauge / player.detectionThreshold);
 
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver && !LoadingScreen.inst.isLoading) PausePlay();
+
+		if (Input.GetKeyDown(KeyCode.Q)) ShowHideTutorial(!showTutorial, "Help me Senpai");
+
 
 		if (action != null) action();
 	}
@@ -364,6 +393,14 @@ public class UIManager : MonoBehaviour
 		this.hackableName.text = string.Format("{0}\n{1}", roomName, hackableName);
 	}
 
+	public void ShowHideTutorial(bool show, string text = "")
+	{
+		showTutorial = show;
+		if (showTutorial) tutorialContent.text = text;
+
+		action += TutorialFadeInOut;
+	}
+
 	//Display Error Upon Button Press
 	public void DisplayError(string error = "")
 	{
@@ -395,7 +432,7 @@ public class UIManager : MonoBehaviour
 			StartCoroutine("ShowSavedIcon");
 		}
 		touchedCheckpoint = !touchedCheckpoint;
-	}	
+	}
 
 	IEnumerator ShowSavedIcon ()
 	{	
@@ -415,22 +452,6 @@ public class UIManager : MonoBehaviour
 		int dist = Mathf.RoundToInt((player.CurrentViewingCamera.transform.position - objective).magnitude);
 
 		distanceToObj.text = dist.ToString() + "m";
-
-		#region Directional Tracking
-		/*//Check if Objective is in front or behind of Player (any body that the Player is in)
-		Vector3 dirToObj = (objPos - player.CurrentViewingCamera.transform.position).normalized;
-		//If Objective is behind of where Player (any body that the Player is in) is at
-		if (Vector3.Dot(player.CurrentViewingCamera.transform.forward, dirToObj) < 0)
-		{
-			//If Object is on the Right side of the Player, Clamp it to the LEFT (Since Player is facing behind) and vice versa
-			if (objScreenPos.x > Screen.width / 2) objScreenPos.x = minXY.x;
-			else objScreenPos.x = maxXY.x;
-		}
-
-		//Clamp to prevent Marker from going Offscreen
-		objScreenPos.x = Mathf.Clamp(objScreenPos.x, minXY.x, maxXY.x);
-		objScreenPos.y = Mathf.Clamp(objScreenPos.y, minXY.y, maxXY.y);*/
-		#endregion
 
 		Vector3 dirToObj = (objective - player.CurrentViewingCamera.transform.position).normalized;
 
@@ -536,8 +557,6 @@ public class UIManager : MonoBehaviour
 
 		Vector3 playerPos = player.transform.position + new Vector3(0, player.GetPlayerHeight() + 0.1f, 0); //0.1f is the Offset
 		Vector3 screenPos = player.CurrentViewingCamera.WorldToScreenPoint(playerPos);
-		/*Vector3 currentCamPos = player.CurrentViewingCamera.transform.position;
-		Vector3 dirToPlayer = (playerPos - currentCamPos).normalized;*/
 
 		if (screenPos.z <= 0 || screenPos.x < minXY.x || screenPos.x > maxXY.x || screenPos.y < minXY.y || screenPos.y > maxXY.y)
 		{
@@ -573,11 +592,6 @@ public class UIManager : MonoBehaviour
 			if (player.isDetected)
 			{
 				if (!playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(true);
-
-				/*Vector3 horDir = (new Vector3(playerPos.x, 0, playerPos.z) - new Vector3(currentCamPos.x, 0, currentCamPos.z)).normalized;
-				Vector3 forward = player.CurrentViewingCamera.transform.forward;
-				float horAngle = Vector3.SignedAngle(new Vector3(forward.x, 0, forward.z).normalized, horDir, Vector3.up);*/ //Not really sure of the Math why this works
-
 				playerPointer.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg); //Set Rotation of Player Pointer to Point at Player
 			}
 			else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
@@ -589,8 +603,6 @@ public class UIManager : MonoBehaviour
 		screenPos.y = Mathf.Clamp(screenPos.y, minXY.y, maxXY.y);
 
 		movableDetectionComp.transform.position = screenPos;
-		//detectionGauges[1].transform.position = playerScreenPos;
-		//detectionGaugeBackdrops[1].transform.position = playerScreenPos;
 	}
 	#endregion
 
@@ -599,7 +611,6 @@ public class UIManager : MonoBehaviour
 	{
 		crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
 
-		crosshairLerpTime = isFocusing ? Mathf.Min(crosshairLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(crosshairLerpTime - Time.deltaTime * 5, 0);
 		Color targetColor = GetCurrentColor(currentColor);
 		crosshairs[0].color = Color.Lerp(targetColor, Color.clear, crosshairLerpTime); //May not even need 0. Just Lerp the Filled Dot Color
 		crosshairs[1].color = Color.Lerp(Color.clear, targetColor, crosshairLerpTime);
@@ -638,6 +649,54 @@ public class UIManager : MonoBehaviour
 		{
 			errorMsg.color = Color.clear;
 			action -= ErrorFadeInFadeOut;
+		}
+	}
+
+	void TutorialFadeInOut()
+	{
+		tutorialLerpTime = showTutorial ? Mathf.Min(tutorialLerpTime + Time.deltaTime * 3, 1) : Mathf.Max(tutorialLerpTime - Time.deltaTime * 3, 0);
+
+		float targetVal = Mathf.Clamp(tutorialLerpTime / 0.5f, 0, 1);
+
+		foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, targetVal);
+		tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, targetVal);
+		tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, targetVal);
+
+		tutorialWindow.anchoredPosition = new Vector2(Mathf.Lerp(-10, 242.5f, targetVal), 80);
+
+		float lateLerpTime = Mathf.Clamp((tutorialLerpTime - 0.3f) / 0.5f, 0, 1);
+
+		tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(-30, 12.5f, lateLerpTime));
+		tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, Mathf.Lerp(58.5f, -5f, lateLerpTime));
+		tutorialTxtBox.sizeDelta = new Vector2(160, Mathf.Lerp(0, 120, lateLerpTime));
+
+		if (showTutorial && tutorialLerpTime >= 1)
+		{
+			foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 1);
+			tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 1);
+			tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 1);
+
+			tutorialWindow.anchoredPosition = new Vector2(242.5f, 80);
+
+			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(0, 12.5f);
+			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, -5f);
+			tutorialTxtBox.sizeDelta = new Vector2(160, 120);
+
+			action -= TutorialFadeInOut;
+		}
+		else if (!showTutorial && tutorialLerpTime <= 0)
+		{
+			foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
+			tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 0);
+			tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 0);
+
+			tutorialWindow.anchoredPosition = new Vector2(-10, 80);
+
+			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-30, 12.5f);
+			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.5f);
+			tutorialTxtBox.sizeDelta = new Vector2(160, 0);
+
+			action -= TutorialFadeInOut;
 		}
 	}
 
@@ -680,14 +739,6 @@ public class UIManager : MonoBehaviour
 
 				break;
 		}
-
-		/*if (isPlayer) //Cut Lerping if is Player
-		{
-			uiLerpTime = uiFadeIn ? 1 : 0;
-			uiFadeInProgress = false;
-			action -= UITemplatesFadeAnim;
-			return;
-		}*/
 
 		//Lerping of Common UI Elements
 		float lerpTimeLate = Mathf.Clamp((uiLerpTime - 0.5f) / 0.5f, 0, 1);
@@ -759,8 +810,6 @@ public class UIManager : MonoBehaviour
 				foreach (Graphic graphic in unhackInstructions) graphic.color = Color.clear;
 			}
 
-			//uiFadeInProgress = false;
-			//action -= UITemplatesFadeAnim;
 			uiFadeIn = true;
 		}
 	}

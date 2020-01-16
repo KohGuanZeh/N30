@@ -18,25 +18,25 @@ public class InstructionSection : MonoBehaviour
         uIManager = UIManager.inst;
     }
 
-    void OnTriggerEnter (Collider other)
-    {
-        if (other.tag == "Player" || other.tag == "Hackable")
-        {
-            if (other.tag == "Hackable")
-                other.GetComponent<IHackable>().lockRotation = true;
-            uIManager.currentHint.text = string.Empty;
-            iM.instructionImage.sprite = instructionPictureToDisplay;
-            iM.instructionText.text = instructionToDisplay;
-            iM.WhileInInstructionScreen();
-            gameObject.SetActive (false);
-        }
-    }
+    // void OnTriggerEnter (Collider other)
+    // {
+    //     if (other.tag == "Player" || other.tag == "Hackable")
+    //     {
+    //         if (other.tag == "Hackable")
+    //             other.GetComponent<IHackable>().lockRotation = true;
+    //         uIManager.currentHint.text = string.Empty;
+    //         iM.instructionImage.sprite = instructionPictureToDisplay;
+    //         iM.instructionText.text = instructionToDisplay;
+    //         iM.WhileInInstructionScreen();
+    //         gameObject.SetActive (false);
+    //     }
+    // }
 
-    void OnTriggerExit (Collider other)
-    {
-        if (other.tag == "Player" || other.tag == "Hackable")
-        {
-            gameObject.SetActive (false);
-        }
-    }
+    // void OnTriggerExit (Collider other)
+    // {
+    //     if (other.tag == "Player" || other.tag == "Hackable")
+    //     {
+    //         gameObject.SetActive (false);
+    //     }
+    // }
 }

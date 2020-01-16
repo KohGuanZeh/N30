@@ -234,8 +234,8 @@ public class AI : IHackable
 
 	protected override void ExecuteHackingFunctionaliy ()
 	{
-		if (!lockRotation) PlayerRotation ();
-		if (!lockRotation) PlayerMovement ();
+		PlayerRotation ();
+		PlayerMovement ();
 	}
 
 	void PlayerRotation()

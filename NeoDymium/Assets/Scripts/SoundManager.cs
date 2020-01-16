@@ -101,9 +101,17 @@ public class SoundManager : MonoBehaviour
 			audioSources[i].playOnAwake = false;
 		} 
 
-		master.SetFloat ("masterVolume", PlayerPrefs.GetFloat ("Master", Mathf.Log (0.8f) * 20));
-		master.SetFloat ("bgmVolume", PlayerPrefs.GetFloat ("BGM", Mathf.Log (0.8f) * 20));
-		master.SetFloat ("sfxVolume", PlayerPrefs.GetFloat ("SFX", Mathf.Log (0.8f) * 20));
+		// master.SetFloat ("masterVolume", PlayerPrefs.GetFloat ("Master", Mathf.Log (0.8f) * 20));
+		// master.SetFloat ("bgmVolume", PlayerPrefs.GetFloat ("BGM", Mathf.Log (0.8f) * 20));
+		// master.SetFloat ("sfxVolume", PlayerPrefs.GetFloat ("SFX", Mathf.Log (0.8f) * 20));
+
+		master.SetFloat ("masterVolume", Mathf.Log (PlayerPrefs.GetFloat ("Master", 0.8f)) * 20);
+		master.SetFloat ("bgmVolume", Mathf.Log (PlayerPrefs.GetFloat ("BGM", 0.8f)) * 20);
+		master.SetFloat ("sfxVolume", Mathf.Log (PlayerPrefs.GetFloat ("SFX", 0.8f)) * 20);
+
+		masterSlider.value = PlayerPrefs.GetFloat ("Master", 0.8f);
+		bgmSlider.value = PlayerPrefs.GetFloat ("BGM", 0.8f);
+		sfxSlider.value = PlayerPrefs.GetFloat ("SFX", 0.8f);
 
 		if (PlayerPrefs.GetInt("Scene Index") <= 0) 
 			player = null;
@@ -120,9 +128,13 @@ public class SoundManager : MonoBehaviour
 		master.SetFloat ("bgmVolume", Mathf.Log (bgmSlider.value) * 20);
 		master.SetFloat ("sfxVolume", Mathf.Log (sfxSlider.value) * 20);
 
-		PlayerPrefs.SetFloat ("Master", Mathf.Log (masterSlider.value) * 20);
-		PlayerPrefs.SetFloat ("BGM", Mathf.Log (bgmSlider.value) * 20);
-		PlayerPrefs.SetFloat ("SFX", Mathf.Log (sfxSlider.value) * 20);
+		// PlayerPrefs.SetFloat ("Master", Mathf.Log (masterSlider.value) * 20);
+		// PlayerPrefs.SetFloat ("BGM", Mathf.Log (bgmSlider.value) * 20);
+		// PlayerPrefs.SetFloat ("SFX", Mathf.Log (sfxSlider.value) * 20);
+
+		PlayerPrefs.SetFloat ("Master", masterSlider.value);
+		PlayerPrefs.SetFloat ("BGM", bgmSlider.value);
+		PlayerPrefs.SetFloat ("SFX", sfxSlider.value);
 	}
 
 	public bool IsSourcePlaying (int sourceIndex)

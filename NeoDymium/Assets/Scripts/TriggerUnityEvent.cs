@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class Tutorial : MonoBehaviour
+public class TriggerUnityEvent : MonoBehaviour
 {
 	public UnityEvent events;
 

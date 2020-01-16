@@ -19,6 +19,12 @@ public class EmergencyAlarm : IInteractable
 	[SerializeField] Animator anim;
 	[SerializeField] TextMeshProUGUI passcode;
 
+	[Header ("Tutorial")]
+	public bool tutorialFirst = false;
+	bool tutorialFirstDone = false;
+
+	[Space (10)]
+
 	bool alarmed;
 	public bool active;
 
@@ -72,6 +78,12 @@ public class EmergencyAlarm : IInteractable
 
 	void StartAlarm ()
 	{
+		if (tutorialFirst && !tutorialFirstDone)
+		{
+			tutorialFirstDone = true;
+			NewTutorial.inst.TutorialEnd (1);
+		}
+
 		audioSources[0].Play ();
 
 		//MaterialUtils.ChangeMaterialsEmission(screenMats, alertColor, alertIntensity, "_EmissiveColor");

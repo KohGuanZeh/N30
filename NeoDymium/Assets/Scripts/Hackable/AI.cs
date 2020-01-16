@@ -23,6 +23,19 @@ public class AI : IHackable
 	public float slopeForce = 2f;
 	public float distFromGround = 0.02f;
 
+	[Header ("Tutorial")]
+	public bool tutorialFirstHack = false;
+	bool tutorialFirstHackDone = false;
+
+	public bool tutorialFourthHack = false;
+	bool tutorialFourthHackDone = false;
+
+	public bool tutorialFourthHackSecond = false;
+	bool tutorialFourthHackSecondDone = false;
+
+	public bool tutorialLevel2First = false;
+	bool tutorialLevel2FirstDone = false;
+
 	[HideInInspector] public Animator anim;
 	SoundManager soundManager;
 	AudioSource walkAudiosource;
@@ -174,6 +187,32 @@ public class AI : IHackable
 	public override void OnHack ()
 	{
 		base.OnHack ();
+
+		if (tutorialFirstHack && !tutorialFirstHackDone)
+		{
+			tutorialFirstHackDone = true;
+			NewTutorial.inst.TutorialEnd (1);
+			NewTutorial.inst.TutorialStart (2);
+		}
+
+		if (tutorialFourthHack && !tutorialFourthHackDone)
+		{
+			tutorialFourthHackDone = true;
+			NewTutorial.inst.TutorialStart (3);
+		}
+
+		if (tutorialFourthHackSecond && !tutorialFourthHackSecondDone)
+		{
+			tutorialFourthHackSecondDone = true;
+			NewTutorial.inst.TutorialEnd (3);
+		}
+
+		if (tutorialLevel2First && !tutorialLevel2FirstDone)
+		{
+			tutorialLevel2FirstDone = true;
+			NewTutorial.inst.TutorialEnd (0);
+		}
+
 		camera.transform.position = hackCamPos.position;
 
 		ai.EndFinding ();
@@ -196,6 +235,7 @@ public class AI : IHackable
 	public override void OnUnhack ()
 	{
 		base.OnUnhack ();
+
 		camera.transform.position = unhackCamPos.position;
 
 		//Reset Cam Rotation on Unhack

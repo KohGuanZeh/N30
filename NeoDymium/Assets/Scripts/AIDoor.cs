@@ -17,6 +17,10 @@ public class AIDoor : MonoBehaviour
 	bool soundPlayed = false;
 	bool otherClipPlayed = false;
 
+	[Header ("Tutorial")]
+	public bool tutorialFirst = false;
+	bool tutorialFirstDone = false;
+
 	void Start ()
 	{
 		soundManager = SoundManager.inst;
@@ -57,6 +61,12 @@ public class AIDoor : MonoBehaviour
 		inRange = true;
 		soundPlayed = true;
 		animator.SetFloat ("Speed", 1);
+
+		if (tutorialFirst && !tutorialFirstDone)
+		{
+			NewTutorial.inst.TutorialEnd (2);
+			tutorialFirstDone = true;
+		}
 	
 		if (!otherClipPlayed)
 			soundManager.PlaySound (soundManager.slidingDoor);

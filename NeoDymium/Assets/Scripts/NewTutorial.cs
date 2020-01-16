@@ -11,16 +11,22 @@ public struct TutorialSegment
 
 public class NewTutorial : MonoBehaviour
 {
+	public static NewTutorial inst;
+
 	public TutorialSegment[] tutorials;
-	[Space (10)]
-	public TextMeshProUGUI descriptionText;
-	public GameObject tutorialObj;
 
 	int currentTutorialIndex = -1;
 
+	UIManager ui;
+
+	void Awake ()
+	{
+		inst = this;
+	}
+
 	void Start ()
 	{
-		tutorialObj.SetActive (false);
+		ui = UIManager.inst;
 	}
 
 	public void TutorialStart (int index)
@@ -29,14 +35,13 @@ public class NewTutorial : MonoBehaviour
 		{
 			currentTutorialIndex = index;
 			tutorials[index].triggered = true;
-			descriptionText.text = tutorials[index].description;
-			tutorialObj.SetActive (true);
+			ui.ShowHideTutorial (true, tutorials[index].description);
 		}
 	}
 
 	public void TutorialEnd (int index)
 	{
 		if (index == currentTutorialIndex)
-			tutorialObj.SetActive (false);
+			ui.ShowHideTutorial (false);
 	}
 }

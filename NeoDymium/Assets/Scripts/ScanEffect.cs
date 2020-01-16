@@ -25,9 +25,13 @@ public class ScanEffect : MonoBehaviour
 		Vector3 maxPosition = transform.position + maxDist * dir;
 
 		RaycastHit hit;
-		if (Physics.Linecast(transform.position, maxPosition, out hit, hitLayers)) maxPosition = hit.point;
+		if (Physics.Raycast(transform.position, maxPosition, out hit, hitLayers))
+		{
+			print(hit.collider.gameObject.name);
+			maxPosition = hit.point;
+		}
 
 		//Debug.DrawLine(transform.position, maxPosition, Color.red);
-		lineRenderer.SetPosition(1, maxPosition - transform.position);
+		lineRenderer.SetPosition(1, maxPosition - transform.position - (dir * 0.2f));
     }
 }

@@ -62,6 +62,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] Graphic[] unhackInstructions; //For now Store the Unhack Instructions as a Graphic
 	[SerializeField] Color[] unhackGraphicsColor; //Store Default Colors for the Unhack Instructions 
 	[SerializeField] TextMeshProUGUI hackableName;
+	[SerializeField] Graphic[] aiDetectionElements;
 
 	[Header("Crosshair")]
 	[SerializeField] bool isFocusing; //Check if a Hackable or Interactable Object has been focused on
@@ -88,6 +89,13 @@ public class UIManager : MonoBehaviour
 	[SerializeField] RectTransform movableDetectionComp;//Parent Holder for CCTV/AI Detection Gauges
 	[SerializeField] float warningTime, gaugeFlashTime;
 	[SerializeField] bool showGaugeBackdrop;
+
+	[Header("AI Focus Component")]
+	[SerializeField] RectTransform aiFocusGrp;
+	[SerializeField] Image[] aiFocusRings;
+	[SerializeField] float[] rotationSpeeds;
+	[SerializeField] bool playerOnScreen;
+	[SerializeField] float aiFocusLerpTime;
 
 	[Header("Instructions and Error Msgs")]
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
@@ -233,6 +241,7 @@ public class UIManager : MonoBehaviour
 		action += LerpActionAvailability;
 		action += FlashDetectedWarning;
 		action += FlashGaugeOnHighAlert;
+		action += AIFocus;
 
 		action += PointToObjective;
 		action += PointDetectionGaugeToPlayer;
@@ -326,6 +335,9 @@ public class UIManager : MonoBehaviour
 			uiColor.a = crosshair.color.a;
 			crosshair.color = uiColor;
 		}
+
+		//Only for AI Detection Items
+		if (color != ColorIdentifier.none) foreach (Graphic aiDetectionItem in aiDetectionElements) aiDetectionItem.color = uiColor.ChangeAlpha(aiDetectionItem.color.a);
 	}
 
 	public void ResetInstructionsDisplayOnHack()
@@ -543,7 +555,7 @@ public class UIManager : MonoBehaviour
 		float alpha = 0;
 		if (player.isDetected)
 		{
-			warningTime += Time.deltaTime * 3;
+			warningTime += Time.deltaTime * 2f;
 			alpha = Mathf.PingPong(warningTime, 1);
 		}
 		else warningTime = 0;
@@ -571,6 +583,20 @@ public class UIManager : MonoBehaviour
 		if (gaugeFlashTime >= 1) gaugeFlashTime = 0;
 	}
 
+	void AIFocus()
+	{
+		if (aiFocusGrp.gameObject.activeInHierarchy) for (int i = 0; i < aiFocusRings.Length; i++) aiFocusRings[i].rectTransform.Rotate(new Vector3(0, 0, rotationSpeeds[i] * Time.deltaTime));
+
+		if ((playerOnScreen && aiFocusLerpTime >= 1) || (!playerOnScreen && aiFocusLerpTime <= 0)) return;
+		aiFocusLerpTime = playerOnScreen ? Mathf.Min(aiFocusLerpTime + Time.deltaTime * 5, 1) : Mathf.Max(aiFocusLerpTime - Time.deltaTime * 5, 0);
+
+		foreach (Image ring in aiFocusRings)
+		{
+			ring.color = ring.color.ChangeAlpha(aiFocusLerpTime);
+			ring.rectTransform.localScale = Vector3.Lerp(Vector3.one * 3f, Vector3.one, aiFocusLerpTime);
+		}
+	}
+
 	//May need to Account for Vertical Direction as well
 	//Sometimes doesnt work. Not sure how to replicate the bug
 	void PointDetectionGaugeToPlayer()
@@ -579,13 +605,15 @@ public class UIManager : MonoBehaviour
 		{
 			if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
 			return;
-		} 
+		}
 
 		Vector3 playerPos = player.transform.position + new Vector3(0, player.GetPlayerHeight() + 0.1f, 0); //0.1f is the Offset
 		Vector3 screenPos = player.CurrentViewingCamera.WorldToScreenPoint(playerPos);
 
 		if (screenPos.z <= 0 || screenPos.x < minXY.x || screenPos.x > maxXY.x || screenPos.y < minXY.y || screenPos.y > maxXY.y)
 		{
+			playerOnScreen = false;
+
 			//Multiply by -1 if the Object is behind
 			if (screenPos.z < 0) screenPos *= -1;
 
@@ -622,13 +650,24 @@ public class UIManager : MonoBehaviour
 			}
 			else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
 		}
-		else if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
+		else
+		{
+			playerOnScreen = true;
+			if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
+		} 
 
 		//Clamping to Edges of Screen
 		screenPos.x = Mathf.Clamp(screenPos.x, minXY.x, maxXY.x);
 		screenPos.y = Mathf.Clamp(screenPos.y, minXY.y, maxXY.y);
 
 		movableDetectionComp.transform.position = screenPos;
+
+		if (playerOnScreen)
+		{
+			Vector3 focusPos = player.transform.position + new Vector3(0, player.GetPlayerHeight()/2 + 0.1f, 0);
+			Vector3 screenFocusPos = player.CurrentViewingCamera.WorldToScreenPoint(focusPos);
+			aiFocusGrp.transform.position = screenFocusPos;
+		}
 	}
 	#endregion
 

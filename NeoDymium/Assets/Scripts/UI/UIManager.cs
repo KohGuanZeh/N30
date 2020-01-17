@@ -55,7 +55,6 @@ public class UIManager : MonoBehaviour
 	[SerializeField] Image[] cctvUIBorders;
 
 	[Header("AI UI Items")]
-	[SerializeField] Image aiUIGrid;
 	[SerializeField] Graphic[] aiUIElements;
 	[SerializeField] GameObject dottedItems;
 
@@ -93,9 +92,18 @@ public class UIManager : MonoBehaviour
 	[Header("Instructions and Error Msgs")]
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
 	[SerializeField] ControlsInfo[] controls;
-	[SerializeField] bool errorFadeIn; //Checks if Error is Fading in
-	[SerializeField] TextMeshProUGUI errorMsg;
+
+	[Header("Error Pop Up")]
+	[SerializeField] RectTransform errorWindow;
+	[SerializeField] Graphic[] errorBorders;
+	[SerializeField] TextMeshProUGUI errorHeader;
+	[SerializeField] RectTransform errorTxtBox;
+	[SerializeField] bool showError;
 	[SerializeField] float errorLerpTime;
+
+	[SerializeField] TextMeshProUGUI errorContent;
+	[SerializeField] float errorTextLerpTime, errorShowTime;
+	[SerializeField] bool errorIsShowing;
 
 	[Header("Tutorial Pop Up")]
 	[SerializeField] RectTransform tutorialWindow;
@@ -104,13 +112,6 @@ public class UIManager : MonoBehaviour
 	[SerializeField] RectTransform tutorialTxtBox;
 	[SerializeField] bool showTutorial;
 	[SerializeField] float tutorialLerpTime;
-
-	[Header("Error Pop Up")]
-	[SerializeField] RectTransform errorWindow;
-	[SerializeField] Graphic[] errorBorder;
-	[SerializeField] TextMeshProUGUI errorHeader, errorContent;
-	[SerializeField] RectTransform errorTxtBox;
-	[SerializeField] bool showError;
 
 	[Header("Game States")]
 	//May want to use Enum for Game States
@@ -203,19 +204,31 @@ public class UIManager : MonoBehaviour
 			controls[i].backdrop.color = Color.clear;
 		}
 
+		//For Error
+		errorWindow.anchoredPosition = new Vector2(10, 115);
+
+		foreach (Graphic graphic in errorBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
+		errorHeader.color = ColorUtils.ChangeAlpha(errorHeader.color, 0);
+
+		errorBorders[0].rectTransform.anchoredPosition = new Vector2(0, -30);
+		errorBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.5f);
+		errorTxtBox.sizeDelta = new Vector2(160, 0);
+
+		errorContent.color = ColorUtils.ChangeAlpha(errorContent.color, 0);
+
+
 		//For Tutorial
+		tutorialWindow.anchoredPosition = new Vector2(-10, 115);
+
 		foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
 		tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 0);
 		tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 0);
-
-		tutorialWindow.anchoredPosition = new Vector2(-10, 80);
 
 		tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-30, 12.5f);
 		tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.25f);
 		tutorialTxtBox.sizeDelta = new Vector2(160, 0);
 
-		errorMsg.color = Color.clear;
-
+		//Adding Scripted Animations to Action Delegate
 		action += LerpInstructions;
 		action += LerpActionAvailability;
 		action += FlashDetectedWarning;
@@ -237,8 +250,11 @@ public class UIManager : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver && !LoadingScreen.inst.isLoading) PausePlay();
 
-		if (Input.GetKeyDown(KeyCode.Q)) ShowHideTutorial(!showTutorial, "Help me Senpai");
-
+		if (errorIsShowing)
+		{
+			errorShowTime -= Time.deltaTime;
+			if (errorShowTime <= 0) HideError();
+		}
 
 		if (action != null) action();
 	}
@@ -393,25 +409,41 @@ public class UIManager : MonoBehaviour
 		this.hackableName.text = string.Format("{0}\n{1}", roomName, hackableName);
 	}
 
-	public void ShowHideTutorial(bool show, string text = "")
-	{
-		showTutorial = show;
-		if (showTutorial) tutorialContent.text = text;
-
-		action += TutorialFadeInOut;
-	}
-
 	//Display Error Upon Button Press
 	public void DisplayError(string error = "")
 	{
 		if (error == string.Empty) return;
 
-		action -= ErrorFadeInFadeOut;
-		errorMsg.color = Color.clear;
-		errorMsg.text = error;
-		errorFadeIn = true;
-		errorLerpTime = 0;
-		action += ErrorFadeInFadeOut;
+		errorContent.text = error;
+		errorShowTime = 3;
+		errorTextLerpTime = 0;
+		action += ErrorTextFade;
+
+		if (!errorIsShowing)
+		{
+			if (showError) return;
+
+			action -= ErrorPopInPopOut;
+
+			showError = true;
+			action += ErrorPopInPopOut;
+		}
+	}
+
+	public void HideError()
+	{
+		errorIsShowing = false;
+
+		showError = false;
+		action += ErrorPopInPopOut;
+	}
+
+	public void ShowHideTutorial(bool show, string text = "")
+	{
+		showTutorial = show;
+		if (showTutorial) tutorialContent.text = text;
+
+		action += TutorialPopInPopOut;
 	}
 
 	//Hide or Show All UI, used in Special Interactions like the Numpad
@@ -480,12 +512,6 @@ public class UIManager : MonoBehaviour
 		marker.gameObject.SetActive(false);
 	}
 
-	// void ClearObjective()
-	// {
-	// 	objective = null;
-	// }
-
-	// I put this to public - Nigel
 	public void SetNewObjective (Vector3 newObjective, bool firstTime = false)
 	{
 		objective = newObjective;
@@ -633,38 +659,74 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	void ErrorFadeInFadeOut()
+	void ErrorTextFade()
 	{
-		errorLerpTime = errorFadeIn ? Mathf.Min(errorLerpTime + Time.deltaTime * 1.5f, 1) : Mathf.Max(errorLerpTime - Time.deltaTime * 1.5f, 0);
+		errorTextLerpTime = Mathf.Min(errorTextLerpTime + Time.deltaTime * 5, 1);
 
-		//Appear within the first quarter and start to disappear on the last quarter of the lerp
-		errorMsg.color = Color.Lerp(Color.clear, Color.red, Mathf.Clamp(errorLerpTime/0.25f, 0, 1));
+		errorContent.color = ColorUtils.ChangeAlpha(errorContent.color, errorTextLerpTime);
+		if (errorTextLerpTime >= 1) action -= ErrorTextFade;
+	}
 
-		if (errorLerpTime >= 1 && errorFadeIn)
+	void ErrorPopInPopOut()
+	{
+		errorLerpTime = showError ? Mathf.Min(errorLerpTime + Time.deltaTime * 2f, 1) : Mathf.Max(errorLerpTime - Time.deltaTime * 2f, 0);
+
+		float earlyLerpTime = Mathf.Clamp(errorLerpTime / 0.45f, 0, 1);
+
+		errorWindow.anchoredPosition = new Vector2(Mathf.Lerp(10, -250, earlyLerpTime), 115);
+
+		foreach (Graphic graphic in errorBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, earlyLerpTime);
+		errorHeader.color = ColorUtils.ChangeAlpha(errorHeader.color, earlyLerpTime);
+
+		float lateLerpTime = Mathf.Clamp((errorLerpTime - 0.5f) / 0.5f, 0, 1);
+
+		errorBorders[0].rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(-30, 12.5f, lateLerpTime));
+		errorBorders[1].rectTransform.anchoredPosition = new Vector2(3, Mathf.Lerp(58.5f, -5f, lateLerpTime));
+		errorTxtBox.sizeDelta = new Vector2(160, Mathf.Lerp(0, 120, lateLerpTime));
+
+		if (showError && errorLerpTime >= 1)
 		{
-			errorMsg.color = Color.red;
-			errorFadeIn = false;
+			errorWindow.anchoredPosition = new Vector2(-250, 115);
+
+			foreach (Graphic graphic in errorBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 1);
+			errorHeader.color = ColorUtils.ChangeAlpha(errorHeader.color, 1);
+
+			errorBorders[0].rectTransform.anchoredPosition = new Vector2(0, 12.5f);
+			errorBorders[1].rectTransform.anchoredPosition = new Vector2(3, -5f);
+			errorTxtBox.sizeDelta = new Vector2(160, 120);
+
+			errorIsShowing = true;
+
+			action -= ErrorPopInPopOut;
 		}
-		else if (errorLerpTime <= 0 && !errorFadeIn)
+		else if (!showError && errorLerpTime <= 0)
 		{
-			errorMsg.color = Color.clear;
-			action -= ErrorFadeInFadeOut;
+			errorWindow.anchoredPosition = new Vector2(10, 115);
+
+			foreach (Graphic graphic in errorBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
+			errorHeader.color = ColorUtils.ChangeAlpha(errorHeader.color, 0);
+
+			errorBorders[0].rectTransform.anchoredPosition = new Vector2(0, -30);
+			errorBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.5f);
+			errorTxtBox.sizeDelta = new Vector2(160, 0);
+
+			action -= ErrorPopInPopOut;
 		}
 	}
 
-	void TutorialFadeInOut()
+	void TutorialPopInPopOut()
 	{
-		tutorialLerpTime = showTutorial ? Mathf.Min(tutorialLerpTime + Time.deltaTime * 3, 1) : Mathf.Max(tutorialLerpTime - Time.deltaTime * 3, 0);
+		tutorialLerpTime = showTutorial ? Mathf.Min(tutorialLerpTime + Time.deltaTime * 2f, 1) : Mathf.Max(tutorialLerpTime - Time.deltaTime * 2f, 0);
 
-		float targetVal = Mathf.Clamp(tutorialLerpTime / 0.5f, 0, 1);
+		float earlyLerpTIme = Mathf.Clamp(tutorialLerpTime / 0.45f, 0, 1);
 
-		foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, targetVal);
-		tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, targetVal);
-		tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, targetVal);
+		tutorialWindow.anchoredPosition = new Vector2(Mathf.Lerp(-10, 242.5f, earlyLerpTIme), 115);
 
-		tutorialWindow.anchoredPosition = new Vector2(Mathf.Lerp(-10, 242.5f, targetVal), 80);
+		foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, earlyLerpTIme);
+		tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, earlyLerpTIme);
+		tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, earlyLerpTIme);
 
-		float lateLerpTime = Mathf.Clamp((tutorialLerpTime - 0.3f) / 0.5f, 0, 1);
+		float lateLerpTime = Mathf.Clamp((tutorialLerpTime - 0.5f) / 0.5f, 0, 1);
 
 		tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(-30, 12.5f, lateLerpTime));
 		tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, Mathf.Lerp(58.5f, -5f, lateLerpTime));
@@ -672,31 +734,31 @@ public class UIManager : MonoBehaviour
 
 		if (showTutorial && tutorialLerpTime >= 1)
 		{
+			tutorialWindow.anchoredPosition = new Vector2(242.5f, 115);
+
 			foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 1);
 			tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 1);
 			tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 1);
-
-			tutorialWindow.anchoredPosition = new Vector2(242.5f, 80);
 
 			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(0, 12.5f);
 			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, -5f);
 			tutorialTxtBox.sizeDelta = new Vector2(160, 120);
 
-			action -= TutorialFadeInOut;
+			action -= TutorialPopInPopOut;
 		}
 		else if (!showTutorial && tutorialLerpTime <= 0)
 		{
+			tutorialWindow.anchoredPosition = new Vector2(-10, 115);
+
 			foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
 			tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 0);
 			tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 0);
-
-			tutorialWindow.anchoredPosition = new Vector2(-10, 80);
 
 			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-30, 12.5f);
 			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.5f);
 			tutorialTxtBox.sizeDelta = new Vector2(160, 0);
 
-			action -= TutorialFadeInOut;
+			action -= TutorialPopInPopOut;
 		}
 	}
 
@@ -724,12 +786,11 @@ public class UIManager : MonoBehaviour
 
 			case HackableType.AI:
 
-				foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = ColorUtils.ChangeAlpha(aiUIElement.color, uiLerpTime);
-
 				Color targetColorA = targetColor;
 				targetColorA = Color.Lerp(Color.clear, targetColorA, uiLerpTime);
 
-				aiUIGrid.color = targetColorA;
+				foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = targetColorA;
+
 				break;
 
 			default:
@@ -770,8 +831,7 @@ public class UIManager : MonoBehaviour
 
 					case HackableType.AI:
 
-						foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = ColorUtils.ChangeAlpha(aiUIElement.color, 1);
-						aiUIGrid.color = targetColor;
+						foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = targetColor;
 						dottedItems.SetActive(true);
 
 						break;
@@ -801,8 +861,8 @@ public class UIManager : MonoBehaviour
 						break;
 
 					case HackableType.AI:
-						foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = ColorUtils.ChangeAlpha(aiUIElement.color, 0);
-						aiUIGrid.color = Color.clear;
+
+						foreach (Graphic aiUIElement in aiUIElements) aiUIElement.color = Color.clear;
 						break;
 				}
 

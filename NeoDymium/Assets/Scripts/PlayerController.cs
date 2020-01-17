@@ -585,7 +585,7 @@ public class PlayerController : MonoBehaviour
 		if (!detectedInteractable) return;
 
 		string interactError = detectedInteractable.GetError();
-		if (interactError == string.Empty) interactError = WithinWipeDistance() ? interactError : "Target is out of reach";
+		if (interactError == string.Empty) interactError = WithinWipeDistance() ? interactError : "Error. Target is out of reach";
 		ui.DisplayError(interactError); //May want to use Display Error to Return a Bool. If the Bool is true, return so you dont have to do additional Checks
 
 		if (interactError != string.Empty) return; //Prevent Interaction so long an Error is being produced
@@ -607,7 +607,7 @@ public class PlayerController : MonoBehaviour
 		if (!detectedHackable.hasPlayerMemory) return;
 
 		string wipeError = detectedHackable.GetError(1);
-		if (wipeError == string.Empty) wipeError = WithinWipeDistance() ? wipeError : "Target is out of reach";
+		if (wipeError == string.Empty) wipeError = WithinWipeDistance() ? wipeError : "Error. Target is out of reach";
 		ui.DisplayError(wipeError); //May want to use Display Error to Return a Bool. If the Bool is true, return so you dont have to do additional Checks
 
 		if (wipeError != string.Empty) return; //Prevent Wiping of Memory if Error is produced

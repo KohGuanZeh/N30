@@ -375,7 +375,7 @@ public class IHackable : MonoBehaviour
 	public virtual string GetError(int key = 0)
 	{
 		if (isDisabled) return "Error. System is Disabled";
-		else if (enabledShields.Count > 0) return "Error.System Protection Level Too High";
+		else if (enabledShields.Count > 0) return "Error. System Protection Level Too High";
 		else if (!hackable) return "Error. Entity is preventing further Action";
 		else if (key > 0)
 		{

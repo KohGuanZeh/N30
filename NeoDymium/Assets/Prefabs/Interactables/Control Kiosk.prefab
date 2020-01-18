@@ -2859,6 +2859,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  audioSources: []
   screenRs:
   - {fileID: 9158866773737984763}
   screenMats: []
@@ -2871,6 +2872,7 @@ MonoBehaviour:
   passcodeUI: {fileID: 1832096794794695521}
   anim: {fileID: 503091132097140007}
   passcode: {fileID: 6710572228964327506}
+  tutorialFirst: 0
   active: 0
 --- !u!65 &2379783891743753025
 BoxCollider:
@@ -2894,7 +2896,8 @@ AudioSource:
   m_GameObject: {fileID: 2379783891743753024}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1265774836771164933, guid: 350de4cd0788409439403471b902ad0c,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 69ac517729c301e45b3bbf9f7086d2a7, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.4
@@ -2990,7 +2993,8 @@ AudioSource:
   m_GameObject: {fileID: 2379783891743753024}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1265774836771164933, guid: 350de4cd0788409439403471b902ad0c,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: c2754cee0b6331e4ebb13c089193ef63, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.1

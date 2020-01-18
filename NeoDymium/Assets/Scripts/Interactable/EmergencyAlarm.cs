@@ -6,7 +6,7 @@ public class EmergencyAlarm : IInteractable
 	public float duration;
 	public Transform alarmPosition;
 	public PatrollingAI[] affectedAis;
-	AudioSource[] audioSources;
+	public AudioSource[] audioSources;
 	UIManager uIManager;
 	bool tutHasFinished;
 
@@ -30,13 +30,17 @@ public class EmergencyAlarm : IInteractable
 
 	EmergencyAlarm[] alarms;
 
+	void Awake ()
+	{
+		audioSources = GetComponents<AudioSource> ();
+	}
+
 	public override void Start ()
 	{
 		base.Start ();
 		alarmed = false;
 		active = false;
 		alarms = FindObjectsOfType<EmergencyAlarm> ();
-		audioSources = GetComponents<AudioSource> ();
 		uIManager = UIManager.inst;
 
 		//screenMats = MaterialUtils.GetMaterialsFromRenderers(screenRs);
@@ -85,7 +89,7 @@ public class EmergencyAlarm : IInteractable
 		}
 
 		audioSources[0].Play ();
-
+		
 		//MaterialUtils.ChangeMaterialsEmission(screenMats, alertColor, alertIntensity, "_EmissiveColor");
 		defaultHud.SetActive(false);
 		errorHud.SetActive(true);
@@ -106,9 +110,10 @@ public class EmergencyAlarm : IInteractable
 				ai.agent.SetDestination (alarmPosition.position);
 				ai.ResetHeadRotation ();
 				ai.idleRotation = true;
-				ai.StopCoroutine (ai.IdleLookAround ());
-			}
-				
+				ai.firstIdle = true;
+				//ai.StopCoroutine (ai.IdleLookAround ());
+				ai.StopAllCoroutines();
+			}	
 		}
 		alarmed = true;
 		Invoke ("EndAlarm", duration);

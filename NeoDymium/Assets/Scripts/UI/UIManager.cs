@@ -149,6 +149,7 @@ public class UIManager : MonoBehaviour
 	public Color greenColor = Color.green;
 	public Action action;
 	SoundManager soundManager;
+	AudioSource[] controlKioskAudioSources;
 
 	private void Awake()
 	{
@@ -250,6 +251,16 @@ public class UIManager : MonoBehaviour
 		action += PointDetectionGaugeToPlayer;
 		action += ShowHideGaugeBackdrop;
 
+		EmergencyAlarm[] alarms = FindObjectsOfType<EmergencyAlarm>();
+		controlKioskAudioSources = new AudioSource[alarms.Length * 2];
+		for (int i = 0; i < alarms.Length; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				controlKioskAudioSources[i * 2 + j] = alarms[i].audioSources[j];
+			}
+		} 
+
 		soundManager = SoundManager.inst;
 		objM = ObjectiveManager.inst;
 	}
@@ -284,6 +295,14 @@ public class UIManager : MonoBehaviour
 		pauseScreen.gameObject.SetActive(false);
 		optionsScreen.gameObject.SetActive(false);
 		gameOverScreen.gameObject.SetActive(true);
+
+		for (int i = 0; i < controlKioskAudioSources.Length; i++)
+		{
+			if (isGameOver)
+				controlKioskAudioSources[i].Pause();
+			else
+				controlKioskAudioSources[i].UnPause();
+		}
 	}
 
 	public void Focus(bool playerIsFocusing)
@@ -1072,6 +1091,14 @@ public class UIManager : MonoBehaviour
 		Cursor.lockState = isPaused ?  CursorLockMode.None : player.inSpInteraction ? CursorLockMode.None : CursorLockMode.Locked;
 		Time.timeScale = isPaused ? 0 : 1;
 		soundManager.PlaySound (soundManager.click);
+
+		for (int i = 0; i < controlKioskAudioSources.Length; i++)
+		{
+			if (isPaused)
+				controlKioskAudioSources[i].Pause();
+			else
+				controlKioskAudioSources[i].UnPause();
+		}
 	}
 
 	public void Options()

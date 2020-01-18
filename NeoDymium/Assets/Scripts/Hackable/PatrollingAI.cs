@@ -98,10 +98,11 @@ public class PatrollingAI : MonoBehaviour
 		{
 			if (!moveAcrossNavMeshesStarted)
 				SpotPlayer ();
+
 			Invincibility ();
 			OffMeshLinkCheck ();
 
-			if (idleLookAround && !idleRotation && !patrol && reachedIdle)
+			if (idleLookAround && !idleRotation && !patrol && reachedIdle && !alarmed)
 			{
 				StopAllCoroutines ();
 				//firstIdle = true;

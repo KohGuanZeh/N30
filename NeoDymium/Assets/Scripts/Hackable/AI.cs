@@ -88,7 +88,7 @@ public class AI : IHackable
 		GroundAndSlopeCheck ();
 		if (!hacked)
 		{
-			if (ai.agent.velocity.magnitude > 0.1f || ai.moveAcrossNavMeshesStarted)
+			if (ai.agent.velocity.magnitude > 0.05f || ai.moveAcrossNavMeshesStarted)
 				anim.SetBool ("Moving", true);
 			else
 				anim.SetBool ("Moving", false);

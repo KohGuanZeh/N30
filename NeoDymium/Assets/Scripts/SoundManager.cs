@@ -90,17 +90,17 @@ public class SoundManager : MonoBehaviour
 	void Awake ()
 	{
 		inst = this;
-	}
 
-	void Start ()
-	{
 		audioSources = GetComponents<AudioSource> ();
 		for (int i = 0; i < audioSources.Length - 1; i++)
 		{	
 			audioSources[i].loop = false;
 			audioSources[i].playOnAwake = false;
 		} 
+	}
 
+	void Start ()
+	{
 		// master.SetFloat ("masterVolume", PlayerPrefs.GetFloat ("Master", Mathf.Log (0.8f) * 20));
 		// master.SetFloat ("bgmVolume", PlayerPrefs.GetFloat ("BGM", Mathf.Log (0.8f) * 20));
 		// master.SetFloat ("sfxVolume", PlayerPrefs.GetFloat ("SFX", Mathf.Log (0.8f) * 20));

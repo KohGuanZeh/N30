@@ -15,6 +15,7 @@ public class ObjectiveManager : MonoBehaviour
     public GameObject[] mainObjectives;
     public int currentMainObjNumber;
     public int currentGoalNumber;
+    public bool overrideGoalNumber;
 
     UIManager uiManager;
     public static ObjectiveManager inst;
@@ -31,6 +32,9 @@ public class ObjectiveManager : MonoBehaviour
             currentGoalNumber = PlayerPrefs.GetInt ("Last Objective Saved");
         }
         else currentGoalNumber = 0;
+
+        if (overrideGoalNumber)
+            currentGoalNumber = 0;
 
         if (currentGoalNumber >= goal.Length)
             currentGoalNumber = 0;

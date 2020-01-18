@@ -116,10 +116,13 @@ public class UIManager : MonoBehaviour
 	[Header("Tutorial Pop Up")]
 	[SerializeField] RectTransform tutorialWindow;
 	[SerializeField] Graphic[] tutorialBorders;
-	[SerializeField] TextMeshProUGUI tutorialHeader, tutorialContent;
+	[SerializeField] TextMeshProUGUI tutorialHeader;
 	[SerializeField] RectTransform tutorialTxtBox;
 	[SerializeField] bool showTutorial;
 	[SerializeField] float tutorialLerpTime;
+
+	[SerializeField] TextMeshProUGUI tutorialContent;
+	[SerializeField] float tutorialTextLerpTime;
 
 	[Header("Game States")]
 	//May want to use Enum for Game States
@@ -453,7 +456,13 @@ public class UIManager : MonoBehaviour
 	public void ShowHideTutorial(bool show, string text = "")
 	{
 		showTutorial = show;
-		if (showTutorial) tutorialContent.text = text;
+		if (showTutorial)
+		{
+			tutorialContent.text = text;
+
+			tutorialTextLerpTime = 0;
+			action += TutorialTextFade;
+		} 
 
 		action += TutorialPopInPopOut;
 	}
@@ -753,6 +762,14 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
+	void TutorialTextFade()
+	{
+		tutorialTextLerpTime = Mathf.Min(tutorialTextLerpTime + Time.deltaTime * 5, 1);
+
+		tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, tutorialTextLerpTime);
+		if (tutorialTextLerpTime >= 1) action -= TutorialTextFade;
+	}
+
 	void TutorialPopInPopOut()
 	{
 		tutorialLerpTime = showTutorial ? Mathf.Min(tutorialLerpTime + Time.deltaTime * 2f, 1) : Mathf.Max(tutorialLerpTime - Time.deltaTime * 2f, 0);
@@ -763,7 +780,6 @@ public class UIManager : MonoBehaviour
 
 		foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, earlyLerpTIme);
 		tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, earlyLerpTIme);
-		tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, earlyLerpTIme);
 
 		float lateLerpTime = Mathf.Clamp((tutorialLerpTime - 0.5f) / 0.5f, 0, 1);
 
@@ -777,7 +793,6 @@ public class UIManager : MonoBehaviour
 
 			foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 1);
 			tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 1);
-			tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 1);
 
 			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(0, 12.5f);
 			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, -5f);
@@ -791,7 +806,6 @@ public class UIManager : MonoBehaviour
 
 			foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
 			tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 0);
-			tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 0);
 
 			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-30, 12.5f);
 			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.5f);

@@ -76,6 +76,7 @@ public class LoadingScreen : MonoBehaviour
 		if (nextLevelIndex == SceneManager.sceneCountInBuildSettings)
 		{
 			PlayerPrefs.DeleteKey("Scene Index");
+			PlayerPrefs.DeleteKey("Minutes Elapsed");
 			nextLevelIndex = 0;
 		}
 		else PlayerPrefs.SetInt("Scene Index", nextLevelIndex);

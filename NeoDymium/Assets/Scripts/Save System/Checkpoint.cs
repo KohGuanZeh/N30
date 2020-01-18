@@ -55,6 +55,7 @@ public class Checkpoint : MonoBehaviour
 			player.checkPointsPassed++;
 			PlayerPrefs.SetInt("Scene Index", SceneManager.GetActiveScene().buildIndex);
 			PlayerPrefs.SetInt("Last Objective Saved", player.checkPointsPassed);
+			PlayerPrefs.SetFloat("Minutes Elapsed", Mathf.Floor((float)LoadingScreen.inst.GetTimeElapsed() / 60));
 			// if (wall) wall.SetActive(true);
 			coll.enabled = false;
 		}

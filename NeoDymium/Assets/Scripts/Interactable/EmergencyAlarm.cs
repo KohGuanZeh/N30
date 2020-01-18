@@ -17,7 +17,8 @@ public class EmergencyAlarm : IInteractable
 	[SerializeField] float defaultIntensity, alertIntensity;
 	[SerializeField] GameObject defaultHud, errorHud, passcodeUI;
 	[SerializeField] Animator anim;
-	[SerializeField] TextMeshProUGUI passcode;
+	[SerializeField] TextMeshProUGUI passcode, time;
+	[SerializeField] double timer;
 
 	[Header ("Tutorial")]
 	public bool tutorialFirst = false;
@@ -43,7 +44,17 @@ public class EmergencyAlarm : IInteractable
 		alarms = FindObjectsOfType<EmergencyAlarm> ();
 		uIManager = UIManager.inst;
 
+		timer = 13 + PlayerPrefs.GetFloat("Minutes Elapsed", 0);
+		time.text = string.Format("{0}:{1}", (Mathf.FloorToInt((float)timer/60)).ToString("00"), Mathf.FloorToInt((float)timer % 60));
+
 		//screenMats = MaterialUtils.GetMaterialsFromRenderers(screenRs);
+	}
+
+	protected override void Update()
+	{
+		base.Update();
+		double totalTime = timer + (LoadingScreen.inst.GetTimeElapsed()/60);
+		time.text = string.Format("{0}:{1}", (Mathf.FloorToInt((float) totalTime/60)).ToString("00"), Mathf.FloorToInt((float)totalTime % 60));
 	}
 
 	public override void Interact ()

@@ -39,7 +39,7 @@ public class IInteractable : MonoBehaviour
 			{
 				if (!player.inHackable)
 				{
-					if (hit.collider != player.GetPlayerCollider ())
+					if (hit.collider != player.GetPlayerCollider () && hit.collider != player.controllerCol)
 					{
 						passed = false;
 					}

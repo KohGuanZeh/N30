@@ -223,6 +223,7 @@ public class AI : IHackable
 		ai.agent.enabled = false;
 		ai.hacked = true;
 		ai.enabled = false;
+		ai.reachedIdle = false;
 		controller.enabled = true;
 		ai.StopAllCoroutines ();
 		walkAudiosource.Stop ();

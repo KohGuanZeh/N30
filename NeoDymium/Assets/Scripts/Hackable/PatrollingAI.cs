@@ -96,6 +96,14 @@ public class PatrollingAI : MonoBehaviour
 		
 		if (!ai.isDisabled)
 		{
+			if (reachedIdle)
+			{
+				Quaternion targetRotation = Quaternion.LookRotation (patrolPoints[0].point.forward, Vector3.up);
+				transform.rotation = Quaternion.Slerp (transform.rotation, targetRotation, 10 * Time.deltaTime);
+				//transform.eulerAngles = patrolPoints[0].point.eulerAngles;
+			}
+				
+
 			if (!moveAcrossNavMeshesStarted)
 				SpotPlayer ();
 
@@ -444,7 +452,7 @@ public class PatrollingAI : MonoBehaviour
 				agent.velocity = Vector3.zero;
 				reachedIdle = true;
 				idleRotation = false;
-				transform.eulerAngles = patrolPoints[0].point.eulerAngles;
+				//transform.eulerAngles = patrolPoints[0].point.eulerAngles;
 			}
 		}
 

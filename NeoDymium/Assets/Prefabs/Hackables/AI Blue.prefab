@@ -2026,10 +2026,6 @@ MonoBehaviour:
   questionMark: {fileID: 6488819739669101783}
   whiteDotRaycastHeightOffset: 1
   whiteDot: {fileID: 0}
-  instructionRobot: 0
-  lockRotation: 0
-  instructionImage: {fileID: 0}
-  instructionToDisplay: 
   walkSpeed: 5
   groundOffset: 0.02
   hackCamPos: {fileID: 2805370164209681601}
@@ -2040,6 +2036,10 @@ MonoBehaviour:
     m_Bits: 2048
   slopeForce: 10
   distFromGround: 0.5
+  tutorialFirstHack: 0
+  tutorialFourthHack: 0
+  tutorialFourthHackSecond: 0
+  tutorialLevel2First: 0
   anim: {fileID: 0}
   lightCone: {fileID: 882950367844394752}
   densityVolume: {fileID: 1115499930299462811}
@@ -2074,7 +2074,8 @@ AudioSource:
   m_GameObject: {fileID: 2805370165156913053}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1265774836771164933, guid: 350de4cd0788409439403471b902ad0c,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: cd3354796af20c041918a548b89ce101, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -2170,7 +2171,8 @@ AudioSource:
   m_GameObject: {fileID: 2805370165156913053}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1265774836771164933, guid: 350de4cd0788409439403471b902ad0c,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 4c2b082d6a5be1646bc7c15c0b5befaa, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5

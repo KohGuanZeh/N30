@@ -183,8 +183,8 @@ public class PatrollingAI : MonoBehaviour
 				rotatedAmt += headRotateSpeed * Time.deltaTime;
 				yield return null;
 			}
-			head.eulerAngles = expectedAngle;
-			ai.camera.transform.eulerAngles = expectedAngleCam;
+			//head.eulerAngles = expectedAngle;
+			//ai.camera.transform.eulerAngles = expectedAngleCam;
 			head.transform.localPosition = Vector3.zero;
 		}
 		else
@@ -200,8 +200,8 @@ public class PatrollingAI : MonoBehaviour
 				rotatedAmt += headRotateSpeed * Time.deltaTime;
 				yield return null;
 			}
-			head.eulerAngles = expectedAngle;
-			ai.camera.transform.eulerAngles = expectedAngleCam;
+			//head.eulerAngles = expectedAngle;
+			//ai.camera.transform.eulerAngles = expectedAngleCam;
 			head.transform.localPosition = Vector3.zero;
 		}
 
@@ -221,8 +221,8 @@ public class PatrollingAI : MonoBehaviour
 			yield return null;
 		}
 
-		head.eulerAngles = expectedAngle;
-		ai.camera.transform.eulerAngles = expectedAngleCam;
+		//head.eulerAngles = expectedAngle;
+		//ai.camera.transform.eulerAngles = expectedAngleCam;
 		head.transform.localPosition = Vector3.zero;
 
 		yield return new WaitForSeconds (headRotateInterval);

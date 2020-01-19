@@ -121,6 +121,7 @@ public class EmergencyAlarm : IInteractable
 				ai.agent.SetDestination (alarmPosition.position);
 				ai.ResetHeadRotation ();
 				ai.idleRotation = true;
+				ai.reachedIdle = false;
 				ai.firstIdle = true;
 				//ai.StopCoroutine (ai.IdleLookAround ());
 				ai.StopAllCoroutines();

@@ -632,6 +632,7 @@ public class UIManager : MonoBehaviour
 		if (!detectionGauges[1].gameObject.activeInHierarchy || detectionGauges[1].fillAmount == 0)
 		{
 			if (playerPointer.gameObject.activeInHierarchy) playerPointer.gameObject.SetActive(false);
+			if (playerOnScreen) playerOnScreen = false;
 			return;
 		}
 

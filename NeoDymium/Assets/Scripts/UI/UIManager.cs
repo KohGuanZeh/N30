@@ -97,7 +97,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] bool playerOnScreen;
 	[SerializeField] float aiFocusLerpTime;
 
-	[Header("Instructions and Error Msgs")]
+	[Header("Focus Controls")]
 	[SerializeField] Sprite[] controlsSprites; //Mouse Click is 0, E is 1
 	[SerializeField] ControlsInfo[] controls;
 
@@ -122,6 +122,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] float tutorialLerpTime;
 
 	[SerializeField] TextMeshProUGUI tutorialContent;
+	public GameObject movementTutorial;
 	[SerializeField] float tutorialTextLerpTime;
 
 	[Header("Game States")]
@@ -472,16 +473,22 @@ public class UIManager : MonoBehaviour
 		action += ErrorPopInPopOut;
 	}
 
-	public void ShowHideTutorial(bool show, string text = "")
+	public void ShowHideTutorial(bool show, string text = "", bool isMovement = false)
 	{
 		showTutorial = show;
 		if (showTutorial)
 		{
-			tutorialContent.text = text;
-
+			if (isMovement)
+			{
+				movementTutorial.SetActive(true);
+				tutorialContent.text = "";
+			}
+			else tutorialContent.text = text;
+			
 			tutorialTextLerpTime = 0;
 			action += TutorialTextFade;
-		} 
+		}
+		else if (isMovement) movementTutorial.SetActive(false);
 
 		action += TutorialPopInPopOut;
 	}

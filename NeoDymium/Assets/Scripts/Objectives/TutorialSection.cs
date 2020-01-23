@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class TutorialSection : MonoBehaviour
 {
@@ -7,6 +9,10 @@ public class TutorialSection : MonoBehaviour
     TutorialManager tutorialManager;
     UIManager uIManager;
     bool tutHasFinished;
+
+    public GameObject controlKeys;
+    public TextMeshProUGUI controlText;
+
     void Awake ()
     {
         tutorialManager = FindObjectOfType<TutorialManager>();
@@ -17,18 +23,28 @@ public class TutorialSection : MonoBehaviour
     }
     void OnTriggerEnter (Collider other)
     {
-        if (other.tag == "Player")
-            tutorialManager.DiscountCoroutine (gameObject, textToDisplay);
+        // if (other.tag == "Player")
+        //     tutorialManager.DiscountCoroutine (gameObject, textToDisplay);
     }
     void OnTriggerStay (Collider other)
     {
-        if (!tutHasFinished)
+        // if (!tutHasFinished)
+        // {
+        //     if (Input.GetKeyDown (KeyCode.LeftControl))
+        //     {
+        //         uIManager.currentHint.text = string.Empty;
+        //         tutHasFinished = true;
+        //     }
+        // }
+        if (other.tag == "Player")
         {
-            if (Input.GetKeyDown (KeyCode.LeftControl))
-            {
-                uIManager.currentHint.text = string.Empty;
-                tutHasFinished = true;
-            }
+            
         }
+    }
+
+    void OnTriggerExit (Collider other)
+    {
+        // if (controlKeys.activeSelf) controlKeys.SetActive (false);
+        // if (controlText.gameObject.activeSelf) controlText.gameObject.SetActive (false);
     }
 }

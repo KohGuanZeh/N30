@@ -7,6 +7,7 @@ public struct TutorialSegment
 	public bool triggered; //put to false at start
 	[TextArea (5, 20)]
 	public string description;
+	public bool movementTut;
 }
 
 public class NewTutorial : MonoBehaviour
@@ -35,13 +36,22 @@ public class NewTutorial : MonoBehaviour
 		{
 			currentTutorialIndex = index;
 			tutorials[index].triggered = true;
-			ui.ShowHideTutorial (true, tutorials[index].description);
+			if (!tutorials[index].movementTut) 
+				ui.ShowHideTutorial (true, tutorials[index].description, false);
+			else 
+			{
+				ui.movementTutorial.SetActive (true);
+				ui.ShowHideTutorial (true, tutorials[index].description, true);
+			}
 		}
 	}
 
 	public void TutorialEnd (int index)
 	{
 		if (index == currentTutorialIndex)
-			ui.ShowHideTutorial (false);
+		{
+			ui.ShowHideTutorial (false, "", false);
+			ui.movementTutorial.SetActive (false);
+		}
 	}
 }

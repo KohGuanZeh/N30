@@ -19,7 +19,10 @@ public class LoadingScreen : MonoBehaviour
 	[SerializeField] int levelIdxToLoad = -1;
 
 	[Header("Loading Screen Items")]
-	[SerializeField] Image bg;
+	public GameObject items;
+	public Image[] fadeBgs;
+	public Image previewBg;
+	public Sprite[] previewBgSprites;
 	[SerializeField] Color bgDefaultColor = new Color(0.1f, 0.1f, 0.1f, 1);
 	[SerializeField] Image[] loadingIcons;
 	[SerializeField] float[] rotationSpeeds;
@@ -47,9 +50,16 @@ public class LoadingScreen : MonoBehaviour
 		watch = new Stopwatch();
 		watch.Start();
 
-		bg.color = loadingTxt.color = Color.clear;
+		for (int i = 0; i < fadeBgs.Length; i++)
+		{
+			fadeBgs[i].color = Color.clear;
+		}
+
+		loadingTxt.color = Color.clear;
 		foreach (Image loadingIcon in loadingIcons) loadingIcon.color = Color.clear;
-		bg.gameObject.SetActive(false);
+		//bg.gameObject.SetActive(false);
+
+		items.SetActive (false);
 
 		levelIdxToLoad = -1;
 		levelToLoad = string.Empty;
@@ -87,8 +97,43 @@ public class LoadingScreen : MonoBehaviour
 	public void LoadScene(string levelName)
 	{
 		if (isLoading) return;
-		bg.gameObject.SetActive(true);
+
+		// for (int i = 0; i < fadeBgs.Length; i++)
+		// {
+		// 	fadeBgs[i].gameObject.SetActive (true);
+		// }
+		
+		items.SetActive (true);
+
+		//bg.gameObject.SetActive(true);
 		levelToLoad = levelName;
+
+		switch (levelName)
+		{
+			case "Main Menu":
+			{
+				previewBg.sprite = previewBgSprites[UnityEngine.Random.Range (0, 3)];
+				break;
+			}
+
+			case "Tutorial 1 Revamped":
+			{
+				previewBg.sprite = previewBgSprites[0];
+				break;
+			}
+
+			case "Tutorial 2":
+			{
+				previewBg.sprite = previewBgSprites[1];
+				break;
+			}
+
+			case "Tutorial 3":
+			{
+				previewBg.sprite = previewBgSprites[2];
+				break;
+			}
+		}
 
 		isLoading = true;
 		fadeIn = true;
@@ -100,8 +145,29 @@ public class LoadingScreen : MonoBehaviour
 	public void LoadScene(int levelIndex)
 	{
 		if (isLoading) return;
-		bg.gameObject.SetActive(true);
+
+		// for (int i = 0; i < fadeBgs.Length; i++)
+		// {
+		// 	fadeBgs[i].gameObject.SetActive (true);
+		// }
+
+		items.SetActive (true);
+
+		//bg.gameObject.SetActive(true);
 		levelIdxToLoad = levelIndex;
+
+		int previewIndex = 0;
+
+		if (levelIndex == 0)
+		{
+			previewIndex = UnityEngine.Random.Range (0, 3);
+		}
+		else
+		{
+			previewIndex = levelIndex - 1;
+		}
+
+		previewBg.sprite = previewBgSprites[previewIndex];
 
 		isLoading = true;
 		fadeIn = true;
@@ -131,13 +197,25 @@ public class LoadingScreen : MonoBehaviour
 	{
 		fadeLerpTime = fadeIn ? Mathf.Min(fadeLerpTime + fadeSpeed * Time.deltaTime, 1) : Mathf.Max(fadeLerpTime - fadeSpeed * Time.deltaTime, 0);
 
-		bg.color = Color.Lerp(Color.clear, bgDefaultColor, fadeLerpTime);
+		//bg.color = Color.Lerp(Color.clear, bgDefaultColor, fadeLerpTime);
+
+		for (int i = 0; i < fadeBgs.Length; i++)
+		{
+			fadeBgs[i].color = Color.Lerp (Color.clear, bgDefaultColor, fadeLerpTime);
+		}
+
 		foreach (Image loadingIcon in loadingIcons) loadingIcon.color = Color.Lerp(Color.clear, Color.white, fadeLerpTime);
 		loadingTxt.color = Color.Lerp(Color.clear, Color.white, fadeLerpTime);
 
 		if (fadeIn && fadeLerpTime >= 1)
 		{
-			bg.color = bgDefaultColor;
+			//bg.color = bgDefaultColor;
+
+			for (int i = 0; i < fadeBgs.Length; i++)
+			{
+				fadeBgs[i].color = bgDefaultColor;
+			}
+
 			foreach (Image loadingIcon in loadingIcons) loadingIcon.color = Color.white;
 			loadingTxt.color = Color.white;
 			OnFadeIn();
@@ -146,7 +224,13 @@ public class LoadingScreen : MonoBehaviour
 		}
 		else if (!fadeIn && fadeLerpTime <= 0)
 		{
-			bg.color = Color.clear;
+			//bg.color = Color.clear;
+
+			for (int i = 0; i < fadeBgs.Length; i++)
+			{
+				fadeBgs[i].color = Color.clear;
+			}
+
 			foreach (Image loadingIcon in loadingIcons) loadingIcon.color = Color.clear;
 			loadingTxt.color = Color.clear;
 			OnFadeOut();
@@ -165,7 +249,9 @@ public class LoadingScreen : MonoBehaviour
 	public void OnFadeOut()
 	{
 		isLoading = false;
-		bg.gameObject.SetActive(false);
+		//bg.gameObject.SetActive(false);
+
+		items.SetActive (false);
 
 		levelToLoad = string.Empty;
 		levelIdxToLoad = -1;

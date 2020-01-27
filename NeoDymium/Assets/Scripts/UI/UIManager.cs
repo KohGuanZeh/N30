@@ -223,8 +223,8 @@ public class UIManager : MonoBehaviour
 		foreach (Graphic graphic in errorBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
 		errorHeader.color = ColorUtils.ChangeAlpha(errorHeader.color, 0);
 
-		errorBorders[0].rectTransform.anchoredPosition = new Vector2(0, -30);
-		errorBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.5f);
+		errorBorders[0].rectTransform.anchoredPosition = new Vector2(-2, -30);
+		errorBorders[1].rectTransform.anchoredPosition = new Vector2(1.2f, 55f);
 		errorTxtBox.sizeDelta = new Vector2(160, 0);
 
 		errorContent.color = ColorUtils.ChangeAlpha(errorContent.color, 0);
@@ -238,7 +238,7 @@ public class UIManager : MonoBehaviour
 		tutorialContent.color = ColorUtils.ChangeAlpha(tutorialContent.color, 0);
 
 		tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-30, 12.5f);
-		tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.25f);
+		tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(1.2f, 55f);
 		tutorialTxtBox.sizeDelta = new Vector2(160, 0);
 
 		//Adding Scripted Animations to Action Delegate
@@ -755,8 +755,8 @@ public class UIManager : MonoBehaviour
 
 		float lateLerpTime = Mathf.Clamp((errorLerpTime - 0.5f) / 0.5f, 0, 1);
 
-		errorBorders[0].rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(-30, 12.5f, lateLerpTime));
-		errorBorders[1].rectTransform.anchoredPosition = new Vector2(3, Mathf.Lerp(58.5f, -5f, lateLerpTime));
+		errorBorders[0].rectTransform.anchoredPosition = new Vector2(-2, Mathf.Lerp(-30, 12.5f, lateLerpTime));
+		errorBorders[1].rectTransform.anchoredPosition = new Vector2(1.2f, Mathf.Lerp(55.5f, -8.5f, lateLerpTime));
 		errorTxtBox.sizeDelta = new Vector2(160, Mathf.Lerp(0, 120, lateLerpTime));
 
 		if (showError && errorLerpTime >= 1)
@@ -766,8 +766,8 @@ public class UIManager : MonoBehaviour
 			foreach (Graphic graphic in errorBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 1);
 			errorHeader.color = ColorUtils.ChangeAlpha(errorHeader.color, 1);
 
-			errorBorders[0].rectTransform.anchoredPosition = new Vector2(0, 12.5f);
-			errorBorders[1].rectTransform.anchoredPosition = new Vector2(3, -5f);
+			errorBorders[0].rectTransform.anchoredPosition = new Vector2(-2, 12.5f);
+			errorBorders[1].rectTransform.anchoredPosition = new Vector2(1.2f, -8.5f);
 			errorTxtBox.sizeDelta = new Vector2(160, 120);
 
 			errorIsShowing = true;
@@ -781,8 +781,8 @@ public class UIManager : MonoBehaviour
 			foreach (Graphic graphic in errorBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
 			errorHeader.color = ColorUtils.ChangeAlpha(errorHeader.color, 0);
 
-			errorBorders[0].rectTransform.anchoredPosition = new Vector2(0, -30);
-			errorBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.5f);
+			errorBorders[0].rectTransform.anchoredPosition = new Vector2(-2, -30);
+			errorBorders[1].rectTransform.anchoredPosition = new Vector2(1.2f, 55f);
 			errorTxtBox.sizeDelta = new Vector2(160, 0);
 
 			action -= ErrorPopInPopOut;
@@ -810,8 +810,8 @@ public class UIManager : MonoBehaviour
 
 		float lateLerpTime = Mathf.Clamp((tutorialLerpTime - 0.5f) / 0.5f, 0, 1);
 
-		tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(-30, 12.5f, lateLerpTime));
-		tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, Mathf.Lerp(58.5f, -5f, lateLerpTime));
+		tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-2, Mathf.Lerp(-30, 12.5f, lateLerpTime));
+		tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(1.2f, Mathf.Lerp(55f, -8.5f, lateLerpTime));
 		tutorialTxtBox.sizeDelta = new Vector2(160, Mathf.Lerp(0, 120, lateLerpTime));
 
 		if (showTutorial && tutorialLerpTime >= 1)
@@ -821,8 +821,8 @@ public class UIManager : MonoBehaviour
 			foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 1);
 			tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 1);
 
-			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(0, 12.5f);
-			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, -5f);
+			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-2, 12.5f);
+			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(1.2f, -8.5f);
 			tutorialTxtBox.sizeDelta = new Vector2(160, 120);
 
 			action -= TutorialPopInPopOut;
@@ -834,8 +834,8 @@ public class UIManager : MonoBehaviour
 			foreach (Graphic graphic in tutorialBorders) graphic.color = ColorUtils.ChangeAlpha(graphic.color, 0);
 			tutorialHeader.color = ColorUtils.ChangeAlpha(tutorialHeader.color, 0);
 
-			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-30, 12.5f);
-			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(3, 58.5f);
+			tutorialBorders[0].rectTransform.anchoredPosition = new Vector2(-2, -30);
+			tutorialBorders[1].rectTransform.anchoredPosition = new Vector2(1.2f, 55f);
 			tutorialTxtBox.sizeDelta = new Vector2(160, 0);
 
 			action -= TutorialPopInPopOut;

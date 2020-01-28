@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.21659103, g: 0.1675663, b: 0.15856221, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4229,11 +4229,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ceiling Light (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
-        type: 3}
-      propertyPath: displayLightIntensity
-      value: 700
-      objectReference: {fileID: 0}
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4288,6 +4283,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
+      propertyPath: displayLightIntensity
+      value: 700
       objectReference: {fileID: 0}
     - target: {fileID: 1493833483808846546, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
@@ -4643,11 +4643,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ceiling Light (3)
       objectReference: {fileID: 0}
-    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
-        type: 3}
-      propertyPath: displayLightIntensity
-      value: 700
-      objectReference: {fileID: 0}
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4702,6 +4697,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
+      propertyPath: displayLightIntensity
+      value: 700
       objectReference: {fileID: 0}
     - target: {fileID: 1493833483808846546, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
@@ -5795,6 +5795,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1507707086}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &591037059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 133
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 1
+  exposure:
+    m_OverrideState: 0
+    m_Value: 1
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1.9192116
+    min: 0
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 0.5
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1 &598294324
 GameObject:
   m_ObjectHideFlags: 0
@@ -9526,11 +9575,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ceiling Light
       objectReference: {fileID: 0}
-    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
-        type: 3}
-      propertyPath: displayLightIntensity
-      value: 700
-      objectReference: {fileID: 0}
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9585,6 +9629,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
+      propertyPath: displayLightIntensity
+      value: 700
       objectReference: {fileID: 0}
     - target: {fileID: 1493833483808846546, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
@@ -12014,11 +12063,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ceiling Light (5)
       objectReference: {fileID: 0}
-    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
-        type: 3}
-      propertyPath: displayLightIntensity
-      value: 700
-      objectReference: {fileID: 0}
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12073,6 +12117,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
+      propertyPath: displayLightIntensity
+      value: 700
       objectReference: {fileID: 0}
     - target: {fileID: 1493833483808846546, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
@@ -15540,11 +15589,21 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
-    - target: {fileID: -6115667796753027924, guid: 0be2d09ff087c6240b1805135c8628bd,
+    - target: {fileID: 4504643842057439555, guid: 0be2d09ff087c6240b1805135c8628bd,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f9582d594262a05479fe437e0ebc4957, type: 2}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: -806462644607904677, guid: 0be2d09ff087c6240b1805135c8628bd,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: -1957008695780758697, guid: 0be2d09ff087c6240b1805135c8628bd,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 0be2d09ff087c6240b1805135c8628bd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -15600,26 +15659,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -1957008695780758697, guid: 0be2d09ff087c6240b1805135c8628bd,
+    - target: {fileID: -6115667796753027924, guid: 0be2d09ff087c6240b1805135c8628bd,
         type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
-    - target: {fileID: -806462644607904677, guid: 0be2d09ff087c6240b1805135c8628bd,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f9582d594262a05479fe437e0ebc4957, type: 2}
     - target: {fileID: 2914089612385460551, guid: 0be2d09ff087c6240b1805135c8628bd,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: f9582d594262a05479fe437e0ebc4957, type: 2}
-    - target: {fileID: 4504643842057439555, guid: 0be2d09ff087c6240b1805135c8628bd,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0be2d09ff087c6240b1805135c8628bd, type: 3}
 --- !u!4 &1745357951 stripped
@@ -15945,55 +15994,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1799229303}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1813044475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 133
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 1
-  exposure:
-    m_OverrideState: 0
-    m_Value: 1
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1.9192116
-    min: 0
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 0.5
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1 &1820332138
 GameObject:
   m_ObjectHideFlags: 0
@@ -16085,11 +16085,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ceiling Light (4)
       objectReference: {fileID: 0}
-    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
-        type: 3}
-      propertyPath: displayLightIntensity
-      value: 700
-      objectReference: {fileID: 0}
     - target: {fileID: 7435466893150946102, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -16144,6 +16139,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621582290114731352, guid: ebb3c85b58baeef44825d9dcc11dc781,
+        type: 3}
+      propertyPath: displayLightIntensity
+      value: 700
       objectReference: {fileID: 0}
     - target: {fileID: 1493833483808846546, guid: ebb3c85b58baeef44825d9dcc11dc781,
         type: 3}
@@ -22438,16 +22438,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 278147339697570076}
     m_Modifications:
-    - target: {fileID: -7273349273436846234, guid: 4d7a1f2d72196e24bb9a9eefb40859c3,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
-    - target: {fileID: -9011121634745004123, guid: 4d7a1f2d72196e24bb9a9eefb40859c3,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: 4d7a1f2d72196e24bb9a9eefb40859c3,
         type: 3}
       propertyPath: m_Name
@@ -22503,6 +22493,11 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: -9011121634745004123, guid: 4d7a1f2d72196e24bb9a9eefb40859c3,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: -838008012807992823, guid: 4d7a1f2d72196e24bb9a9eefb40859c3,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -22519,6 +22514,11 @@ PrefabInstance:
       value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 5322470328466629114, guid: 4d7a1f2d72196e24bb9a9eefb40859c3,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: -7273349273436846234, guid: 4d7a1f2d72196e24bb9a9eefb40859c3,
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295

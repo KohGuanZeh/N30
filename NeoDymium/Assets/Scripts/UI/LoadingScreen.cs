@@ -57,7 +57,6 @@ public class LoadingScreen : MonoBehaviour
 
 		loadingTxt.color = Color.clear;
 		foreach (Image loadingIcon in loadingIcons) loadingIcon.color = Color.clear;
-		//bg.gameObject.SetActive(false);
 
 		items.SetActive (false);
 
@@ -97,11 +96,6 @@ public class LoadingScreen : MonoBehaviour
 	public void LoadScene(string levelName)
 	{
 		if (isLoading) return;
-
-		// for (int i = 0; i < fadeBgs.Length; i++)
-		// {
-		// 	fadeBgs[i].gameObject.SetActive (true);
-		// }
 		
 		items.SetActive (true);
 

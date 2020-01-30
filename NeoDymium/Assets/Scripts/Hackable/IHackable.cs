@@ -375,13 +375,13 @@ public class IHackable : MonoBehaviour
 	public virtual string GetError(int key = 0)
 	{
 		if (isDisabled) return "Error. System is Disabled.";
-		else if (enabledShields.Count > 0) return "Error. System Protection Level Too High.";
-		else if (!hackable) return "Error. Entity is preventing further Action";
+		else if (enabledShields.Count > 0) return "Error. Insufficient Security Clearance.";
+		else if (!hackable) return "Error. Alert Mode Currently Active. Unable to Access";
 		else if (key > 0)
 		{
 			//Only thing I did not Check is the Distance
 			if (player.inHackable) return "Error. Can only Wipe in Player Body";
-			else if (!canWipeMemory) return "Error. Entity is preventing further Action";
+			else if (!canWipeMemory) return "Error. Alert Mode Currently Active. Unable to Access";
 			else return string.Empty;
 		}
 		else return string.Empty;

@@ -165,7 +165,7 @@ public class EmergencyAlarm : IInteractable
 
 	public override string GetError(int key = 0)
 	{
-		for (int i = 0; i < alarms.Length; i++) if (alarms[i].active) return "Error. An Alarm is still going off.";
+		for (int i = 0; i < alarms.Length; i++) if (alarms[i].active) return "Error. Alarm is Currently Active. Please Wait";
 		return string.Empty;
 	}
 }

@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] LoadingScreen loadingScreen;
 	[SerializeField] AreaNamesManager areaNamesManager;
 	[SerializeField] AreaNames areaNames;
+	public float aiFov; //Sets the Standard FOV for AI when Player is not hacking into it
 
 	[Header("Player Movement")]
 	[SerializeField] bool lockPlayerMove, lockPlayerRot, lockPlayerAction; //To Lock Player Movement, Rotation or Actions (Hack/Interact) at Certain Parts of the Game
@@ -727,7 +728,7 @@ public class PlayerController : MonoBehaviour
 					currentViewingCamera.enabled = true;
 
 					prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
-					prevViewingCamera.fieldOfView = 60;
+					prevViewingCamera.fieldOfView = prevViewingCamera == playerCam ? 60 : aiFov;
 					prevViewingCamera.enabled = false;
 					prevViewingCamera = null;
 
@@ -772,7 +773,7 @@ public class PlayerController : MonoBehaviour
 					currentViewingCamera.enabled = true;
 
 					prevViewingCamera.depth = -1; //Player Camera Depth will always be at 0
-					prevViewingCamera.fieldOfView = 60;
+					prevViewingCamera.fieldOfView = aiFov;
 					prevViewingCamera.enabled = false;
 					prevViewingCamera = null;
 

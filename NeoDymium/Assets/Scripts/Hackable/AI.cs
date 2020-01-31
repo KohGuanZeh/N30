@@ -3,6 +3,8 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 
 public class AI : IHackable
 {
+	[Header ("AI Specific Variables")]
+	[SerializeField] ScanEffect scanEffect;
 	PatrollingAI ai;
 
 	//movement and rotation
@@ -72,6 +74,12 @@ public class AI : IHackable
 		hackableType = HackableType.AI;
 
 		base.Start ();
+
+		if (camera)
+		{
+			camera.fieldOfView = player.aiFov; //If the AI has a Camera, Set FOV according to Standard AI Fov
+			if (scanEffect) scanEffect.InitialiseScanLine(camera, color);
+		} 
 
 		//lightCone = transform.GetChild (1).GetChild (20).GetChild (1).GetChild (0).GetComponentInChildren<Light> ();
 		//densityVolume = transform.GetChild (1).GetChild (20).GetChild (1).GetChild (0).GetComponentInChildren<DensityVolume> ();
@@ -187,6 +195,7 @@ public class AI : IHackable
 	public override void OnHack ()
 	{
 		base.OnHack ();
+		scanEffect.gameObject.SetActive(false);
 
 		if (tutorialFirstHack && !tutorialFirstHackDone)
 		{
@@ -236,6 +245,7 @@ public class AI : IHackable
 	public override void OnUnhack ()
 	{
 		base.OnUnhack ();
+		scanEffect.gameObject.SetActive(true);
 
 		camera.transform.position = unhackCamPos.position;
 

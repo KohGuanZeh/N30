@@ -3,7 +3,8 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 
 public class AI : IHackable
 {
-	[Header ("AI Specific Variables")]
+	[Header("AI Specific Variables")]
+	[SerializeField] SkinnedMeshRenderer[] allMeshObjs;
 	[SerializeField] ScanEffect scanEffect;
 	PatrollingAI ai;
 
@@ -58,6 +59,8 @@ public class AI : IHackable
 		walkAudiosource = GetComponents<AudioSource> ()[0];
 		rotateAudiosource = GetComponents<AudioSource> ()[1];
 		distFromGround = GetComponentInChildren<Renderer>().bounds.extents.y + 0.02f;
+		
+		allMeshObjs = GetComponentsInChildren<SkinnedMeshRenderer>();
 
 		soundManager = SoundManager.inst;
 
@@ -195,6 +198,7 @@ public class AI : IHackable
 	public override void OnHack ()
 	{
 		base.OnHack ();
+		foreach (SkinnedMeshRenderer meshObj in allMeshObjs) meshObj.gameObject.layer = 13;
 		scanEffect.gameObject.SetActive(false);
 
 		if (tutorialFirstHack && !tutorialFirstHackDone)
@@ -245,6 +249,7 @@ public class AI : IHackable
 	public override void OnUnhack ()
 	{
 		base.OnUnhack ();
+		foreach (SkinnedMeshRenderer meshObj in allMeshObjs) meshObj.gameObject.layer = 9;
 		scanEffect.gameObject.SetActive(true);
 
 		camera.transform.position = unhackCamPos.position;

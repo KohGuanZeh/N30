@@ -64,9 +64,9 @@ public class EmergencyAlarm : IInteractable
 
 	void AlarmStartup ()
 	{
-		bool passed = true;
-		
-		foreach (EmergencyAlarm alarm in alarms)
+		//bool passed = true;
+
+		/*foreach (EmergencyAlarm alarm in alarms)
 			if (alarm.active)
 				passed = false;
 
@@ -79,10 +79,12 @@ public class EmergencyAlarm : IInteractable
 		{
 			active = false;
 			return;
-		}
-			
+		}*/
+
 		// if (alarmed || affectedAis[0].alarmed) //cheap check
 		// 	return;
+
+		active = true;
 
 		alarmed = true;
 		audioSources[1].Play ();
@@ -158,14 +160,10 @@ public class EmergencyAlarm : IInteractable
 		passcode.text += "*";
 	}
 
-	void FlashError()
-	{
-
-	}
-
 	public override string GetError(int key = 0)
 	{
-		for (int i = 0; i < alarms.Length; i++) if (alarms[i].active) return "Error. Alarm is Currently Active. Please Wait";
+		if (active) return "Error. Alarm is currently active. Please wait.";
+		//for (int i = 0; i < alarms.Length; i++) if (alarms[i].active) return "Error. Alarm is Currently Active. Please Wait";
 		return string.Empty;
 	}
 }

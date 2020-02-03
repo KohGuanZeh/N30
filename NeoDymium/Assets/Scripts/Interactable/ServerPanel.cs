@@ -7,8 +7,6 @@ using TMPro;
 
 public class ServerPanel : IInteractable
 {
-	[SerializeField] GameObject tempCanvas;
-	[SerializeField] Animator tempCanvasAnim;
 	[SerializeField] bool canCloseMenu;
 
 	public override void Start()
@@ -46,13 +44,8 @@ public class ServerPanel : IInteractable
 
 	public void ExecuteGameEnd()
 	{
-		tempCanvas.gameObject.SetActive(true);
-		tempCanvasAnim.SetBool("Ended", true);
-	}
-
-	public void AllowCloseMenu()
-	{
-		canCloseMenu = true;
+		UIManager.inst.PlayCutscene(false);
+		UIManager.inst.isGameOver = true;
 	}
 
 	/*public void Disable()

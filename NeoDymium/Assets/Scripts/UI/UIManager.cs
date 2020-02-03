@@ -125,6 +125,10 @@ public class UIManager : MonoBehaviour
 	public GameObject movementTutorial;
 	[SerializeField] float tutorialTextLerpTime;
 
+	[Header("Cutscene Items")]
+	[SerializeField] TextMeshProUGUI cutsceneMsg;
+	[SerializeField] bool canCloseMenu;
+
 	[Header("Game States")]
 	//May want to use Enum for Game States
 	public bool isGameOver;
@@ -264,6 +268,8 @@ public class UIManager : MonoBehaviour
 
 		soundManager = SoundManager.inst;
 		objM = ObjectiveManager.inst;
+
+		if (LoadingScreen.inst.startWithBackdrop) PlayCutscene(true);
 	}
 
 	void Update()
@@ -273,6 +279,8 @@ public class UIManager : MonoBehaviour
 		foreach (Image detectionGauge in detectionGauges) detectionGauge.fillAmount = (player.detectionGauge / player.detectionThreshold);
 
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver && !LoadingScreen.inst.isLoading) PausePlay();
+
+		if (isGameOver && canCloseMenu && Input.GetMouseButtonDown(0)) LoadingScreen.inst.AutoLoadNextScene();
 
 		if (errorIsShowing)
 		{
@@ -1212,6 +1220,51 @@ public class UIManager : MonoBehaviour
 		//maxXY = new Vector2(Screen.width - minXY.x, Screen.height - (minXY.y + marker.GetPixelAdjustedRect().height));
 		minXY = new Vector2(movableDetectionComp.rect.width / 2 + offset.x, offset.y);
 		maxXY = new Vector2(screenSize.x - minXY.x, screenSize.y - (minXY.y + movableDetectionComp.rect.height));
+	}
+	#endregion
+
+	#region Cutsceene Items
+	void OnBackdropFadeOut()
+	{
+		player.LockPlayerRotation(false);
+	}
+
+	void PlaySound(int soundIndex)
+	{
+		/*switch (soundIndex)
+		{
+			case 0:
+				soundManager.PlaySound(soundManager.ventSfx);
+				break;
+			case 1:
+				soundManager.PlaySound(soundManager.dropSfx);
+				break;
+		}*/
+	}
+
+	void ChangeMsgText(string msg)
+	{
+		cutsceneMsg.text = msg;	
+	}
+
+	void CanCloseMenu()
+	{
+		canCloseMenu = true;
+	}
+
+	public void PlayCutscene(bool isStart)
+	{
+		guiAnim.SetBool(isStart ? "Play Intro" : "Play End", true);
+		player.LockPlayerMovement(true);
+		if (isStart) player.LockPlayerRotation(true);
+		player.LockPlayerAction(true);
+	}
+
+	public void EndCutscene()
+	{
+		player.LockPlayerMovement(false);
+		player.LockPlayerRotation(false);
+		player.LockPlayerAction(false);
 	}
 	#endregion
 }

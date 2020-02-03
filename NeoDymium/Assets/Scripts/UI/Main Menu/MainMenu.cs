@@ -96,6 +96,7 @@ public class MainMenu : MonoBehaviour
 			PlayerPrefs.SetInt("Scene Index", 1);
 			PlayerPrefs.DeleteKey("Last Objective Saved");
 			PlayerPrefs.DeleteKey("Minutes Elapsed");
+			LoadingScreen.inst.startWithBackdrop = true;
 		}
 		else index = PlayerPrefs.GetInt("Scene Index", 1);
 

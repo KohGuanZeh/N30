@@ -34,6 +34,9 @@ public class LoadingScreen : MonoBehaviour
 	[SerializeField] float fadeLerpTime;
 	[SerializeField] Action action;
 
+	[Header("For Cutscene")]
+	public bool startWithBackdrop;
+
 	[Header("For Any Scripts that require Real Time")]
 	Stopwatch watch;
 

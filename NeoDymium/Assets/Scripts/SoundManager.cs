@@ -82,6 +82,10 @@ public class SoundManager : MonoBehaviour
 	public Audio vipCardSuccess;
 	public Audio vipCardFail;
 
+	[Header("Cutscene Audio")]
+	public Audio ventSfx;
+	public Audio dropSfx;
+
 	// Sounds that use their own audiosources:
 	// 1. control panel
 	// 2. server panel

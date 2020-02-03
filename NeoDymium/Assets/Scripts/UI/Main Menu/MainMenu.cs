@@ -97,8 +97,13 @@ public class MainMenu : MonoBehaviour
 			PlayerPrefs.DeleteKey("Last Objective Saved");
 			PlayerPrefs.DeleteKey("Last Checkpoint Saved");
 			PlayerPrefs.DeleteKey("Minutes Elapsed");
+			LoadingScreen.inst.startWithBackdrop = true;
 		}
-		else index = PlayerPrefs.GetInt("Scene Index", 1);
+		else
+		{
+			index = PlayerPrefs.GetInt("Scene Index", 1);
+			LoadingScreen.inst.startWithBackdrop = false;
+		}
 
 		audioSource.Play ();
 		LoadingScreen.inst.LoadScene(index);

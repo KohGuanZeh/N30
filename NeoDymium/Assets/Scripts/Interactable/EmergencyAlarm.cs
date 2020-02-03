@@ -99,6 +99,7 @@ public class EmergencyAlarm : IInteractable
 		{
 			tutorialFirstDone = true;
 			NewTutorial.inst.TutorialEnd (1);
+			FindObjectOfType<NigelPervertOpenTightsWallpaperInPublic> ().boinger.SetActive (false);
 		}
 
 		audioSources[0].Play ();
@@ -148,6 +149,10 @@ public class EmergencyAlarm : IInteractable
 		passcode.text = string.Empty;
 		anim.SetBool("Error", false);
 
+		foreach (EmergencyAlarm alarm in alarms)
+			if (alarm.active)
+				return;
+				
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = false;

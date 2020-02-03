@@ -317,7 +317,7 @@ public class AI : IHackable
 		if (horVelocity.sqrMagnitude == 0)
 			player.SetBobSpeedAndOffset(0.75f, 0.01f); //Set Bobbing for Idle
 		else
-			player.SetBobSpeedAndOffset(3f, 0.04f);
+			player.SetBobSpeedAndOffset(1.5f, 0.04f);
 
 		velocity = new Vector3(horVelocity.x, velocity.y, horVelocity.z);
 

@@ -128,6 +128,9 @@ public class UIManager : MonoBehaviour
 	[Header("Cutscene Items")]
 	[SerializeField] TextMeshProUGUI cutsceneMsg;
 	[SerializeField] bool canCloseMenu;
+	[SerializeField] TextMeshProUGUI subtitles;
+	[SerializeField] float subtitlesLerpTime, subtitlesDisplayTime;
+	[SerializeField] bool useFade, showSubtitles;
 
 	[Header("Game States")]
 	//May want to use Enum for Game States
@@ -281,6 +284,8 @@ public class UIManager : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver && !LoadingScreen.inst.isLoading) PausePlay();
 
 		if (isGameOver && canCloseMenu && Input.GetMouseButtonDown(0)) LoadingScreen.inst.AutoLoadNextScene();
+
+		if (Input.GetKeyDown(KeyCode.K)) StartCoroutine(ShowHideSubtitles(new string[] { "I need to build my statikk shiv", "Ded ass my n word" }));
 
 		if (errorIsShowing)
 		{
@@ -1225,34 +1230,6 @@ public class UIManager : MonoBehaviour
 	#endregion
 
 	#region Cutsceene Items
-	void OnBackdropFadeOut()
-	{
-		player.LockPlayerRotation(false);
-	}
-
-	void PlaySound(int soundIndex)
-	{
-		/*switch (soundIndex)
-		{
-			case 0:
-				soundManager.PlaySound(soundManager.ventSfx);
-				break;
-			case 1:
-				soundManager.PlaySound(soundManager.dropSfx);
-				break;
-		}*/
-	}
-
-	void ChangeMsgText(string msg)
-	{
-		cutsceneMsg.text = msg;	
-	}
-
-	void CanCloseMenu()
-	{
-		canCloseMenu = true;
-	}
-
 	public void PlayCutscene(bool isStart)
 	{
 		guiAnim.SetBool(isStart ? "Play Intro" : "Play End", true);
@@ -1266,6 +1243,86 @@ public class UIManager : MonoBehaviour
 		player.LockPlayerMovement(false);
 		player.LockPlayerRotation(false);
 		player.LockPlayerAction(false);
+	}
+
+	void OnBackdropFadeOut()
+	{
+		player.LockPlayerRotation(false);
+	}
+
+	void PlaySound(int soundIndex)
+	{
+		switch (soundIndex)
+		{
+			case 0:
+				if (soundManager.ventSfx.clip) soundManager.PlaySound(soundManager.ventSfx);
+				break;
+			case 1:
+				if (soundManager.dropSfx.clip) soundManager.PlaySound(soundManager.dropSfx);
+				break;
+		}
+	}
+
+	void ChangeMsgText(string msg)
+	{
+		cutsceneMsg.text = msg;	
+	}
+
+	void CanCloseMenu()
+	{
+		canCloseMenu = true;
+	}
+
+	public IEnumerator ShowHideSubtitles(string[] text)
+	{
+		subtitles.text = string.Empty;
+		subtitles.gameObject.SetActive(true);
+
+		if (useFade)
+		{
+			subtitles.color = subtitles.color.ChangeAlpha(0);
+			for (int i = 0; i < text.Length; i++)
+			{
+				subtitles.text = text[i];
+				while (subtitlesLerpTime < 1)
+				{
+					subtitlesLerpTime = Mathf.Min(subtitlesLerpTime + Time.deltaTime * 3.5f, 1);
+					subtitles.color = subtitles.color.ChangeAlpha(subtitlesLerpTime);
+					yield return new WaitForEndOfFrame();
+				}
+				
+				yield return new WaitForSeconds(subtitlesDisplayTime);
+				
+				while (subtitlesLerpTime > 0)
+				{
+					subtitlesLerpTime = Mathf.Max(subtitlesLerpTime - Time.deltaTime * 3.5f, 0);
+					subtitles.color = subtitles.color.ChangeAlpha(subtitlesLerpTime);
+					yield return new WaitForEndOfFrame();
+				}
+
+				if (i != text.Length - 1) yield return new WaitForSeconds(0.25f); //Add a Slight Pause before next text plays
+			}
+
+			subtitles.gameObject.SetActive(false);
+		}
+		else
+		{
+			for (int i = 0; i < text.Length; i++)
+			{
+				subtitles.text = string.Empty;
+				char[] chars = text[i].ToCharArray();
+
+				for (int j = 0; j < chars.Length; j++)
+				{
+					subtitles.text += chars[j];
+					yield return new WaitForSeconds(0.02f);
+				}
+
+				yield return new WaitForSeconds(subtitlesDisplayTime);
+			}
+
+			subtitles.gameObject.SetActive(false);
+		}
 	}
 	#endregion
 }

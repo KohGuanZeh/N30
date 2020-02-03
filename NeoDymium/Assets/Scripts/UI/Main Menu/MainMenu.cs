@@ -95,6 +95,7 @@ public class MainMenu : MonoBehaviour
 		{
 			PlayerPrefs.SetInt("Scene Index", 1);
 			PlayerPrefs.DeleteKey("Last Objective Saved");
+			PlayerPrefs.DeleteKey("Last Checkpoint Saved");
 			PlayerPrefs.DeleteKey("Minutes Elapsed");
 			LoadingScreen.inst.startWithBackdrop = true;
 		}

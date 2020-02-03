@@ -573,6 +573,7 @@ public class UIManager : MonoBehaviour
 		if (!firstTime)
 			soundManager.PlaySound (soundManager.nextObjective);
 		ShowMarker();
+		PlayerPrefs.SetInt ("Last Objective Saved", objM.currentGoalNumber);
 	}
 	#endregion
 

@@ -143,7 +143,7 @@ public class PlayerController : MonoBehaviour
 		if (PlayerPrefs.GetInt("Scene Index", 0) != SceneManager.GetActiveScene().buildIndex) PlayerPrefs.DeleteKey("Last Objective Saved");
 		//print (PlayerPrefs.GetInt("Last Objective Saved", 0));
 		if (!overwriteCheckpoints)
-			checkPointsPassed = PlayerPrefs.GetInt("Last Objective Saved", 0);
+			checkPointsPassed = PlayerPrefs.GetInt("Last Checkpoint Saved", 0);
 		else
 			checkPointsPassed = forcedCheckPointsPassed;
 

@@ -109,11 +109,11 @@ public class EmergencyAlarm : IInteractable
 		errorHud.SetActive(true);
 		anim.SetBool("Error", true);
 
-		if (!tutHasFinished && uIManager.currentHint.gameObject.activeInHierarchy)
-		{
-			uIManager.currentHint.text = string.Empty;
-			tutHasFinished = true;
-		}
+		// if (!tutHasFinished && uIManager.currentHint.gameObject.activeInHierarchy)
+		// {
+		// 	uIManager.currentHint.text = string.Empty;
+		// 	tutHasFinished = true;
+		// }
 		foreach (PatrollingAI ai in affectedAis)
 		{
 			ai.alarmed = true;

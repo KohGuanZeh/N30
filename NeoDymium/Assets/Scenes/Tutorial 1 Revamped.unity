@@ -10437,55 +10437,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 145725208}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &149415001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 133
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 1
-  exposure:
-    m_OverrideState: 0
-    m_Value: 1
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1.9192116
-    min: 0
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 0.5
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &149681237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -48159,11 +48110,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 593512713}
     m_Modifications:
-    - target: {fileID: 6347623168020527173, guid: 43cc48f7e58e47c4d9578a5fcd1453b2,
-        type: 3}
-      propertyPath: m_Name
-      value: Tv 32 Inch Emissive Variant
-      objectReference: {fileID: 0}
     - target: {fileID: 7947745563111443030, guid: 43cc48f7e58e47c4d9578a5fcd1453b2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -48218,6 +48164,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347623168020527173, guid: 43cc48f7e58e47c4d9578a5fcd1453b2,
+        type: 3}
+      propertyPath: m_Name
+      value: Tv 32 Inch Emissive Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 43cc48f7e58e47c4d9578a5fcd1453b2, type: 3}
@@ -49796,6 +49747,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1867577104}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1183796140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 133
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 1
+  exposure:
+    m_OverrideState: 0
+    m_Value: 1
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1.9192116
+    min: 0
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 0.5
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &1185695105
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59539,7 +59539,7 @@ PrefabInstance:
     - target: {fileID: 4598359836110636559, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.01
+      value: 21.515
       objectReference: {fileID: 0}
     - target: {fileID: 4598359836110636559, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
@@ -64362,10 +64362,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Elevator
       objectReference: {fileID: 0}
-    - target: {fileID: 2564595563552902304, guid: 4747649d25fa0f14fa72711f51ec0190,
+    - target: {fileID: -8074229748503888626, guid: 4747649d25fa0f14fa72711f51ec0190,
         type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8074229748503888626, guid: 4747649d25fa0f14fa72711f51ec0190,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -6975716450478673231, guid: 4747649d25fa0f14fa72711f51ec0190,
         type: 3}
@@ -64376,26 +64381,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_NavMeshLayer
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -3754261936992363328, guid: 4747649d25fa0f14fa72711f51ec0190,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: -3754261936992363328, guid: 4747649d25fa0f14fa72711f51ec0190,
-        type: 3}
-      propertyPath: m_NavMeshLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8074229748503888626, guid: 4747649d25fa0f14fa72711f51ec0190,
-        type: 3}
-      propertyPath: m_NavMeshLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8074229748503888626, guid: 4747649d25fa0f14fa72711f51ec0190,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -6380457676921215755, guid: 4747649d25fa0f14fa72711f51ec0190,
         type: 3}
@@ -64482,6 +64467,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3754261936992363328, guid: 4747649d25fa0f14fa72711f51ec0190,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -3754261936992363328, guid: 4747649d25fa0f14fa72711f51ec0190,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -2554176266724179667, guid: 4747649d25fa0f14fa72711f51ec0190,
         type: 3}
       propertyPath: m_NavMeshLayer
@@ -64501,6 +64496,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2564595563552902304, guid: 4747649d25fa0f14fa72711f51ec0190,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5008427335388450245, guid: 4747649d25fa0f14fa72711f51ec0190,
         type: 3}
@@ -88545,31 +88545,6 @@ PrefabInstance:
       propertyPath: sfxSlider
       value: 
       objectReference: {fileID: 1400206118}
-    - target: {fileID: 4128693904081838192, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: nextObjective.clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 6a1760067ec047e45be585d2c1285a27, type: 3}
-    - target: {fileID: 4128693904081838192, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: playerDetected.clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 1f92dcf7f29c3064fa5969335279088b, type: 3}
-    - target: {fileID: 4128693904081838192, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: unhack.clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 2fc82b53f1520c64e98e5300c083a540, type: 3}
-    - target: {fileID: 4128693904081838192, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: hack.clip
-      value: 
-      objectReference: {fileID: 8300000, guid: d93a06e3e02000246bb9e185355829f6, type: 3}
-    - target: {fileID: 4128693904081838192, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: hack.volume
-      value: 0.6
-      objectReference: {fileID: 0}
     - target: {fileID: 4128693904876611596, guid: eccc9edccffc6e5418d9211314190b7b,
         type: 3}
       propertyPath: m_LocalRotation.x
@@ -88905,11 +88880,6 @@ PrefabInstance:
       propertyPath: textToDisplay
       value: Ctrl to crouch
       objectReference: {fileID: 0}
-    - target: {fileID: 421902756563126211, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 8460b97ba664c2849b37832a0ffc9cab, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eccc9edccffc6e5418d9211314190b7b, type: 3}
 --- !u!4 &4128693904813718935 stripped
@@ -89170,11 +89140,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 593512713}
     m_Modifications:
-    - target: {fileID: 7554610575145591741, guid: 2097488cb68065b41b3c7ff8e4950504,
-        type: 3}
-      propertyPath: m_Name
-      value: Book
-      objectReference: {fileID: 0}
     - target: {fileID: 7554610575145591738, guid: 2097488cb68065b41b3c7ff8e4950504,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -89229,6 +89194,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 70.84901
+      objectReference: {fileID: 0}
+    - target: {fileID: 7554610575145591741, guid: 2097488cb68065b41b3c7ff8e4950504,
+        type: 3}
+      propertyPath: m_Name
+      value: Book
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2097488cb68065b41b3c7ff8e4950504, type: 3}

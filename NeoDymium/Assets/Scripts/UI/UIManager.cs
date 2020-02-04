@@ -1240,6 +1240,7 @@ public class UIManager : MonoBehaviour
 
 	public void EndCutscene()
 	{
+		LoadingScreen.inst.startWithBackdrop = false;
 		player.LockPlayerMovement(false);
 		player.LockPlayerRotation(false);
 		player.LockPlayerAction(false);

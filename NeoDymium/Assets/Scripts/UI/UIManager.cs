@@ -272,7 +272,7 @@ public class UIManager : MonoBehaviour
 		soundManager = SoundManager.inst;
 		objM = ObjectiveManager.inst;
 
-		if (LoadingScreen.inst.startWithBackdrop) PlayCutscene(true);
+		if (LoadingScreen.inst.startWithBackdrop) PlayCutscene(0);
 	}
 
 	void Update()
@@ -285,7 +285,7 @@ public class UIManager : MonoBehaviour
 
 		if (isGameOver && canCloseMenu && Input.GetMouseButtonDown(0)) LoadingScreen.inst.AutoLoadNextScene();
 
-		if (Input.GetKeyDown(KeyCode.K)) StartCoroutine(ShowHideSubtitles(new string[] { "I need to build my statikk shiv", "Ded ass my n word" }));
+		//if (Input.GetKeyDown(KeyCode.K)) StartCoroutine(ShowHideSubtitles(new string[] { "I need to build my statikk shiv", "Ded ass my n word" }));
 
 		if (errorIsShowing)
 		{
@@ -1230,12 +1230,25 @@ public class UIManager : MonoBehaviour
 	#endregion
 
 	#region Cutsceene Items
-	public void PlayCutscene(bool isStart)
+	public void PlayCutscene(int index)
 	{
-		guiAnim.SetBool(isStart ? "Play Intro" : "Play End", true);
-		player.LockPlayerMovement(true);
-		if (isStart) player.LockPlayerRotation(true);
-		player.LockPlayerAction(true);
+		switch (index)
+		{
+			case 0:
+				guiAnim.SetBool("Play Intro", true);
+				player.LockPlayerMovement(true);
+				player.LockPlayerRotation(true);
+				player.LockPlayerAction(true);
+				break;
+			case 1:
+				guiAnim.SetBool("Play Mid", true);
+				break;
+			case 2:
+				guiAnim.SetBool("Play End", true);
+				player.LockPlayerMovement(true);
+				player.LockPlayerAction(true);
+				break;
+		}
 	}
 
 	public void EndCutscene()

@@ -7,7 +7,7 @@ using TMPro;
 
 public class ServerPanel : IInteractable
 {
-	[SerializeField] bool canCloseMenu;
+	[SerializeField] bool canCloseMenu, isDummy;
 
 	public override void Start()
 	{
@@ -27,12 +27,23 @@ public class ServerPanel : IInteractable
 		return; 
 	}
 
-	public override void Interact ()
+	public override void Interact()
 	{
 		//audioSource.Play ();
-		ExecuteGameEnd();
-		RespectiveGoals goal = GetComponent<RespectiveGoals>();
-		if (goal) goal.isCompleted = true;
+		if (isDummy)
+		{
+			PlayLevel2Dialog();
+			col.enabled = false;
+			gameObject.layer = 0;
+			//RespectiveGoals goal = GetComponent<RespectiveGoals>();
+			//if (goal) goal.isCompleted = true;
+		}
+		else
+		{
+			ExecuteGameEnd();
+			RespectiveGoals goal = GetComponent<RespectiveGoals>();
+			if (goal) goal.isCompleted = true;
+		}
 	}
 
 	public override string GetError(int key = 0)
@@ -42,9 +53,14 @@ public class ServerPanel : IInteractable
 		else return string.Empty;
 	}
 
+	public void PlayLevel2Dialog()
+	{
+		UIManager.inst.PlayCutscene(1);
+	}
+
 	public void ExecuteGameEnd()
 	{
-		UIManager.inst.PlayCutscene(false);
+		UIManager.inst.PlayCutscene(2);
 		UIManager.inst.isGameOver = true;
 	}
 

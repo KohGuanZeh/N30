@@ -31,7 +31,7 @@ public class ElevatorDoor : IInteractable
 			gameObject.layer = 0; //Set Layer to Default
 			gameObject.tag = "Untagged";
 
-			if (PlayerPrefs.GetInt("Last Objective Saved", 0) == 0)
+			if (PlayerPrefs.GetInt("Last Checkpoint Saved", 0) == 0)
 			{
 				soundManager.PlaySound(soundManager.elevatorTravel);
 				StartCoroutine(OpenElevatorDoor());

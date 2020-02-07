@@ -8,6 +8,7 @@ using TMPro;
 public class ServerPanel : IInteractable
 {
 	[SerializeField] bool canCloseMenu, isDummy;
+	public GameObject gateway;
 
 	public override void Start()
 	{
@@ -35,8 +36,9 @@ public class ServerPanel : IInteractable
 			PlayLevel2Dialog();
 			col.enabled = false;
 			gameObject.layer = 0;
-			//RespectiveGoals goal = GetComponent<RespectiveGoals>();
-			//if (goal) goal.isCompleted = true;
+			if (gateway.activeSelf) gateway.SetActive (false);
+			RespectiveGoals goal = GetComponent<RespectiveGoals>();
+			if (goal) goal.isCompleted = true;
 		}
 		else
 		{

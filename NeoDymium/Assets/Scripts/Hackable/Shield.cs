@@ -10,11 +10,11 @@ public class Shield : MonoBehaviour
 	Renderer rend; 
 
 	[Header ("Others")]
-	public Color playerColor = Color.white;
-	public Color redColor = Color.red;
-	public Color blueColor = Color.blue;
-	public Color yellowColor = Color.yellow;
-	public Color greenColor = Color.green;
+	[ColorUsage(false, true)] public Color playerColor = Color.white;
+	[ColorUsage(false, true)] public Color redColor = Color.red;
+	[ColorUsage(false, true)] public Color blueColor = Color.blue;
+	[ColorUsage(false, true)] public Color yellowColor = Color.yellow;
+	[ColorUsage(false, true)] public Color greenColor = Color.green;
 	//[SerializeField] Collider collider; //If the Shield has a Collider
 
 	//If Shield is to have a Collider, need to make it a Different Layer

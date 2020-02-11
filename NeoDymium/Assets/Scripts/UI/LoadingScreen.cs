@@ -136,7 +136,6 @@ public class LoadingScreen : MonoBehaviour
 		fadeIn = true;
 		action += FadeInFadeOut;
 		action += RotateIcon;
-		print("Loading Scene Through String");
 	}
 
 	public void LoadScene(int levelIndex)
@@ -170,7 +169,6 @@ public class LoadingScreen : MonoBehaviour
 		fadeIn = true;
 		action += FadeInFadeOut;
 		action += RotateIcon;
-		print("Loading Scene Through Int");
 	}
 
 	public void OnSceneLoaded()

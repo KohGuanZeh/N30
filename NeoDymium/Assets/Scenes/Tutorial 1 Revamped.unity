@@ -22453,6 +22453,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shelf w Crates Final (15)
       objectReference: {fileID: 0}
+    - target: {fileID: 2352481528722575719, guid: 7a9d927d4f9a14341b26fbca53422f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1657017505798660980, guid: 7a9d927d4f9a14341b26fbca53422f3d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -28294,55 +28299,6 @@ Transform:
   m_Father: {fileID: 593512713}
   m_RootOrder: 67
   m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: -106.44601}
---- !u!114 &574310842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 133
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 1
-  exposure:
-    m_OverrideState: 0
-    m_Value: 1
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1.9192116
-    min: 0
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 0.5
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &577721220
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38400,6 +38356,66 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 540145717}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &792793562
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 792793563}
+  - component: {fileID: 792793565}
+  - component: {fileID: 792793564}
+  m_Layer: 0
+  m_Name: Start Subs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &792793563
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792793562}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -42.416, y: 0.483, z: 24.212}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1784483817}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &792793564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792793562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6703af0df77be214f9365e7dc68ac6ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  subtitlesList:
+  - The Server Panel should be located on the upper floors
+  - There should be a lift nearby
+--- !u!65 &792793565
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792793562}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 3.9196591}
+  m_Center: {x: 8.491685e-17, y: 0, z: 0.037225485}
 --- !u!1001 &794317615
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40593,6 +40609,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Shelf w Crates Final (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2352481528722575719, guid: 7a9d927d4f9a14341b26fbca53422f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1657017505798660980, guid: 7a9d927d4f9a14341b26fbca53422f3d,
         type: 3}
@@ -48478,66 +48499,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1028890004}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1079319898
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1079319899}
-  - component: {fileID: 1079319901}
-  - component: {fileID: 1079319900}
-  m_Layer: 0
-  m_Name: Movement
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1079319899
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1079319898}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -42.992, y: 1, z: 18.837}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1784483817}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1079319900
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1079319898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 557e7fc498f413f47a4d8fe595d5be43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToDisplay: WASD to move <br> CTRL to crouch
-  controlKeys: {fileID: 0}
-  controlText: {fileID: 0}
---- !u!65 &1079319901
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1079319898}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 8.549203, y: 2, z: 5.019169}
-  m_Center: {x: 0.5901575, y: 0, z: 0.6091368}
 --- !u!1001 &1082413850
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59895,6 +59856,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shelf w Crates Final (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 2352481528722575719, guid: 7a9d927d4f9a14341b26fbca53422f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1657017505798660980, guid: 7a9d927d4f9a14341b26fbca53422f3d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -60624,6 +60590,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8059569060818824284, guid: 2397738c107c17c4bb6abe0d863af3f8,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4281174525
+      objectReference: {fileID: 0}
     - target: {fileID: 8332417826136480229, guid: 2397738c107c17c4bb6abe0d863af3f8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -61227,7 +61198,7 @@ PrefabInstance:
     - target: {fileID: 4598359836110636559, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 21.515
+      value: 20.147
       objectReference: {fileID: 0}
     - target: {fileID: 4598359836110636559, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
@@ -61237,7 +61208,7 @@ PrefabInstance:
     - target: {fileID: 4598359836110636559, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 46.52
+      value: 48.404
       objectReference: {fileID: 0}
     - target: {fileID: 4598359836110636559, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
@@ -70244,6 +70215,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shelf w Crates Final (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 2352481528722575719, guid: 7a9d927d4f9a14341b26fbca53422f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1657017505798660980, guid: 7a9d927d4f9a14341b26fbca53422f3d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -73958,6 +73934,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shelf w Crates Final (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 2352481528722575719, guid: 7a9d927d4f9a14341b26fbca53422f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1657017505798660980, guid: 7a9d927d4f9a14341b26fbca53422f3d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -75833,6 +75814,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Shelf w Crates Final (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2352481528722575719, guid: 7a9d927d4f9a14341b26fbca53422f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1657017505798660980, guid: 7a9d927d4f9a14341b26fbca53422f3d,
         type: 3}
@@ -81916,6 +81902,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shelf w Crates Final (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 2352481528722575719, guid: 7a9d927d4f9a14341b26fbca53422f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1657017505798660980, guid: 7a9d927d4f9a14341b26fbca53422f3d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -83945,6 +83936,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shelf w Crates Final (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 2352481528722575719, guid: 7a9d927d4f9a14341b26fbca53422f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1657017505798660980, guid: 7a9d927d4f9a14341b26fbca53422f3d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -85292,6 +85288,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1983455842}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1987969088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 133
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 1
+  exposure:
+    m_OverrideState: 0
+    m_Value: 1
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1.9192116
+    min: 0
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 0.5
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1 &1988170017
 GameObject:
   m_ObjectHideFlags: 0

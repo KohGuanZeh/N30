@@ -258,7 +258,7 @@ public class AI : IHackable
 		pitch = 0;
 		camera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
 
-		print(camera.transform.localEulerAngles);
+		//print(camera.transform.localEulerAngles);
 
 		ai.enabled = true;
 		ai.agent.enabled = true;

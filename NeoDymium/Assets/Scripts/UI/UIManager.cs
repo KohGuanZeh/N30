@@ -1125,6 +1125,7 @@ public class UIManager : MonoBehaviour
 
 	public void Options()
 	{
+		pauseScreen.gameObject.SetActive(optionsScreen.gameObject.activeSelf);
 		optionsScreen.gameObject.SetActive(!optionsScreen.gameObject.activeSelf);
 		soundManager.PlaySound (soundManager.click);
 	}

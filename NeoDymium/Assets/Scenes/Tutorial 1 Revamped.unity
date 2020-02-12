@@ -51491,6 +51491,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1190563527}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1190570854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 133
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 1
+  exposure:
+    m_OverrideState: 0
+    m_Value: 1
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1.9192116
+    min: 0
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 0.5
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1001 &1193070854
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61274,11 +61323,6 @@ PrefabInstance:
         type: 3}
       propertyPath: headBob
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4598359836110636552, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
-        type: 3}
-      propertyPath: overwriteCheckpoints
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6033328190598435222, guid: 23bb3bd0a75b0fb47955c5e4f455453b,
         type: 3}
@@ -85288,55 +85332,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1983455842}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1987969088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 133
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 1
-  exposure:
-    m_OverrideState: 0
-    m_Value: 1
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1.9192116
-    min: 0
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 0.5
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: ba92795b6b2635340be0061c6437fbb3, type: 3}
 --- !u!1 &1988170017
 GameObject:
   m_ObjectHideFlags: 0
@@ -88440,13 +88435,13 @@ PrefabInstance:
       objectReference: {fileID: 798482088}
     - target: {fileID: 35086175609506388, guid: f705616687e3e07478fcdd8cee706b85,
         type: 3}
-      propertyPath: roomName
-      value: RM-01
+      propertyPath: hackableName
+      value: AI001
       objectReference: {fileID: 0}
     - target: {fileID: 35086175609506388, guid: f705616687e3e07478fcdd8cee706b85,
         type: 3}
-      propertyPath: hackableName
-      value: AI001
+      propertyPath: roomName
+      value: RM-01
       objectReference: {fileID: 0}
     - target: {fileID: 4151499069772773950, guid: f705616687e3e07478fcdd8cee706b85,
         type: 3}
@@ -92078,16 +92073,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 400574975606176385, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 27.12
-      objectReference: {fileID: 0}
-    - target: {fileID: 400574975606176385, guid: eccc9edccffc6e5418d9211314190b7b,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -48.56
-      objectReference: {fileID: 0}
     - target: {fileID: 4128693904918973287, guid: eccc9edccffc6e5418d9211314190b7b,
         type: 3}
       propertyPath: m_Enabled
@@ -92097,6 +92082,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400574975606176385, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 27.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 400574975606176385, guid: eccc9edccffc6e5418d9211314190b7b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -48.56
       objectReference: {fileID: 0}
     - target: {fileID: 6944051773291374763, guid: eccc9edccffc6e5418d9211314190b7b,
         type: 3}

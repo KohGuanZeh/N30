@@ -490,7 +490,8 @@ public class PlayerController : MonoBehaviour
 					case ("Hackable"):
 						detectedHackable = aimRayHit.collider.GetComponent<IHackable>();
 						detectedInteractable = null;
-
+						if (aimRayHit.transform.GetComponent<IHackable>() == hackedObj)
+							return;
 						string hackError = detectedHackable.GetError(0);
 						if (hackError != string.Empty) ui.DisplayInstructionsAndErrors(true, new bool[] {true, true}, detectedHackable.hasPlayerMemory && !inHackable);
 						else
